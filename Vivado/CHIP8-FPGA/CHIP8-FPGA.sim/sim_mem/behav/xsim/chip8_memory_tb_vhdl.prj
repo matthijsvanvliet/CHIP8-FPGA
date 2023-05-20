@@ -1,0 +1,7 @@
+# compile vhdl design source files
+vhdl xil_defaultlib  \
+"../../../../../../chip8_memory.vhd" \
+"../../../../../../chip8_memory_tb.vhd" \
+
+# Do not sort compile order
+nosort
