@@ -68,6 +68,16 @@ architecture arch_chip8_cpu of chip8_cpu is
     -- Program Counter
     signal r_PROG_COUNT : std_logic_vector(15 downto 0);
     -- Registers, Stack and Program Counter -- 
+
+    -- State Machine --
+    type t_SM_CPU is (
+        s_NEXT,
+        s_FETCH,
+        s_DECODE,
+        s_EXECUTE
+    );
+    signal r_SM_CPU : t_SM_CPU := s_NEXT;
+    -- State Machine --
                                                     
 begin
 
