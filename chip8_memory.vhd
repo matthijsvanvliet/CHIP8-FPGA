@@ -67,14 +67,14 @@ begin
 
     p_RAM : process (i_clck) is
     begin
-            o_read_done <= '0';
-            if rising_edge(i_clck) then
-                if i_en_write = '0' then
-                    o_data_out <= r_RAM_DATA(to_integer(unsigned(i_address)));
-                    o_read_done <= '1';
-                elsif i_en_write = '1' then
-                    r_RAM_DATA(to_integer(unsigned(i_address))) <= i_data_in;
-                end if;
+        o_read_done <= '0';
+        if rising_edge(i_clck) then
+            if i_en_write = '0' then
+                o_data_out <= r_RAM_DATA(to_integer(unsigned(i_address)));
+                o_read_done <= '1';
+            elsif i_en_write = '1' then
+                r_RAM_DATA(to_integer(unsigned(i_address))) <= i_data_in;
+            end if;
         end if;
     end process p_RAM;
     
