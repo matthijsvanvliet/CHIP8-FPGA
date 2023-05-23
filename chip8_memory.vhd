@@ -12,8 +12,7 @@ entity chip8_memory is
         i_address   : in    std_logic_vector(11 downto 0);
         i_en_write  : in    std_logic;
 
-        o_data_out  : out   std_logic_vector(7 downto 0);
-        o_read_done : out   std_logic
+        o_data_out  : out   std_logic_vector(7 downto 0)
     );
 end chip8_memory;
 
@@ -67,15 +66,12 @@ begin
 
     p_RAM : process (i_clck) is
     begin
-        o_read_done <= '0';
         if rising_edge(i_clck) then
-            if i_en_write = '0' then
-                o_data_out <= r_RAM_DATA(to_integer(unsigned(i_address)));
-                o_read_done <= '1';
-            elsif i_en_write = '1' then
+            if i_en_write = '1' then
                 r_RAM_DATA(to_integer(unsigned(i_address))) <= i_data_in;
             end if;
         end if;
+        o_data_out <= r_RAM_DATA(to_integer(unsigned(i_address)));
     end process p_RAM;
     
 end arch_chip8_memory;
