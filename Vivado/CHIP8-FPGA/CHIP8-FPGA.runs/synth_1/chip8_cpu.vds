@@ -1,0 +1,211 @@
+#-----------------------------------------------------------
+# Vivado v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Wed May 24 00:55:05 2023
+# Process ID: 12148
+# Current directory: D:/git/Overig/CHIP8-FPGA/Vivado/CHIP8-FPGA/CHIP8-FPGA.runs/synth_1
+# Command line: vivado.exe -log chip8_cpu.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source chip8_cpu.tcl
+# Log file: D:/git/Overig/CHIP8-FPGA/Vivado/CHIP8-FPGA/CHIP8-FPGA.runs/synth_1/chip8_cpu.vds
+# Journal file: D:/git/Overig/CHIP8-FPGA/Vivado/CHIP8-FPGA/CHIP8-FPGA.runs/synth_1\vivado.jou
+# Running On: DESKTOP-MATTHIJS, OS: Windows, CPU Frequency: 3700 MHz, CPU Physical cores: 16, Host memory: 25715 MB
+#-----------------------------------------------------------
+source chip8_cpu.tcl -notrace
+create_project: Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 394.109 ; gain = 68.242
+Command: synth_design -top chip8_cpu -part xc7a100tcsg324-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7a100t'
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 22776
+INFO: [Synth 8-11241] undeclared symbol 'REGCCE', assumed default net type 'wire' [F:/Xilinx/Vivado/2022.2/data/verilog/src/unimacro/BRAM_SINGLE_MACRO.v:2170]
+---------------------------------------------------------------------------------
+Starting Synthesize : Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 833.859 ; gain = 412.340
+---------------------------------------------------------------------------------
+INFO: [Synth 8-638] synthesizing module 'chip8_cpu' [D:/git/Overig/CHIP8-FPGA/chip8_cpu.vhd:12]
+INFO: [Synth 8-3491] module 'chip8_memory' declared at 'D:/git/Overig/CHIP8-FPGA/chip8_memory.vhd:5' bound to instance 'MEMORY' of component 'chip8_memory' [D:/git/Overig/CHIP8-FPGA/chip8_cpu.vhd:93]
+INFO: [Synth 8-638] synthesizing module 'chip8_memory' [D:/git/Overig/CHIP8-FPGA/chip8_memory.vhd:19]
+WARNING: [Synth 8-614] signal 'i_address' is read in the process but is not in the sensitivity list [D:/git/Overig/CHIP8-FPGA/chip8_memory.vhd:67]
+INFO: [Synth 8-256] done synthesizing module 'chip8_memory' (0#1) [D:/git/Overig/CHIP8-FPGA/chip8_memory.vhd:19]
+INFO: [Synth 8-226] default block is never used [D:/git/Overig/CHIP8-FPGA/chip8_cpu.vhd:166]
+INFO: [Synth 8-256] done synthesizing module 'chip8_cpu' (0#1) [D:/git/Overig/CHIP8-FPGA/chip8_cpu.vhd:12]
+WARNING: [Synth 8-6014] Unused sequential element r_PRESCALER_COUNTER_60HZ_reg was removed.  [D:/git/Overig/CHIP8-FPGA/chip8_cpu.vhd:115]
+WARNING: [Synth 8-6014] Unused sequential element r_DELAY_TIMER_reg was removed.  [D:/git/Overig/CHIP8-FPGA/chip8_cpu.vhd:134]
+WARNING: [Synth 8-6014] Unused sequential element r_SOUND_TIMER_reg was removed.  [D:/git/Overig/CHIP8-FPGA/chip8_cpu.vhd:138]
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:09 ; elapsed = 00:00:09 . Memory (MB): peak = 935.254 ; gain = 513.734
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:09 ; elapsed = 00:00:10 . Memory (MB): peak = 935.254 ; gain = 513.734
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7a100tcsg324-1
+---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xc7a100tcsg324-1
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:09 ; elapsed = 00:00:10 . Memory (MB): peak = 935.254 ; gain = 513.734
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'r_SM_CPU_reg' in module 'chip8_cpu'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+            s_next_instr |                              000 |                              000
+            s_fetch_high |                              001 |                              001
+             s_fetch_low |                              010 |                              010
+               s_incr_pc |                              011 |                              011
+                s_decode |                              100 |                              100
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'r_SM_CPU_reg' using encoding 'sequential' in module 'chip8_cpu'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:10 ; elapsed = 00:00:10 . Memory (MB): peak = 935.254 ; gain = 513.734
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   32 Bit       Adders := 1     
+	   2 Input   12 Bit       Adders := 1     
++---Registers : 
+	               32 Bit    Registers := 1     
+	               16 Bit    Registers := 1     
+	               12 Bit    Registers := 1     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   5 Input   16 Bit        Muxes := 2     
+	   5 Input   12 Bit        Muxes := 1     
+	   5 Input    3 Bit        Muxes := 1     
+	  17 Input    1 Bit        Muxes := 1     
+	   5 Input    1 Bit        Muxes := 3     
+	   2 Input    1 Bit        Muxes := 1     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 240 (col length:80)
+BRAMs: 270 (col length: RAMB18 80 RAMB36 40)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+WARNING: [Synth 8-3332] Sequential element (FSM_sequential_r_SM_CPU_reg[2]) is unused and will be removed from module chip8_cpu.
+WARNING: [Synth 8-3332] Sequential element (FSM_sequential_r_SM_CPU_reg[1]) is unused and will be removed from module chip8_cpu.
+WARNING: [Synth 8-3332] Sequential element (FSM_sequential_r_SM_CPU_reg[0]) is unused and will be removed from module chip8_cpu.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:15 ; elapsed = 00:00:16 . Memory (MB): peak = 1126.062 ; gain = 704.543
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:15 ; elapsed = 00:00:16 . Memory (MB): peak = 1126.062 ; gain = 704.543
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:15 ; elapsed = 00:00:16 . Memory (MB): peak = 1126.062 ; gain = 704.543
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1126.062 ; gain = 704.543
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1126.062 ; gain = 704.543
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1126.062 ; gain = 704.543
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1126.062 ; gain = 704.543
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1126.062 ; gain = 704.543
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1126.062 ; gain = 704.543
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++-+-----+------+
+| |Cell |Count |
++-+-----+------+
++-+-----+------+
+
+Report Instance Areas: 
++------+---------+-------+------+
+|      |Instance |Module |Cells |
++------+---------+-------+------+
+|1     |top      |       |     0|
++------+---------+-------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1126.062 ; gain = 704.543
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 8 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1126.062 ; gain = 704.543
+Synthesis Optimization Complete : Time (s): cpu = 00:00:19 ; elapsed = 00:00:20 . Memory (MB): peak = 1126.062 ; gain = 704.543
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1126.062 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1229.758 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Synth Design complete, checksum: b72313f8
+INFO: [Common 17-83] Releasing license: Synthesis
+19 Infos, 8 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:21 ; elapsed = 00:00:22 . Memory (MB): peak = 1229.758 ; gain = 832.070
+INFO: [Common 17-1381] The checkpoint 'D:/git/Overig/CHIP8-FPGA/Vivado/CHIP8-FPGA/CHIP8-FPGA.runs/synth_1/chip8_cpu.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file chip8_cpu_utilization_synth.rpt -pb chip8_cpu_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Wed May 24 00:55:41 2023...

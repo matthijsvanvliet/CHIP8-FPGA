@@ -82,8 +82,8 @@ architecture arch_chip8_cpu of chip8_cpu is
         s_NEXT_INSTR,
         s_FETCH_HIGH,
         s_FETCH_LOW,
-        s_DECODE,
-        s_EXECUTE
+        s_INCR_PC,
+        s_DECODE
     );
     signal r_SM_CPU : t_SM_CPU := s_NEXT_INSTR;
     ---- State Machine ----
@@ -152,13 +152,58 @@ begin
                     end if;
                 when s_FETCH_HIGH =>
                     r_EN_WRITE <= '0';
-                        r_ADDRESS <= r_PROG_COUNT;
-                        r_INSTRUCTION(15 downto 8) <= w_DATA_OUT;
-                        r_SM_CPU <= s_FETCH_LOW;
+                    r_ADDRESS <= r_PROG_COUNT;
+                    r_INSTRUCTION(15 downto 8) <= w_DATA_OUT;
+                    r_SM_CPU <= s_FETCH_LOW;
                 when s_FETCH_LOW =>
-                        r_ADDRESS <= std_logic_vector(unsigned(r_PROG_COUNT) + 1);
-                        r_INSTRUCTION(7 downto 0) <= w_DATA_OUT;
-                        r_SM_CPU <= s_NEXT_INSTR;
+                    r_ADDRESS <= std_logic_vector(unsigned(r_PROG_COUNT) + 1);
+                    r_INSTRUCTION(7 downto 0) <= w_DATA_OUT;
+                    r_SM_CPU <= s_INCR_PC;
+                when s_INCR_PC =>
+                    r_PROG_COUNT <= std_logic_vector(unsigned(r_PROG_COUNT) + 2);
+                    r_SM_CPU <= s_DECODE;
+                when s_DECODE =>
+                    case r_INSTRUCTION(15 downto 12) is
+                        when x"0" =>
+                            case r_INSTRUCTION(11 downto 0) is
+                                when x"0E0" =>
+
+                                when others =>
+                                    r_SM_CPU <= s_NEXT_INSTR;
+                            end case;
+                        when x"1" =>
+                            -- implement
+                        when x"2" =>
+                            -- implement
+                        when x"3" =>
+                            -- implement
+                        when x"4" =>
+                            -- implement
+                        when x"5" =>
+                            -- implement
+                        when x"6" =>
+                            -- implement
+                        when x"7" =>
+                            -- implement
+                        when x"8" =>
+                            -- implement
+                        when x"9" =>
+                            -- implement
+                        when x"A" =>
+                            -- implement
+                        when x"B" =>
+                            -- implement
+                        when x"C" =>
+                            -- implement
+                        when x"D" =>
+                            -- implement
+                        when x"E" =>
+                            -- implement
+                        when x"F" =>
+                            -- implement
+                        when others =>
+                            r_SM_CPU <= s_NEXT_INSTR;
+                    end case;
                 when others =>
                     r_SM_CPU <= s_NEXT_INSTR;
             end case;
