@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="synth_1" LaunchPart="xc7a100tcsg324-1" LaunchTime="1684882502">
+<GenRun Id="synth_1" LaunchPart="xc7a100tcsg324-1" LaunchTime="1685032020">
   <File Type="PA-TCL" Name="chip8_cpu.tcl"/>
   <File Type="REPORTS-TCL" Name="chip8_cpu_reports.tcl"/>
   <File Type="RDS-RDS" Name="chip8_cpu.vds"/>

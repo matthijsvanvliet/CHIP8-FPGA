@@ -1,6 +1,8 @@
 library ieee;
 use ieee.std_logic_1164.all; -- For std_logic type definition
 use ieee.numeric_std.all; -- For numerical computation (includes logical operations in this file (and, xor, etc))
+use std.textio.all; -- Used to load in program into RAM
+use ieee.std_logic_textio.all;
 
 entity chip8_memory is
     port (
@@ -41,28 +43,43 @@ architecture arch_chip8_memory of chip8_memory is
         x"F0", x"80", x"F0", x"80", x"80"  -- F
     );
 
-    constant c_FONT_LOC   : integer   := 80; 
+    constant c_FONT_LOC   : integer := 16#050#; 
 
     -- RAM data
-    constant c_RAM_WIDTH : integer := 4096;
+    constant c_RAM_WIDTH        : integer := 4096;
+    constant c_START_ADDRESS    : integer := 16#200#;
 
     type t_RAM is array (0 to c_RAM_WIDTH-1) of std_logic_vector(7 downto 0);
 
-    function InitialiseRamWithFont(
-            signal font_data : in t_FONT
+    impure function InitialiseRamWithData(
+            font_data : t_FONT;
+            file_name : string
         )
-        return t_RAM is variable ram_data : t_RAM;
+        return t_RAM is
+            variable ram_data       : t_RAM := (others => x"00");
+            variable data_bytes     : character;
+            variable current_line   : line;        
+            file file_handle        : text open read_mode is file_name;
+
     begin
-        ram_data := (others => x"00");
-        -- ram_data(16#FF0#) := x"00";
-        -- ram_data(16#FF1#) := x"E0";
+        -- Load chip8 program into memory
+        readline(file_handle, current_line);
+        for i in 0 to c_RAM_WIDTH - c_START_ADDRESS - 1 loop
+            read(current_line, data_bytes);
+
+            ram_data(c_START_ADDRESS) := std_logic_vector(to_unsigned(character'pos(data_bytes), 8));
+        end loop;
+
+        file_close(file_handle);
+
+        -- Load font into memory
         for i in t_FONT'range loop
             ram_data(80 + i) := font_data(i); -- Load font data to address 0x050
         end loop;
         return ram_data;
-    end InitialiseRamWithFont;
+    end InitialiseRamWithData;
 
-    signal r_RAM_DATA : t_RAM := InitialiseRamWithFont(r_FONT_DATA);
+    signal r_RAM_DATA : t_RAM := InitialiseRamWithData(r_FONT_DATA, "ibm-logo.ch8");
 
 begin
 
