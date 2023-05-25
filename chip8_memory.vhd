@@ -54,6 +54,8 @@ architecture arch_chip8_memory of chip8_memory is
         return t_RAM is variable ram_data : t_RAM;
     begin
         ram_data := (others => x"00");
+        -- ram_data(16#FF0#) := x"00";
+        -- ram_data(16#FF1#) := x"E0";
         for i in t_FONT'range loop
             ram_data(80 + i) := font_data(i); -- Load font data to address 0x050
         end loop;

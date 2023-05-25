@@ -68,10 +68,10 @@ architecture arch_chip8_cpu of chip8_cpu is
     signal r_VAR_REG : t_VAR_REG := (others => x"00");
 
     -- Index Register
-    signal r_INDEX_REG : std_logic_vector(15 downto 0) := (others => '0');
+    signal r_INDEX_REG : std_logic_vector(11 downto 0) := (others => '0');
 
     -- Program Counter
-    signal r_PROG_COUNT : std_logic_vector(11 downto 0) := x"050"; --(others => '0');
+    signal r_PROG_COUNT : std_logic_vector(11 downto 0) := (others => '0');
 
     -- Current Instruction
     signal r_INSTRUCTION : std_logic_vector(15 downto 0) := (others => '0');
@@ -82,12 +82,25 @@ architecture arch_chip8_cpu of chip8_cpu is
         s_NEXT_INSTR,
         s_FETCH_HIGH,
         s_FETCH_LOW,
-        s_DECODE,
-        s_EXECUTE
+        s_DECODE
     );
     signal r_SM_CPU : t_SM_CPU := s_NEXT_INSTR;
+
+    type t_SM_DRAW is (
+        s_LOAD_SPRITE,
+        s_PROCESS_SPRITE
+    );
+    signal r_SM_DRAW : t_SM_DRAW := s_LOAD_SPRITE;
     ---- State Machine ----
-                                                    
+
+    ---- Display ----
+    constant c_DISPLAY_WIDTH    : integer := 64;
+    constant c_DISPLAY_HEIGHT   : integer := 32;
+
+    type t_DISPLAY_BUFFER is array (0 to c_DISPLAY_HEIGHT-1) of std_logic_vector(c_DISPLAY_WIDTH-1 downto 0);
+    signal r_DISPLAY_BUFFER : t_DISPLAY_BUFFER := (others => x"0000_0001_0000_0000");
+    ---- Display ----
+
 begin
 
     MEMORY : chip8_memory
@@ -143,6 +156,11 @@ begin
     end process p_DECR_TIMERS;
 
     p_STATE_MACHINE : process (i_clck) is
+    variable v_READ_RAM : integer := 0;
+
+    variable v_X_COOR : std_logic_vector(7 downto 0) := (others => '0');
+    variable v_Y_COOR : std_logic_vector(7 downto 0) := (others => '0');
+    variable v_SPRITE : std_logic_vector(7 downto 0) := (others => '0');
     begin
         if rising_edge(i_clck) then
             case r_SM_CPU is
@@ -152,13 +170,71 @@ begin
                     end if;
                 when s_FETCH_HIGH =>
                     r_EN_WRITE <= '0';
-                        r_ADDRESS <= r_PROG_COUNT;
+                    r_ADDRESS <= r_PROG_COUNT;
+                    
+                    if v_READ_RAM = 0 then
+                        v_READ_RAM := 1;
+                    else
+                        v_READ_RAM := 0;
                         r_INSTRUCTION(15 downto 8) <= w_DATA_OUT;
                         r_SM_CPU <= s_FETCH_LOW;
+                    end if;
                 when s_FETCH_LOW =>
-                        r_ADDRESS <= std_logic_vector(unsigned(r_PROG_COUNT) + 1);
+                    r_ADDRESS <= std_logic_vector(unsigned(r_PROG_COUNT) + 1);
+
+                    if v_READ_RAM = 0 then
+                        v_READ_RAM := 1;
+                    else
+                        v_READ_RAM := 0;
                         r_INSTRUCTION(7 downto 0) <= w_DATA_OUT;
-                        r_SM_CPU <= s_NEXT_INSTR;
+                        r_PROG_COUNT <= std_logic_vector(unsigned(r_PROG_COUNT) + 2);
+                        r_SM_CPU <= s_DECODE;
+                    end if;
+                when s_DECODE =>
+                    r_SM_CPU <= s_NEXT_INSTR;
+
+                    case r_INSTRUCTION(15 downto 12) is
+                        when x"0" =>
+                            case r_INSTRUCTION(11 downto 0) is
+                                when x"0E0" =>
+                                    r_DISPLAY_BUFFER <= (others => x"0000_0000_0000_0000");
+                                when others => NULL;
+                            end case;
+                        when x"1" =>
+                            r_PROG_COUNT <= r_INSTRUCTION(11 downto 0);
+                        when x"6" =>
+                            r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= r_INSTRUCTION(7 downto 0);
+                        when x"7" =>
+                            r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) + unsigned(r_INSTRUCTION(7 downto 0)));
+                        when x"A" =>
+                            r_INDEX_REG <= r_INSTRUCTION(11 downto 0);
+                        when x"D" =>
+                            r_SM_CPU <= s_DECODE;
+                            v_X_COOR := r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) and std_logic_vector(to_unsigned(c_DISPLAY_WIDTH - 1, v_X_COOR'length));
+                            v_Y_COOR := r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4)))) and std_logic_vector(to_unsigned(c_DISPLAY_HEIGHT - 1, v_Y_COOR'length));
+
+                            r_VAR_REG(16#F#) <= x"00";
+
+                            case r_SM_DRAW is
+                                when s_LOAD_SPRITE =>
+                                    r_ADDRESS <= r_INDEX_REG;
+
+                                    if v_READ_RAM = 0 then
+                                        v_READ_RAM := 1;
+                                    else
+                                        v_READ_RAM := 0;
+                                        v_SPRITE := w_DATA_OUT;
+                                        r_SM_DRAW <= s_PROCESS_SPRITE;
+                                    end if;
+                                when s_PROCESS_SPRITE =>
+                                    for i in 0 to to_integer(unsigned(r_INSTRUCTION(11 downto 0))) loop
+
+                                    end loop;
+                                when others => NULL;
+                            end case;
+                        when others => 
+                            r_SM_CPU <= s_NEXT_INSTR;
+                    end case;
                 when others =>
                     r_SM_CPU <= s_NEXT_INSTR;
             end case;
