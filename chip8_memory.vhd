@@ -3,6 +3,7 @@ use ieee.std_logic_1164.all; -- For std_logic type definition
 use ieee.numeric_std.all; -- For numerical computation (includes logical operations in this file (and, xor, etc))
 use std.textio.all; -- Used to load in program into RAM
 use ieee.std_logic_textio.all;
+use work.ibm_logo.all;
 
 entity chip8_memory is
     port (
@@ -24,7 +25,7 @@ architecture arch_chip8_memory of chip8_memory is
     constant c_FONT_WIDTH : integer := 80;
 
     type t_FONT is array (0 to c_FONT_WIDTH-1) of std_logic_vector(7 downto 0);
-    signal r_FONT_DATA : t_FONT := (
+    constant c_FONT_DATA : t_FONT := (
         x"F0", x"90", x"90", x"90", x"F0", -- 0
         x"20", x"60", x"20", x"20", x"70", -- 1
         x"F0", x"10", x"F0", x"80", x"F0", -- 2
@@ -51,26 +52,20 @@ architecture arch_chip8_memory of chip8_memory is
 
     type t_RAM is array (0 to c_RAM_WIDTH-1) of std_logic_vector(7 downto 0);
 
-    impure function InitialiseRamWithData(
-            font_data : t_FONT;
-            file_name : string
+
+    function InitialiseRamWithData(
+            font_data       : t_FONT;
+            program_data    : t_IBM_LOGO_DATA 
         )
         return t_RAM is
             variable ram_data       : t_RAM := (others => x"00");
-            variable data_bytes     : character;
-            variable current_line   : line;        
-            file file_handle        : text open read_mode is file_name;
 
     begin
-        -- Load chip8 program into memory
-        readline(file_handle, current_line);
         for i in 0 to c_RAM_WIDTH - c_START_ADDRESS - 1 loop
-            read(current_line, data_bytes);
-
-            ram_data(c_START_ADDRESS) := std_logic_vector(to_unsigned(character'pos(data_bytes), 8));
+            if i < program_data'length then
+                ram_data(c_START_ADDRESS + i) := program_data(i);
+            end if;
         end loop;
-
-        file_close(file_handle);
 
         -- Load font into memory
         for i in t_FONT'range loop
@@ -79,7 +74,7 @@ architecture arch_chip8_memory of chip8_memory is
         return ram_data;
     end InitialiseRamWithData;
 
-    signal r_RAM_DATA : t_RAM := InitialiseRamWithData(r_FONT_DATA, "ibm-logo.ch8");
+    signal r_RAM_DATA : t_RAM := InitialiseRamWithData(c_FONT_DATA, c_IBM_LOGO_DATA);
 
 begin
 

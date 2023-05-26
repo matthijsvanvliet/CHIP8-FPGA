@@ -1,8 +1,7 @@
 # compile vhdl design source files
-vhdl2008 xil_defaultlib  \
-"../../../../../../chip8_memory.vhd" \
-
 vhdl xil_defaultlib  \
+"../../../../../../ibm_logo.vhd" \
+"../../../../../../chip8_memory.vhd" \
 "../../../../../../chip8_cpu.vhd" \
 "../../../../../../chip8.vhd" \
 "../../../../../../chip8_cpu_tb.vhd" \

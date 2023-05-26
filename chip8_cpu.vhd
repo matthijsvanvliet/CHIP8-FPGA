@@ -90,7 +90,8 @@ architecture arch_chip8_cpu of chip8_cpu is
     type t_SM_DRAW is (
         s_INIT,
         s_LOAD_SPRITE,
-        s_PROCESS_SPRITE
+        s_PROCESS_SPRITE,
+        s_INCR_Y
     );
     signal r_SM_DRAW : t_SM_DRAW := s_INIT;
     ---- State Machine ----
@@ -100,8 +101,11 @@ architecture arch_chip8_cpu of chip8_cpu is
     constant c_DISPLAY_HEIGHT   : integer := 32;
 
     type t_DISPLAY_BUFFER is array (0 to c_DISPLAY_HEIGHT-1) of std_logic_vector(c_DISPLAY_WIDTH-1 downto 0);
-    signal r_DISPLAY_BUFFER : t_DISPLAY_BUFFER := (others => x"0000_0001_0000_0000");
+    signal r_DISPLAY_BUFFER : t_DISPLAY_BUFFER := (others => x"0000_0000_0000_0000");
     ---- Display ----
+
+    constant c_DISPLAY_LENGTH   : integer := c_DISPLAY_HEIGHT * c_DISPLAY_WIDTH;
+    signal r_DISPLAY_WHOLE      : std_logic_vector(c_DISPLAY_LENGTH - 1 downto 0) := (others => '0');
 
 begin
 
@@ -122,6 +126,14 @@ begin
     begin
         r_CLOCK <= i_clck;
     end process p_CLOCK;
+
+    p_TEST_DISPLAY : process (i_clck) is
+    begin
+        for i in 0 to c_DISPLAY_HEIGHT - 2 loop
+            r_DISPLAY_WHOLE((c_DISPLAY_LENGTH - 1 - (c_DISPLAY_WIDTH * i)) downto (c_DISPLAY_LENGTH - (c_DISPLAY_WIDTH * (i + 1)))) <= r_DISPLAY_BUFFER(i);
+        end loop;
+
+    end process p_TEST_DISPLAY;
 
     p_PRESCALAR_COUNTER : process (i_clck) is
     begin
@@ -220,7 +232,9 @@ begin
                                     v_X_COOR := to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))))) mod (c_DISPLAY_WIDTH - 1);
                                     v_Y_COOR := to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4)))))) mod (c_DISPLAY_HEIGHT - 1);
 
+                                    v_SPRITE_COUNTER := 0;
                                     r_VAR_REG(16#F#) <= x"00";
+                                    r_SM_DRAW <= s_LOAD_SPRITE;
                                 when s_LOAD_SPRITE =>
                                     r_ADDRESS <= std_logic_vector(unsigned(r_INDEX_REG) + v_SPRITE_COUNTER);
 
@@ -234,12 +248,27 @@ begin
                                 when s_PROCESS_SPRITE =>
                                     if v_SPRITE_COUNTER < to_integer(unsigned(r_INSTRUCTION(3 downto 0))) then
                                         v_SPRITE_COUNTER := v_SPRITE_COUNTER + 1;
-                                        for i in 0 to v_SPRITE_BYTE'length loop
-                                            if v_SPRITE_BYTE(v_SPRITE_BYTE'length - i) = r_DISPLAY_BUFFER(v_Y_COOR)(v_X_COOR - i) then
-                                                r_VAR_REG(16#F#) <= x"01";
+                                        for i in 0 to v_SPRITE_BYTE'length - 1 loop
+                                            if (v_X_COOR - i) > 0 then
+                                                if v_SPRITE_BYTE(v_SPRITE_BYTE'length - 1 - i) = r_DISPLAY_BUFFER(v_Y_COOR)(v_X_COOR - i) then
+                                                    r_VAR_REG(16#F#) <= x"01";
+                                                end if;
+                                            
+                                                r_DISPLAY_BUFFER(v_Y_COOR)(v_X_COOR - i) <= r_DISPLAY_BUFFER(v_Y_COOR)(v_X_COOR - i) xor v_SPRITE_BYTE(v_SPRITE_BYTE'length - 1 - i);
                                             end if;
-                                            r_DISPLAY_BUFFER(v_Y_COOR)(v_X_COOR) <= r_DISPLAY_BUFFER(v_Y_COOR)(v_X_COOR) xor v_SPRITE_BYTE(i);
                                         end loop;
+                                        r_SM_DRAW <= s_INCR_Y;
+                                    else
+                                        r_SM_DRAW <= s_INIT;
+                                        r_SM_CPU <= s_NEXT_INSTR;
+                                    end if;
+                                when s_INCR_Y =>
+                                    if v_Y_COOR < c_DISPLAY_HEIGHT - 1 then
+                                        v_Y_COOR := v_Y_COOR + 1;
+                                        r_SM_DRAW <= s_LOAD_SPRITE;
+                                    else
+                                        r_SM_DRAW <= s_INIT;
+                                        r_SM_CPU <= s_NEXT_INSTR;
                                     end if;
                                 when others => NULL;
                             end case;
