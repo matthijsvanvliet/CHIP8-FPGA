@@ -1,7 +1,7 @@
 # compile vhdl design source files
 vhdl xil_defaultlib  \
-"../../../../../../display.vhd" \
 "../../../../../../i2c_master.vhd" \
+"../../../../../../display.vhd" \
 "../../../../../../dispay_tb.vhd" \
 
 # Do not sort compile order

@@ -27,8 +27,6 @@ architecture behave of display_tb is
     signal w_OLED_SCL  : std_logic;
     signal w_OLED_SDA  : std_logic;
 
-    constant c_CLOCK_FREQ   : integer   := 40_000_000;
-
 begin
 
     DUT : display
@@ -36,16 +34,18 @@ begin
         -- clock
         i_clck      => r_CLOCK,
         -- oled
-        o_oled_gnd  => w_OLED_GND,
-        o_oled_vcc  => w_OLED_VCC,
         o_oled_scl  => w_OLED_SCL,
-        o_oled_sda  => w_OLED_SDA
+        o_oled_sda  => w_OLED_SDA,
+
+        -- temp
+        o_oled_gnd  => w_OLED_GND,
+        o_oled_vcc  => w_OLED_VCC
     );
 
     p_CLOCK : process is
     begin
         r_CLOCK <= not r_CLOCK;
-        wait for 12.5 ns;
+        wait for 10 ns / 2; -- 100 MHz
     end process p_CLOCK;
 
 end behave;

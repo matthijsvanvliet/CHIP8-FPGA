@@ -8,36 +8,18 @@ entity display is
         i_clck      : in    std_logic;
 
         -- oled
-        o_oled_gnd  : out   std_logic;
-        o_oled_vcc  : out   std_logic;
         o_oled_scl  : inout std_logic;
-        o_oled_sda  : inout std_logic
+        o_oled_sda  : inout std_logic;
+
+        -- temp
+        o_oled_vcc : out std_logic;
+        o_oled_gnd : out std_logic
     );
 end display;
 
-architecture arch_display of display is
+architecture rtl of display is
 
-    component i2c_master IS
-        generic (
-            input_clk : integer; --input clock speed from user logic in Hz
-            bus_clk   : integer  --speed the i2c bus (scl) will run at in Hz
-        );   
-        port (
-            clk       : in     std_logic;                    --system clock
-            reset_n   : in     std_logic;                    --active low reset
-            ena       : in     std_logic;                    --latch in command
-            addr      : in     std_logic_vector(6 downto 0); --address of target slave
-            rw        : in     std_logic;                    --'0' is write, '1' is read
-            data_wr   : in     std_logic_vector(7 downto 0); --data to write to slave
-            busy      : out    std_logic;                    --indicates transaction in progress
-            data_rd   : out    std_logic_vector(7 downto 0); --data read from slave
-            ack_error : buffer std_logic;                    --flag if improper acknowledge from slave
-            sda       : inout  std_logic;                    --serial data output of i2c bus
-            scl       : inout  std_logic                     --serial clock output of i2c bus
-        );                   
-    end component i2c_master;
-
-    constant c_INPUT_CLOCK  : integer := 40_000_000;
+    constant c_INPUT_CLOCK  : integer := 100_000_000;
     constant c_BUS_CLOCK    : integer := 400_000;
 
     signal r_CLK        : std_logic := '0';
@@ -52,16 +34,19 @@ architecture arch_display of display is
     signal w_ACK_ERROR  : std_logic;
 
     type t_SM_DISPLAY is (
+        s_COM_INIT,
         s_INIT,
-        s_START
+        s_START,
+        s_TEMP
     );
-    signal r_SM_DISPLAY : t_SM_DISPLAY := s_INIT;
+    signal r_SM_DISPLAY : t_SM_DISPLAY := s_COM_INIT;
 
-    constant c_SLAVE_ADDRESS : std_logic_vector(6 downto 0) := "0111100";
+    constant c_SLAVE_ADDRESS : std_logic_vector(6 downto 0) := "0111100"; -- 0x3C
 
     constant c_SSD1306_MEMORYMODE           : std_logic_vector(7 downto 0) := x"20";
     constant c_SSD1306_COLUMNADDR           : std_logic_vector(7 downto 0) := x"21";
     constant c_SSD1306_PAGEADDR             : std_logic_vector(7 downto 0) := x"22";
+    constant c_SSD1306_SETSTARTLINE         : std_logic_vector(7 downto 0) := x"40";
     constant c_SSD1306_SETCONTRAST          : std_logic_vector(7 downto 0) := x"81";
     constant c_SSD1306_CHARGEPUMP           : std_logic_vector(7 downto 0) := x"8D";
     constant c_SSD1306_SEGREMAP             : std_logic_vector(7 downto 0) := x"A0";
@@ -86,9 +71,42 @@ architecture arch_display of display is
     constant c_SSD1306_ACTIVATE_SCROLL                      : std_logic_vector(7 downto 0) := x"2F"; -- Start scroll
     constant c_SSD1306_SET_VERTICAL_SCROLL_AREA             : std_logic_vector(7 downto 0) := x"A3"; -- Set scroll range
 
+    signal r_PREV_BUSY      : std_logic := '0';
+    signal r_COM_COUNTER    : integer   := 0;
+
+    constant c_INIT_COMMAND_LENGTH : integer := 25;
+    type t_INIT_COMMANDS is array (0 to c_INIT_COMMAND_LENGTH-1) of std_logic_vector(7 downto 0);
+    constant c_INIT_COMMANDS : t_INIT_COMMANDS := (
+        c_SSD1306_DISPLAYOFF,
+        c_SSD1306_SETDISPLAYCLOCKDIV,
+        x"80",
+        c_SSD1306_SETMULTIPLEX,
+        x"3F",
+        c_SSD1306_SETDISPLAYOFFSET,
+        x"00",
+        c_SSD1306_SETSTARTLINE or x"00",
+        c_SSD1306_CHARGEPUMP,
+        x"10",
+        c_SSD1306_MEMORYMODE,
+        x"00",
+        c_SSD1306_SEGREMAP or x"01",
+        c_SSD1306_COMSCANDEC,
+        c_SSD1306_SETCOMPINS,
+        x"02",
+        c_SSD1306_SETCONTRAST,
+        x"8F",
+        c_SSD1306_SETPRECHARGE,
+        x"22",
+        c_SSD1306_SETVCOMDETECT,
+        x"40",
+        c_SSD1306_DISPLAYALLON_RESUME,
+        c_SSD1306_NORMALDISPLAY,
+        c_SSD1306_DISPLAYON
+    );
+
 begin
 
-    I2C_CONTROLLER : i2c_master
+    I2C_CONTROLLER : entity work.i2c_master
         generic map (
             input_clk   => c_INPUT_CLOCK,
             bus_clk     => c_BUS_CLOCK
@@ -107,29 +125,57 @@ begin
             scl         => o_oled_scl
         );
 
-    o_oled_gnd <= '0';
     o_oled_vcc <= '1';
+    o_oled_gnd <= '0';
 
     r_CLK <= i_clck;
 
     p_STATE_MACHINE : process (i_clck) is
+        variable v_COUNTER : integer := 0;
     begin
         if rising_edge(i_clck) then
-            
-            case r_SM_DISPLAY is
-                when s_INIT =>
-                    r_ENA <= '1';
-                    r_ADDR <= c_SLAVE_ADDRESS;
-                    r_RW <= '0';
-                    r_DATA_WR <= c_SSD1306_COLUMNADDR;
+            r_PREV_BUSY <= w_BUSY;
 
-                    r_SM_DISPLAY <= s_START;
+            case r_SM_DISPLAY is
+                when s_COM_INIT =>
+                        r_ENA <= '1';
+                        r_ADDR <= c_SLAVE_ADDRESS;
+                        r_RW <= '0';
+                        r_SM_DISPLAY <= s_INIT;
+                when s_INIT =>
+                    r_DATA_WR <= c_INIT_COMMANDS(r_COM_COUNTER);
+
+                    if w_BUSY = '0' and r_PREV_BUSY = '1' then
+                        r_COM_COUNTER <= r_COM_COUNTER + 1;
+                    end if;
+
+                    if r_COM_COUNTER = c_INIT_COMMAND_LENGTH - 1 then
+                        r_ENA <= '0';
+
+                        if w_BUSY = '0' and r_PREV_BUSY = '1' then
+                            r_SM_DISPLAY <= s_START;
+                            r_ENA <= '1';
+                        end if;
+                    end if;
                 when s_START =>
-                    r_SM_DISPLAY <= s_START;
-                when others =>
-                    r_SM_DISPLAY <= s_START;
+                    r_DATA_WR <= c_SSD1306_INVERTDISPLAY;
+
+                    if w_BUSY = '1' then
+                        r_ENA <= '0';
+                    end if;
+
+                    if w_BUSY = '0' and r_PREV_BUSY = '1' then
+                        r_SM_DISPLAY <= s_TEMP;
+                    end if;
+                when s_TEMP =>
+                    v_COUNTER := v_COUNTER + 1;
+                    if v_COUNTER >= 2134234 then
+                        v_COUNTER := 0;
+                        r_SM_DISPLAY <= s_START;
+                    end if;
+                when others => NULL;
             end case;
         end if;
     end process p_STATE_MACHINE;
 
-end arch_display;
+end rtl;

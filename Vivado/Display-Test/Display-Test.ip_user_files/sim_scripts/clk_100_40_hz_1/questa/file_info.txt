@@ -1,0 +1,3 @@
+xpm_cdc.sv,systemverilog,xpm,F:/Xilinx/Vivado/2022.2/data/ip/xpm/xpm_cdc/hdl/xpm_cdc.sv,incdir="../../../../Display-Test.gen/sources_1/ip/clk_100_40_hz_1"
+xpm_VCOMP.vhd,vhdl,xpm,F:/Xilinx/Vivado/2022.2/data/ip/xpm/xpm_VCOMP.vhd,incdir="../../../../Display-Test.gen/sources_1/ip/clk_100_40_hz_1"
+glbl.v,Verilog,xil_defaultlib,glbl.v
