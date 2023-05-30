@@ -1,8 +1,8 @@
 library ieee;
 use ieee.std_logic_1164.all; -- For std_logic type definition
 use ieee.numeric_std.all; -- For numerical computation (includes logical operations in this file (and, xor, etc))
-use std.textio.all; -- Used to load in program into RAM
-use ieee.std_logic_textio.all;
+-- use std.textio.all; -- Used to load in program into RAM
+-- use ieee.std_logic_textio.all;
 use work.ibm_logo.all;
 
 entity chip8_memory is
@@ -69,7 +69,7 @@ architecture arch_chip8_memory of chip8_memory is
 
         -- Load font into memory
         for i in t_FONT'range loop
-            ram_data(80 + i) := font_data(i); -- Load font data to address 0x050
+            ram_data(80 + i) := font_data(i); -- Load font data at address 0x050
         end loop;
         return ram_data;
     end InitialiseRamWithData;

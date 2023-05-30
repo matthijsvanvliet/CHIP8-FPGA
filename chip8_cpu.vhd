@@ -59,8 +59,8 @@ architecture arch_chip8_cpu of chip8_cpu is
     ---- Stack, Registers, Program Counter, Current Instruction and SP ----
     -- Stack
     constant c_STACK_WIDTH : integer := 16;
-    type t_STACK is array (0 to c_STACK_WIDTH-1) of std_logic_vector(15 downto 0); -- Stack of 16 elements where each element is 16-bit
-    signal r_STACK_DATA : t_STACK := (others => x"0000");
+    type t_STACK is array (0 to c_STACK_WIDTH-1) of std_logic_vector(11 downto 0); -- Stack of 16 elements where each element is 12-bit
+    signal r_STACK_DATA : t_STACK := (others => x"000");
     signal r_STACK_ADDR : std_logic_vector(11 downto 0) := x"000";
 
     -- General Purpose Variable Registers
@@ -133,10 +133,10 @@ begin
             o_data_out  => w_DATA_OUT
         );
 
-    p_CLOCK : process (i_clck) is
+    p_MEMORY_CLOCK : process (i_clck) is
     begin
         r_CLOCK <= i_clck;
-    end process p_CLOCK;
+    end process p_MEMORY_CLOCK;
 
     p_PRESCALAR_COUNTER : process (i_clck) is
     begin
@@ -173,6 +173,7 @@ begin
     end process p_DECR_TIMERS;
 
     p_STATE_MACHINE : process (i_clck) is
+    -- Memory variables
     variable v_READ_RAM : std_logic := '0';
 
     -- Display variables
