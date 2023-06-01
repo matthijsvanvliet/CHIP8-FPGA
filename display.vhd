@@ -35,11 +35,13 @@ architecture rtl of display is
 
     type t_SM_DISPLAY is (
         s_COM_INIT,
+        s_SEND_CONTROL,
         s_INIT,
+        s_INIT_RESET,
         s_START,
         s_TEMP
     );
-    signal r_SM_DISPLAY : t_SM_DISPLAY := s_COM_INIT;
+    signal r_SM_DISPLAY : t_SM_DISPLAY := s_SEND_CONTROL;
 
     constant c_SLAVE_ADDRESS : std_logic_vector(6 downto 0) := "0111100"; -- 0x3C
 
@@ -74,19 +76,22 @@ architecture rtl of display is
     signal r_PREV_BUSY      : std_logic := '0';
     signal r_COM_COUNTER    : integer   := 0;
 
-    constant c_INIT_COMMAND_LENGTH : integer := 25;
+    constant c_DELAY_BETWEEN_COM : integer := (c_INPUT_CLOCK / c_BUS_CLOCK) * 10; -- 10 scl clock cycles between commands (~30 us)
+    signal r_DELAY_COUNTER : integer := 0;
+
+    constant c_INIT_COMMAND_LENGTH : integer := 26;
     type t_INIT_COMMANDS is array (0 to c_INIT_COMMAND_LENGTH-1) of std_logic_vector(7 downto 0);
     constant c_INIT_COMMANDS : t_INIT_COMMANDS := (
         c_SSD1306_DISPLAYOFF,
         c_SSD1306_SETDISPLAYCLOCKDIV,
         x"80",
         c_SSD1306_SETMULTIPLEX,
-        x"3F",
+        x"1F",
         c_SSD1306_SETDISPLAYOFFSET,
         x"00",
         c_SSD1306_SETSTARTLINE or x"00",
         c_SSD1306_CHARGEPUMP,
-        x"10",
+        x"14",
         c_SSD1306_MEMORYMODE,
         x"00",
         c_SSD1306_SEGREMAP or x"01",
@@ -96,11 +101,12 @@ architecture rtl of display is
         c_SSD1306_SETCONTRAST,
         x"8F",
         c_SSD1306_SETPRECHARGE,
-        x"22",
+        x"F1",
         c_SSD1306_SETVCOMDETECT,
         x"40",
         c_SSD1306_DISPLAYALLON_RESUME,
         c_SSD1306_NORMALDISPLAY,
+        c_SSD1306_DEACTIVATE_SCROLL,
         c_SSD1306_DISPLAYON
     );
 
@@ -130,32 +136,73 @@ begin
 
     r_CLK <= i_clck;
 
+    p_INITIALISE : process is
+    begin
+        r_ADDR <= c_SLAVE_ADDRESS;
+        r_RW <= '0';
+        wait;
+    end process p_INITIALISE;
+
     p_STATE_MACHINE : process (i_clck) is
         variable v_COUNTER : integer := 0;
     begin
         if rising_edge(i_clck) then
             r_PREV_BUSY <= w_BUSY;
 
+            if w_BUSY = '0' and r_PREV_BUSY = '1' then
+                case r_SM_DISPLAY is
+                    when s_SEND_CONTROL =>
+                        r_SM_DISPLAY <= s_START;
+                        if r_COM_COUNTER /= c_INIT_COMMAND_LENGTH - 1 then
+                            r_SM_DISPLAY <= s_INIT;
+                        end if;
+                    when s_INIT =>
+                        if r_COM_COUNTER = c_INIT_COMMAND_LENGTH - 1 then
+                            r_SM_DISPLAY <= s_START;
+                        else
+                            r_COM_COUNTER <= r_COM_COUNTER + 1;
+                            r_SM_DISPLAY <= s_SEND_CONTROL;
+                        end if;
+                    when others => NULL;
+                end case;
+            end if;
+
             case r_SM_DISPLAY is
-                when s_COM_INIT =>
-                        r_ENA <= '1';
-                        r_ADDR <= c_SLAVE_ADDRESS;
-                        r_RW <= '0';
-                        r_SM_DISPLAY <= s_INIT;
+                when s_SEND_CONTROL =>
+                    r_ENA <= '1';
+                    r_DATA_WR <= x"00";
+
+                    
+
+                    -- r_ENA <= '1';
+
+                    -- if w_BUSY = '1' and r_PREV_BUSY = '0' then
+                    --     r_ENA <= '0';
+                    -- end if;
+
+                    -- if w_BUSY = '0' and r_PREV_BUSY = '1' then
+                    --     if r_COM_COUNTER /= c_INIT_COMMAND_LENGTH - 1 then
+                    --         r_SM_DISPLAY <= s_INIT;
+                    --     else
+                    --         r_SM_DISPLAY <= s_START;
+                    --     end if;
+                    -- end if;
                 when s_INIT =>
                     r_DATA_WR <= c_INIT_COMMANDS(r_COM_COUNTER);
+                    
+                    
+                    -- r_ENA <= '1';
 
-                    if w_BUSY = '0' and r_PREV_BUSY = '1' then
-                        r_COM_COUNTER <= r_COM_COUNTER + 1;
-                    end if;
+                    -- if w_BUSY = '1' and r_PREV_BUSY = '0' then
+                    --     r_ENA <= '0';
+                    -- end if;
+                when s_INIT_RESET =>
+                    r_DELAY_COUNTER <= r_DELAY_COUNTER + 1;
 
-                    if r_COM_COUNTER = c_INIT_COMMAND_LENGTH - 1 then
-                        r_ENA <= '0';
-
-                        if w_BUSY = '0' and r_PREV_BUSY = '1' then
-                            r_SM_DISPLAY <= s_START;
-                            r_ENA <= '1';
-                        end if;
+                    if r_DELAY_COUNTER = c_DELAY_BETWEEN_COM then
+                        r_SM_DISPLAY <= s_SEND_CONTROL;
+                        r_ENA <= '1';
+                        r_DELAY_COUNTER <= 0;
                     end if;
                 when s_START =>
                     r_DATA_WR <= c_SSD1306_INVERTDISPLAY;
@@ -171,7 +218,7 @@ begin
                     v_COUNTER := v_COUNTER + 1;
                     if v_COUNTER >= 2134234 then
                         v_COUNTER := 0;
-                        r_SM_DISPLAY <= s_START;
+                        r_SM_DISPLAY <= s_SEND_CONTROL;
                     end if;
                 when others => NULL;
             end case;

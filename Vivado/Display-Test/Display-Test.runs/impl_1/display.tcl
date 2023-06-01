@@ -123,9 +123,7 @@ start_step write_bitstream
 set ACTIVE_STEP write_bitstream
 set rc [catch {
   create_msg_db write_bitstream.pb
-  set_param tcl.collectionResultDisplayLimit 0
   set_param chipscope.maxJobs 4
-  set_param xicom.use_bs_reader 1
   open_checkpoint display_routed.dcp
   set_property webtalk.parent_dir D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.cache/wt [current_project]
 set_property TOP display [current_fileset]
