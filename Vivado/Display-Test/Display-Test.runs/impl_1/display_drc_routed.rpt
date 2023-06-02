@@ -1,8 +1,8 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
-| Date         : Thu Jun  1 22:20:02 2023
-| Host         : DESKTOP-MATTHIJS running 64-bit major release  (build 9200)
+| Date         : Fri Jun  2 14:28:16 2023
+| Host         : LAPTOP-IT23Q15D running 64-bit major release  (build 9200)
 | Command      : report_drc -file display_drc_routed.rpt -pb display_drc_routed.pb -rpx display_drc_routed.rpx
 | Design       : display
 | Device       : xc7a100tcsg324-1
@@ -24,15 +24,26 @@ Table of Contents
       Design limits: <entire design considered>
            Ruledeck: default
              Max violations: <unlimited>
-             Violations found: 1
-+--------+----------+---------------------------------+------------+
-| Rule   | Severity | Description                     | Violations |
-+--------+----------+---------------------------------+------------+
-| RPBF-3 | Warning  | IO port buffering is incomplete | 1          |
-+--------+----------+---------------------------------+------------+
+             Violations found: 3
++--------+----------+------------------------------------------------+------------+
+| Rule   | Severity | Description                                    | Violations |
++--------+----------+------------------------------------------------+------------+
+| PLIO-8 | Warning  | Placement Constraints Check for IO constraints | 2          |
+| RPBF-3 | Warning  | IO port buffering is incomplete                | 1          |
++--------+----------+------------------------------------------------+------------+
 
 2. REPORT DETAILS
 -----------------
+PLIO-8#1 Warning
+Placement Constraints Check for IO constraints  
+Terminal o_oled_scl has IOB constraint set to TRUE, but it is either not connected to a FLOP element or the connected FLOP element could not be brought into the I/O.
+Related violations: <none>
+
+PLIO-8#2 Warning
+Placement Constraints Check for IO constraints  
+Terminal o_oled_sda has IOB constraint set to TRUE, but it is either not connected to a FLOP element or the connected FLOP element could not be brought into the I/O.
+Related violations: <none>
+
 RPBF-3#1 Warning
 IO port buffering is incomplete  
 Device port o_oled_sda expects both input and output buffering but the buffers are incomplete.

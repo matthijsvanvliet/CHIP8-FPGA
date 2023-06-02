@@ -5,7 +5,12 @@
 
 ## Clock signal
 set_property -dict {PACKAGE_PIN E3 IOSTANDARD LVCMOS33} [get_ports i_clck]
-create_clock -period 10.000 -name sys_clk_pin -waveform {0.000 5.000} [get_ports i_clck]
+#create_clock -period 10.000 -name sys_clk_pin -waveform {0.000 5.000} [get_ports i_clck]
+
+set_property IOB TRUE [get_ports {o_oled_scl o_oled_sda}]
+set_output_delay -clock i_clck 0 [get_ports {o_oled_scl o_oled_sda}]
+set_input_delay -clock i_clck 0 [get_ports {o_oled_scl o_oled_sda}]
+set_false_path -to [get_ports {o_oled_scl o_oled_sda}]
 
 ## Switches
 #set_property -dict { PACKAGE_PIN A8    IOSTANDARD LVCMOS33 } [get_ports { sw[0] }]; #IO_L12N_T1_MRCC_16 Sch=sw[0]

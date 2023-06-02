@@ -19,7 +19,24 @@ end display;
 
 architecture rtl of display is
 
-    constant c_INPUT_CLOCK  : integer := 100_000_000;
+    component clk_50hz
+    port
+    (-- Clock in ports
+        -- Clock out ports
+        clk_out1          : out    std_logic;
+        -- Status and control signals
+        reset             : in     std_logic;
+        locked            : out    std_logic;
+        i_clck            : in     std_logic
+    );
+    end component;
+
+    signal w_CLOCK_OUT1     : std_logic;
+    signal r_CLOCK_RESET    : std_logic := '0';
+    signal w_LOCKED         : std_logic;
+    --signal r_CLOCK_IN       : std_logic := '0';
+
+    constant c_INPUT_CLOCK  : integer := 50_000_000;
     constant c_BUS_CLOCK    : integer := 400_000;
 
     signal r_CLK        : std_logic := '0';
@@ -34,6 +51,7 @@ architecture rtl of display is
     signal w_ACK_ERROR  : std_logic;
 
     type t_SM_DISPLAY is (
+        s_CLOCK_INIT,
         s_COM_INIT,
         s_SEND_CONTROL,
         s_INIT,
@@ -41,7 +59,7 @@ architecture rtl of display is
         s_START,
         s_TEMP
     );
-    signal r_SM_DISPLAY : t_SM_DISPLAY := s_SEND_CONTROL;
+    signal r_SM_DISPLAY : t_SM_DISPLAY := s_CLOCK_INIT;
 
     constant c_SLAVE_ADDRESS : std_logic_vector(6 downto 0) := "0111100"; -- 0x3C
 
@@ -131,10 +149,20 @@ begin
             scl         => o_oled_scl
         );
 
+    CLOCK_50HZ : clk_50hz
+    port map (-- Clock in ports
+        -- Clock out ports
+        clk_out1    => w_CLOCK_OUT1,
+        -- Status and control signals
+        reset       => r_CLOCK_RESET,
+        locked      => w_LOCKED,
+        i_clck      => i_clck
+    );
+
     o_oled_vcc <= '1';
     o_oled_gnd <= '0';
 
-    r_CLK <= i_clck;
+    r_CLK <= w_CLOCK_OUT1;
 
     p_INITIALISE : process is
     begin
@@ -143,10 +171,10 @@ begin
         wait;
     end process p_INITIALISE;
 
-    p_STATE_MACHINE : process (i_clck) is
+    p_STATE_MACHINE : process (w_CLOCK_OUT1) is
         variable v_COUNTER : integer := 0;
     begin
-        if rising_edge(i_clck) then
+        if rising_edge(w_CLOCK_OUT1) then
             r_PREV_BUSY <= w_BUSY;
 
             if w_BUSY = '0' and r_PREV_BUSY = '1' then
@@ -168,6 +196,11 @@ begin
             end if;
 
             case r_SM_DISPLAY is
+                when s_CLOCK_INIT =>
+                    r_ENA <= '0';
+                    if w_LOCKED = '1' then
+                        r_SM_DISPLAY <= s_SEND_CONTROL;
+                    end if; 
                 when s_SEND_CONTROL =>
                     r_ENA <= '1';
                     r_DATA_WR <= x"00";
