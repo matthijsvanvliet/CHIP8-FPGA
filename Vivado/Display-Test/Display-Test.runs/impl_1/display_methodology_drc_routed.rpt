@@ -1,8 +1,8 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
-| Date         : Fri Jun  2 14:28:17 2023
-| Host         : LAPTOP-IT23Q15D running 64-bit major release  (build 9200)
+| Date         : Thu Jun  1 22:20:03 2023
+| Host         : DESKTOP-MATTHIJS running 64-bit major release  (build 9200)
 | Command      : report_methodology -file display_methodology_drc_routed.rpt -pb display_methodology_drc_routed.pb -rpx display_methodology_drc_routed.rpx
 | Design       : display
 | Device       : xc7a100tcsg324-1
@@ -23,13 +23,13 @@ Table of Contents
           Floorplan: design_1
       Design limits: <entire design considered>
              Max violations: <unlimited>
-             Violations found: 5
-+--------+----------+------------------------------------------+------------+
-| Rule   | Severity | Description                              | Violations |
-+--------+----------+------------------------------------------+------------+
-| HPDR-1 | Warning  | Port pin direction inconsistency         | 1          |
-| XDCH-2 | Warning  | Same min and max delay values on IO port | 4          |
-+--------+----------+------------------------------------------+------------+
+             Violations found: 3
++-----------+----------+----------------------------------+------------+
+| Rule      | Severity | Description                      | Violations |
++-----------+----------+----------------------------------+------------+
+| HPDR-1    | Warning  | Port pin direction inconsistency | 1          |
+| TIMING-18 | Warning  | Missing input or output delay    | 2          |
++-----------+----------+----------------------------------+------------+
 
 2. REPORT DETAILS
 -----------------
@@ -38,32 +38,14 @@ Port pin direction inconsistency
 Hierarchical port(pin) o_oled_sda direction INOUT is not consistent with the directions of the cell pins/ports found at that level of the netlist hierarchy. Please review the design and consider changing the port(pin) direction. Both drivers and loads were expected for the net (o_oled_sda) connected to this Port, but both were not found.
 Related violations: <none>
 
-XDCH-2#1 Warning
-Same min and max delay values on IO port  
-The same input delay of 0.000 ns has been defined on port 'o_oled_scl' relative to clock i_clck for both max and min. Make sure this reflects the design intent.
-set_input_delay -clock i_clck 0.000 [get_ports {o_oled_scl o_oled_sda}]
-C:/git/git repositories/CHIP8-FPGA/Arty-A7-100-display.xdc (Line: 12)
+TIMING-18#1 Warning
+Missing input or output delay  
+An input delay is missing on o_oled_scl relative to clock(s) sys_clk_pin
 Related violations: <none>
 
-XDCH-2#2 Warning
-Same min and max delay values on IO port  
-The same input delay of 0.000 ns has been defined on port 'o_oled_sda' relative to clock i_clck for both max and min. Make sure this reflects the design intent.
-set_input_delay -clock i_clck 0.000 [get_ports {o_oled_scl o_oled_sda}]
-C:/git/git repositories/CHIP8-FPGA/Arty-A7-100-display.xdc (Line: 12)
-Related violations: <none>
-
-XDCH-2#3 Warning
-Same min and max delay values on IO port  
-The same output delay of 0.000 ns has been defined on port 'o_oled_scl' relative to clock i_clck for both max and min. Make sure this reflects the design intent.
-set_output_delay -clock i_clck 0.000 [get_ports {o_oled_scl o_oled_sda}]
-C:/git/git repositories/CHIP8-FPGA/Arty-A7-100-display.xdc (Line: 11)
-Related violations: <none>
-
-XDCH-2#4 Warning
-Same min and max delay values on IO port  
-The same output delay of 0.000 ns has been defined on port 'o_oled_sda' relative to clock i_clck for both max and min. Make sure this reflects the design intent.
-set_output_delay -clock i_clck 0.000 [get_ports {o_oled_scl o_oled_sda}]
-C:/git/git repositories/CHIP8-FPGA/Arty-A7-100-display.xdc (Line: 11)
+TIMING-18#2 Warning
+Missing input or output delay  
+An input delay is missing on o_oled_sda relative to clock(s) sys_clk_pin
 Related violations: <none>
 
 
