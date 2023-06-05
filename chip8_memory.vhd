@@ -61,6 +61,7 @@ architecture arch_chip8_memory of chip8_memory is
             variable ram_data       : t_RAM := (others => x"00");
 
     begin
+        -- Load program into memory
         for i in 0 to c_RAM_WIDTH - c_START_ADDRESS - 1 loop
             if i < program_data'length then
                 ram_data(c_START_ADDRESS + i) := program_data(i);
