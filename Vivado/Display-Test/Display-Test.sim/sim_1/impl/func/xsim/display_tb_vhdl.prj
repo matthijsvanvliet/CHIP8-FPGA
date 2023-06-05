@@ -1,7 +1,0 @@
-# compile vhdl design source files
-vhdl xil_defaultlib  \
-"display_tb_func_impl.vhd" \
-"../../../../../../../dispay_tb.vhd" \
-
-# Do not sort compile order
-nosort
