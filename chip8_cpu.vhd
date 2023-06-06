@@ -5,7 +5,10 @@ use ieee.numeric_std.all; -- For numerical computation (includes logical operati
 entity chip8_cpu is
     port (
         -- clock
-        i_clck      : in    std_logic
+        i_clck      : in    std_logic;
+
+        -- input keys
+        i_keys      : in    std_logic_vector(15 downto 0)
     );
 end chip8_cpu;
 
@@ -24,21 +27,6 @@ architecture arch_chip8_cpu of chip8_cpu is
     ---- Timing ----
 
     ---- RAM module ----
-    -- Memory of the CHIP8 that consists of 4kB (4096 bytes)
-    component chip8_memory
-        port (
-            -- clock
-            i_clck      : in    std_logic;
-
-            -- RAM
-            i_data_in   : in    std_logic_vector(7 downto 0);
-            i_address   : in    std_logic_vector(11 downto 0);
-            i_en_write  : in    std_logic;
-
-            o_data_out  : out   std_logic_vector(7 downto 0)
-        );
-    end component chip8_memory;
-
     -- Clock signals
     signal r_CLOCK  : std_logic := '0';
 
@@ -89,7 +77,12 @@ architecture arch_chip8_cpu of chip8_cpu is
         s_INCR_PC,
         s_DECODE,
         s_PUSH,
-        s_POP
+        s_POP,
+        s_BCD1,
+        s_BCD2,
+        s_BCD3,
+        s_STORE,
+        s_LOAD
     );
     signal r_SM_CPU : t_SM_CPU := s_NEXT_INSTR;
 
@@ -120,7 +113,7 @@ architecture arch_chip8_cpu of chip8_cpu is
 
 begin
 
-    MEMORY : chip8_memory
+    MEMORY : entity work.chip8_memory
         port map (
             -- clock
             i_clck      => r_CLOCK,
@@ -174,13 +167,20 @@ begin
 
     p_STATE_MACHINE : process (i_clck) is
     -- Memory variables
-    variable v_READ_RAM : std_logic := '0';
+    variable v_RAM_CLKPULSE : std_logic := '0';
+
+    -- BCD variables
+    variable v_VX : integer := 0;
 
     -- Display variables
     variable v_SPRITE_COUNTER   : integer := 0;
     variable v_X_COOR           : integer := 0;
     variable v_Y_COOR           : integer := 0;
     variable v_SPRITE_BYTE      : std_logic_vector(7 downto 0) := (others => '0');
+
+    -- Store variables
+    variable v_UPPER_LIMIT      : integer := 0;
+    variable v_LOADSTORE_COUNTER    : integer := 0;
     begin
         if rising_edge(i_clck) then
             r_SEED <= (r_SEED * c_RAND_A + c_RAND_C) mod c_RAND_M;
@@ -194,20 +194,20 @@ begin
                     r_EN_WRITE <= '0';
                     r_ADDRESS <= r_PROG_COUNT;
                     
-                    if v_READ_RAM = '0' then
-                        v_READ_RAM := '1';
+                    if v_RAM_CLKPULSE = '0' then
+                        v_RAM_CLKPULSE := '1';
                     else
-                        v_READ_RAM := '0';
+                        v_RAM_CLKPULSE := '0';
                         r_INSTRUCTION(15 downto 8) <= w_DATA_OUT;
                         r_SM_CPU <= s_FETCH_LOW;
                     end if;
                 when s_FETCH_LOW =>
                     r_ADDRESS <= std_logic_vector(unsigned(r_PROG_COUNT) + 1);
 
-                    if v_READ_RAM = '0' then
-                        v_READ_RAM := '1';
+                    if v_RAM_CLKPULSE = '0' then
+                        v_RAM_CLKPULSE := '1';
                     else
-                        v_READ_RAM := '0';
+                        v_RAM_CLKPULSE := '0';
                         r_INSTRUCTION(7 downto 0) <= w_DATA_OUT;
                         r_PROG_COUNT <= std_logic_vector(unsigned(r_PROG_COUNT) + 2);
                         r_SM_CPU <= s_DECODE;
@@ -219,6 +219,69 @@ begin
                 when s_POP =>
                     r_PROG_COUNT <= r_STACK_DATA(r_SP);
                     r_SM_CPU <= s_NEXT_INSTR;
+                when s_BCD1 =>
+                    r_EN_WRITE <= '1';
+                    r_ADDRESS <= std_logic_vector(unsigned(r_INDEX_REG) + 2);
+                    r_DATA_IN <= std_logic_vector(to_unsigned(v_VX mod 10, r_DATA_IN'length));
+
+                    if v_RAM_CLKPULSE = '0' then
+                        v_RAM_CLKPULSE := '1';
+                    else
+                        v_RAM_CLKPULSE := '0';
+                        r_SM_CPU <= s_BCD2;
+                    end if;
+                when s_BCD2 =>
+                    r_ADDRESS <= std_logic_vector(unsigned(r_INDEX_REG) + 1);
+                    r_DATA_IN <= std_logic_vector(to_unsigned((v_VX / 10) mod 10, r_DATA_IN'length));
+
+                    if v_RAM_CLKPULSE = '0' then
+                        v_RAM_CLKPULSE := '1';
+                    else
+                        v_RAM_CLKPULSE := '0';
+                        r_SM_CPU <= s_BCD3;
+                    end if;
+                when s_BCD3 =>
+                    r_ADDRESS <= std_logic_vector(unsigned(r_INDEX_REG));
+                    r_DATA_IN <= std_logic_vector(to_unsigned(((v_VX / 10) / 10) mod 10, r_DATA_IN'length));
+
+                    if v_RAM_CLKPULSE = '0' then
+                        v_RAM_CLKPULSE := '1';
+                    else
+                        v_RAM_CLKPULSE := '0';
+                        r_SM_CPU <= s_NEXT_INSTR;
+                    end if;
+                when s_STORE =>
+                    r_EN_WRITE <= '1';
+                    r_ADDRESS <= std_logic_vector(unsigned(r_INDEX_REG) + v_LOADSTORE_COUNTER);
+                    r_DATA_IN <= r_VAR_REG(v_LOADSTORE_COUNTER);
+
+                    if v_RAM_CLKPULSE = '0' then
+                        v_RAM_CLKPULSE := '1';
+                    else
+                        if v_LOADSTORE_COUNTER + 1 > v_UPPER_LIMIT then
+                            v_LOADSTORE_COUNTER := 0;
+                            v_UPPER_LIMIT := 0;
+                            r_SM_CPU <= s_NEXT_INSTR;
+                        else
+                            v_LOADSTORE_COUNTER := v_LOADSTORE_COUNTER + 1;
+                        end if;
+                    end if;
+                when s_LOAD =>
+                    r_EN_WRITE <= '0';
+                    r_ADDRESS <= std_logic_vector(unsigned(r_INDEX_REG) + v_LOADSTORE_COUNTER);
+
+                    if v_RAM_CLKPULSE = '0' then
+                        v_RAM_CLKPULSE := '1';
+                    else
+                        if v_LOADSTORE_COUNTER + 1 > v_UPPER_LIMIT then
+                            v_LOADSTORE_COUNTER := 0;
+                            v_UPPER_LIMIT := 0;
+                            r_SM_CPU <= s_NEXT_INSTR;
+                        else
+                            r_VAR_REG(v_LOADSTORE_COUNTER) <= w_DATA_OUT;
+                            v_LOADSTORE_COUNTER := v_LOADSTORE_COUNTER + 1;
+                        end if;
+                    end if;
                 when s_DECODE =>
                     r_SM_CPU <= s_NEXT_INSTR;
 
@@ -239,11 +302,11 @@ begin
                             r_STACK_ADDR <= r_INSTRUCTION(11 downto 0);
                             r_SM_CPU <= s_PUSH;
                         when x"3" =>
-                            if r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) = r_INSTRUCTION(78 downto 0) then
+                            if r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) = r_INSTRUCTION(7 downto 0) then
                                 r_PROG_COUNT <= std_logic_vector(unsigned(r_PROG_COUNT) + 2);
                             end if;
                         when x"4" =>
-                            if r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) /= r_INSTRUCTION(78 downto 0) then
+                            if r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) /= r_INSTRUCTION(7 downto 0) then
                                 r_PROG_COUNT <= std_logic_vector(unsigned(r_PROG_COUNT) + 2);
                             end if;
                         when x"5" =>
@@ -278,9 +341,9 @@ begin
                                     end if;
                                 when x"6" =>
                                     r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(shift_right(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))), 1));
-                                    if r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) & x"01" = x"01" then
+                                    if (r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) and x"01") = x"01" then
                                         r_VAR_REG(16#F#) <= x"01";
-                                    elsif r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) & x"01" = x"00" then
+                                    elsif (r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) and x"01") = x"00" then
                                         r_VAR_REG(16#F#) <= x"00";
                                     end if;
                                 when x"7" =>
@@ -292,9 +355,9 @@ begin
                                     end if;
                                 when x"E" =>
                                     r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(shift_left(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))), 1));
-                                    if r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) & x"01" = x"01" then
+                                    if (r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) and x"01") = x"01" then
                                         r_VAR_REG(16#F#) <= x"01";
-                                    elsif r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) & x"01" = x"00" then
+                                    elsif (r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) and x"01") = x"00" then
                                         r_VAR_REG(16#F#) <= x"00";
                                     end if;
                                 when others => NULL;
@@ -323,10 +386,10 @@ begin
                                 when s_LOAD_SPRITE =>
                                     r_ADDRESS <= std_logic_vector(unsigned(r_INDEX_REG) + v_SPRITE_COUNTER);
 
-                                    if v_READ_RAM = '0' then
-                                        v_READ_RAM := '1';
+                                    if v_RAM_CLKPULSE = '0' then
+                                        v_RAM_CLKPULSE := '1';
                                     else
-                                        v_READ_RAM := '0';
+                                        v_RAM_CLKPULSE := '0';
                                         v_SPRITE_BYTE := w_DATA_OUT;
                                         r_SM_DRAW <= s_PROCESS_SPRITE;
                                     end if;
@@ -357,8 +420,58 @@ begin
                                     end if;
                                 when others => NULL;
                             end case;
-                        when others => 
-                            r_SM_CPU <= s_NEXT_INSTR;
+                        when x"E" =>
+                            case r_INSTRUCTION(7 downto 0) is
+                                when x"A1" =>
+                                    if i_keys(to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))))) = '1' then
+                                        r_PROG_COUNT <= std_logic_vector(unsigned(r_PROG_COUNT) + 2);
+                                    end if;
+                                when x"9E" =>
+                                    if i_keys(to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))))) = '0' then
+                                        r_PROG_COUNT <= std_logic_vector(unsigned(r_PROG_COUNT) + 2);
+                                    end if;
+                                when others => NULL;
+                            end case;
+                        when x"F" =>
+                            case r_INSTRUCTION(7 downto 0) is
+                                when x"07" =>
+                                    -- VX = Delay Timer
+                                    r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= r_DELAY_TIMER;
+                                when x"0A" =>
+                                    -- Wait until key is pressed
+                                    if i_keys = x"0000" then
+                                        r_SM_CPU <= s_DECODE;
+                                    else
+                                        for i in 0 to i_keys'length loop
+                                            if i_keys(i) = '1' then
+                                                r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(to_unsigned(i, r_VAR_REG(0)'length));
+                                            end if;
+                                        end loop;
+                                    end if;
+                                when x"15" =>
+                                    -- Delay Timer = VX
+                                    r_DELAY_TIMER <= r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))));
+                                when x"18" =>
+                                    -- Sound Timer = VX
+                                    r_SOUND_TIMER <= r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))));
+                                when x"1E" =>
+                                    -- I = I + VX
+                                    r_INDEX_REG <= std_logic_vector(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) + unsigned(r_INDEX_REG));
+                                when x"29" =>
+                                    -- Font Location => 0x050 --> I = 0x050 + (VX * 5)
+                                    r_INDEX_REG <= std_logic_vector(x"050" + (unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) * 5)); 
+                                when x"33" =>
+                                    v_VX := to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))));
+                                    r_SM_CPU <= s_BCD1;
+                                when x"55" =>
+                                    v_UPPER_LIMIT := to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))));
+                                    r_SM_CPU <= s_STORE;
+                                when x"65" =>
+                                    v_UPPER_LIMIT := to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))));
+                                    r_SM_CPU <= s_LOAD;
+                                when others => NULL;
+                            end case;
+                        when others => NULL;
                     end case;
                 when others =>
                     r_SM_CPU <= s_NEXT_INSTR;

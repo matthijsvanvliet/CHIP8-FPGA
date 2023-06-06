@@ -70,7 +70,7 @@ architecture arch_chip8_memory of chip8_memory is
 
         -- Load font into memory
         for i in t_FONT'range loop
-            ram_data(80 + i) := font_data(i); -- Load font data at address 0x050
+            ram_data(c_FONT_LOC + i) := font_data(i); -- Load font data at address 0x050
         end loop;
         return ram_data;
     end InitialiseRamWithData;

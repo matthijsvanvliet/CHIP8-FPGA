@@ -10,19 +10,28 @@ architecture behave of chip8_cpu_tb is
     component chip8_cpu
         port (
             -- clock
-            i_clck      : in    std_logic
+            i_clck      : in    std_logic;
+
+            -- input keys
+            i_keys      : in    std_logic_vector(15 downto 0)
         );
     end component chip8_cpu;
 
     -- Clock signals
     signal r_CLOCK_TB  : std_logic := '0';
 
+    -- Input keys
+    signal r_KEYS : std_logic_vector(15 downto 0) := (others => '0');
+
 begin
 
     DUT : chip8_cpu
         port map (
             -- clock
-            i_clck  => r_CLOCK_TB
+            i_clck  => r_CLOCK_TB,
+
+            -- input keys
+            i_keys => r_KEYS
         );
 
     p_CLOCK_TB : process is
