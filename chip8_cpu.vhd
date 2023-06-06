@@ -442,7 +442,7 @@ begin
                                     if i_keys = x"0000" then
                                         r_SM_CPU <= s_DECODE;
                                     else
-                                        for i in 0 to i_keys'length loop
+                                        for i in 0 to i_keys'length - 1 loop
                                             if i_keys(i) = '1' then
                                                 r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(to_unsigned(i, r_VAR_REG(0)'length));
                                             end if;
@@ -459,7 +459,7 @@ begin
                                     r_INDEX_REG <= std_logic_vector(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) + unsigned(r_INDEX_REG));
                                 when x"29" =>
                                     -- Font Location => 0x050 --> I = 0x050 + (VX * 5)
-                                    r_INDEX_REG <= std_logic_vector(x"050" + (unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) * 5)); 
+                                    r_INDEX_REG <= std_logic_vector(unsigned(x"050") + (unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) * 5)); 
                                 when x"33" =>
                                     v_VX := to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))));
                                     r_SM_CPU <= s_BCD1;
