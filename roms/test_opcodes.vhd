@@ -4,8 +4,8 @@ use ieee.numeric_std.all;
 
 package test_opcodes is
 
-    type t_TEST_OPCODES_DATA is array (0 to 478 - 1) of std_logic_vector(7 downto 0);
-    constant c_TEST_OPCODES_DATA : t_TEST_OPCODES_DATA := (
+    type t_ROM is array (0 to 478 - 1) of std_logic_vector(7 downto 0);
+    constant c_ROM : t_ROM := (
         x"12", x"4E", x"EA", x"AC", x"AA", x"EA", x"CE", x"AA", x"AA", x"AE", x"E0", x"A0", x"A0", x"E0", x"C0", x"40", 
         x"40", x"E0", x"E0", x"20", x"C0", x"E0", x"E0", x"60", x"20", x"E0", x"A0", x"E0", x"20", x"20", x"60", x"40", 
         x"20", x"40", x"E0", x"80", x"E0", x"E0", x"E0", x"20", x"20", x"20", x"E0", x"E0", x"A0", x"E0", x"E0", x"E0", 

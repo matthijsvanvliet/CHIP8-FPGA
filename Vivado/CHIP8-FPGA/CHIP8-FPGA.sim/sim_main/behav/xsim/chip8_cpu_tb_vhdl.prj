@@ -1,7 +1,12 @@
 # compile vhdl design source files
 vhdl xil_defaultlib  \
-"../../../../../../ibm_logo.vhd" \
-"../../../../../../test_opcodes.vhd" \
+"../../../../../../roms/test_opcodes.vhd" \
+"../../../../../../roms/ibm_logo.vhd" \
+"../../../../../../roms/bc_test.vhd" \
+"../../../../../../roms/coraxplus.vhd" \
+"../../../../../../roms/sctest.vhd" \
+"../../../../../../roms/flags.vhd" \
+"../../../../../../roms/chip8_logo.vhd" \
 "../../../../../../chip8_memory.vhd" \
 "../../../../../../chip8_cpu.vhd" \
 "../../../../../../chip8.vhd" \
