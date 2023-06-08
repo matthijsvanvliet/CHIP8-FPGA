@@ -63,7 +63,11 @@
     <Option Name="EnableBDX" Val="FALSE"/>
     <Option Name="DSABoardId" Val="arty-a7-100"/>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     <Option Name="WTXSimLaunchSim" Val="252"/>
+=======
+    <Option Name="WTXSimLaunchSim" Val="167"/>
+>>>>>>> Stashed changes
 =======
     <Option Name="WTXSimLaunchSim" Val="167"/>
 >>>>>>> Stashed changes
@@ -209,6 +213,9 @@
 <<<<<<< Updated upstream
 =======
       <File Path="$PPRDIR/../../ibm-logo.ch8"/>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
