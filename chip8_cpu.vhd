@@ -258,7 +258,8 @@ begin
                     if v_RAM_CLKPULSE = '0' then
                         v_RAM_CLKPULSE := '1';
                     else
-                        if v_LOADSTORE_COUNTER + 1 > v_UPPER_LIMIT then
+                        v_RAM_CLKPULSE := '0';
+                        if v_LOADSTORE_COUNTER > v_UPPER_LIMIT then
                             v_LOADSTORE_COUNTER := 0;
                             v_UPPER_LIMIT := 0;
                             r_SM_CPU <= s_NEXT_INSTR;
@@ -273,7 +274,8 @@ begin
                     if v_RAM_CLKPULSE = '0' then
                         v_RAM_CLKPULSE := '1';
                     else
-                        if v_LOADSTORE_COUNTER + 1 > v_UPPER_LIMIT then
+                        v_RAM_CLKPULSE := '0';
+                        if v_LOADSTORE_COUNTER > v_UPPER_LIMIT then
                             v_LOADSTORE_COUNTER := 0;
                             v_UPPER_LIMIT := 0;
                             r_SM_CPU <= s_NEXT_INSTR;
@@ -310,7 +312,7 @@ begin
                                 r_PROG_COUNT <= std_logic_vector(unsigned(r_PROG_COUNT) + 2);
                             end if;
                         when x"5" =>
-                            if r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) = r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 3)))) then
+                            if r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) = r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4)))) then
                                 r_PROG_COUNT <= std_logic_vector(unsigned(r_PROG_COUNT) + 2);
                             end if;
                         when x"6" =>
@@ -328,12 +330,14 @@ begin
                                 when x"3" =>
                                     r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) xor r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4))));
                                 when x"4" =>
+                                    r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) + unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4))))));
                                     if to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) + unsigned(r_INSTRUCTION(7 downto 0))) > 255 then
                                         r_VAR_REG(16#F#) <= x"01";
+                                    else
+                                        r_VAR_REG(16#F#) <= x"00";
                                     end if;
-                                    r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) + unsigned(r_INSTRUCTION(7 downto 0)));
                                 when x"5" =>
-                                    r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) - unsigned(r_INSTRUCTION(7 downto 0)));
+                                    r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) - unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4))))));
                                     if to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))))) > to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4)))))) then
                                         r_VAR_REG(16#F#) <= x"01";
                                     else
@@ -347,7 +351,7 @@ begin
                                         r_VAR_REG(16#F#) <= x"00";
                                     end if;
                                 when x"7" =>
-                                    r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4))))) - unsigned(r_INSTRUCTION(11 downto 8)));
+                                    r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4))))) - unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))));
                                     if to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4)))))) > to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))))) then
                                         r_VAR_REG(16#F#) <= x"01";
                                     else
@@ -363,7 +367,7 @@ begin
                                 when others => NULL;
                             end case;
                         when x"9" =>
-                            if r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) /= r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 3)))) then
+                            if r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) /= r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4)))) then
                                 r_PROG_COUNT <= std_logic_vector(unsigned(r_PROG_COUNT) + 2);
                             end if;
                         when x"A" =>
@@ -397,12 +401,12 @@ begin
                                     if v_SPRITE_COUNTER < to_integer(unsigned(r_INSTRUCTION(3 downto 0))) then
                                         v_SPRITE_COUNTER := v_SPRITE_COUNTER + 1;
                                         for i in 0 to v_SPRITE_BYTE'length - 1 loop
-                                            if (c_DISPLAY_WIDTH - v_X_COOR - i) > 0 then
-                                                if v_SPRITE_BYTE(v_SPRITE_BYTE'length - 1 - i) = r_DISPLAY_BUFFER(v_Y_COOR)(c_DISPLAY_WIDTH - v_X_COOR - i) then
+                                            if (c_DISPLAY_WIDTH - 1 - v_X_COOR - i) > 0 then
+                                                if v_SPRITE_BYTE(v_SPRITE_BYTE'length - 1 - i) = r_DISPLAY_BUFFER(v_Y_COOR)(c_DISPLAY_WIDTH - 1 - v_X_COOR - i) then
                                                     r_VAR_REG(16#F#) <= x"01";
                                                 end if;
                                             
-                                                r_DISPLAY_BUFFER(v_Y_COOR)(c_DISPLAY_WIDTH - v_X_COOR - i) <= r_DISPLAY_BUFFER(v_Y_COOR)(c_DISPLAY_WIDTH - v_X_COOR - i) xor v_SPRITE_BYTE(v_SPRITE_BYTE'length - 1 - i);
+                                                r_DISPLAY_BUFFER(v_Y_COOR)(c_DISPLAY_WIDTH - 1 - v_X_COOR - i) <= r_DISPLAY_BUFFER(v_Y_COOR)(c_DISPLAY_WIDTH - 1 - v_X_COOR - i) xor v_SPRITE_BYTE(v_SPRITE_BYTE'length - 1 - i);
                                             end if;
                                         end loop;
                                         r_SM_DRAW <= s_INCR_Y;
@@ -459,15 +463,15 @@ begin
                                     r_INDEX_REG <= std_logic_vector(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) + unsigned(r_INDEX_REG));
                                 when x"29" =>
                                     -- Font Location => 0x050 --> I = 0x050 + (VX * 5)
-                                    r_INDEX_REG <= std_logic_vector(unsigned(x"050") + (unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) * 5)); 
+                                    r_INDEX_REG <= std_logic_vector(x"050" + to_unsigned(to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))))) * 5, r_INDEX_REG'length)); 
                                 when x"33" =>
                                     v_VX := to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))));
                                     r_SM_CPU <= s_BCD1;
                                 when x"55" =>
-                                    v_UPPER_LIMIT := to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))));
+                                    v_UPPER_LIMIT := to_integer(unsigned(r_INSTRUCTION(11 downto 8)));
                                     r_SM_CPU <= s_STORE;
                                 when x"65" =>
-                                    v_UPPER_LIMIT := to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))));
+                                    v_UPPER_LIMIT := to_integer(unsigned(r_INSTRUCTION(11 downto 8)));
                                     r_SM_CPU <= s_LOAD;
                                 when others => NULL;
                             end case;
