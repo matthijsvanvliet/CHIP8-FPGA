@@ -74,8 +74,8 @@ architecture arch_chip8_cpu of chip8_cpu is
         s_NEXT_INSTR,
         s_FETCH_HIGH,
         s_FETCH_LOW,
-        s_INCR_PC,
         s_DECODE,
+        s_STORE_CARRY,
         s_PUSH,
         s_POP,
         s_BCD1,
@@ -169,8 +169,11 @@ begin
     -- Memory variables
     variable v_RAM_CLKPULSE : std_logic := '0';
 
-    -- BCD variables
+    -- BCD variable
     variable v_VX : integer := 0;
+
+    -- Carry variable
+    variable v_CARRY : std_logic_vector(7 downto 0) := (others => '0');
 
     -- Display variables
     variable v_SPRITE_COUNTER   : integer := 0;
@@ -284,6 +287,9 @@ begin
                             v_LOADSTORE_COUNTER := v_LOADSTORE_COUNTER + 1;
                         end if;
                     end if;
+                when s_STORE_CARRY =>
+                    r_VAR_REG(16#F#) <= v_CARRY;
+                    r_SM_CPU <= s_NEXT_INSTR;
                 when s_DECODE =>
                     r_SM_CPU <= s_NEXT_INSTR;
 
@@ -331,39 +337,44 @@ begin
                                     r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) xor r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4))));
                                 when x"4" =>
                                     r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) + unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4))))));
-                                    if to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) + unsigned(r_INSTRUCTION(7 downto 0))) > 255 then
-                                        r_VAR_REG(16#F#) <= x"01";
+                                    if (to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))))) + to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4))))))) > 255 then
+                                        v_CARRY := x"01";
                                     else
-                                        r_VAR_REG(16#F#) <= x"00";
+                                        v_CARRY := x"00";
                                     end if;
+                                    r_SM_CPU <= s_STORE_CARRY;
                                 when x"5" =>
                                     r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) - unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4))))));
-                                    if to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))))) > to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4)))))) then
-                                        r_VAR_REG(16#F#) <= x"01";
+                                    if to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4)))))) > to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))))) then
+                                        v_CARRY := x"00";
                                     else
-                                        r_VAR_REG(16#F#) <= x"00";
+                                        v_CARRY := x"01";
                                     end if;
+                                    r_SM_CPU <= s_STORE_CARRY;
                                 when x"6" =>
                                     r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(shift_right(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))), 1));
                                     if (r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) and x"01") = x"01" then
-                                        r_VAR_REG(16#F#) <= x"01";
+                                        v_CARRY := x"01";
                                     elsif (r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) and x"01") = x"00" then
-                                        r_VAR_REG(16#F#) <= x"00";
+                                        v_CARRY := x"00";
                                     end if;
+                                    r_SM_CPU <= s_STORE_CARRY;
                                 when x"7" =>
                                     r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4))))) - unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))));
-                                    if to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4)))))) > to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))))) then
-                                        r_VAR_REG(16#F#) <= x"01";
+                                    if to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))))) > to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4)))))) then
+                                        v_CARRY := x"00";
                                     else
-                                        r_VAR_REG(16#F#) <= x"00";
+                                        v_CARRY := x"01";
                                     end if;
+                                    r_SM_CPU <= s_STORE_CARRY;
                                 when x"E" =>
                                     r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(shift_left(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))), 1));
-                                    if (r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) and x"01") = x"01" then
-                                        r_VAR_REG(16#F#) <= x"01";
-                                    elsif (r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) and x"01") = x"00" then
-                                        r_VAR_REG(16#F#) <= x"00";
+                                    if (r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) and x"80") = x"80" then
+                                        v_CARRY := x"01";
+                                    elsif (r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) and x"80") = x"00" then
+                                        v_CARRY := x"00";
                                     end if;
+                                    r_SM_CPU <= s_STORE_CARRY;
                                 when others => NULL;
                             end case;
                         when x"9" =>
@@ -401,7 +412,7 @@ begin
                                     if v_SPRITE_COUNTER < to_integer(unsigned(r_INSTRUCTION(3 downto 0))) then
                                         v_SPRITE_COUNTER := v_SPRITE_COUNTER + 1;
                                         for i in 0 to v_SPRITE_BYTE'length - 1 loop
-                                            if (c_DISPLAY_WIDTH - 1 - v_X_COOR - i) > 0 then
+                                            if (c_DISPLAY_WIDTH - 1 - v_X_COOR - i) >= 0 then
                                                 if v_SPRITE_BYTE(v_SPRITE_BYTE'length - 1 - i) = r_DISPLAY_BUFFER(v_Y_COOR)(c_DISPLAY_WIDTH - 1 - v_X_COOR - i) then
                                                     r_VAR_REG(16#F#) <= x"01";
                                                 end if;
