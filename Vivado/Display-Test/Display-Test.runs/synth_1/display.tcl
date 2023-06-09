@@ -70,10 +70,8 @@ proc create_report { reportName command } {
   }
 }
 OPTRACE "synth_1" START { ROLLUP_AUTO }
-set_param tcl.statsThreshold 360
 set_param chipscope.maxJobs 4
 set_param xicom.use_bs_reader 1
-set_msg_config -id {Common 17-41} -limit 10000000
 OPTRACE "Creating in-memory project" START { }
 create_project -in_memory -part xc7a100tcsg324-1
 
@@ -96,7 +94,7 @@ read_vhdl -library xil_defaultlib {
   {C:/git/git repositories/CHIP8-FPGA/i2c_master.vhd}
   {C:/git/git repositories/CHIP8-FPGA/display.vhd}
 }
-read_ip -quiet {{c:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.srcs/sources_1/ip/clk_50hz/clk_50hz.xci}}
+read_ip -quiet {{C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.srcs/sources_1/ip/clk_50hz/clk_50hz.xci}}
 set_property used_in_implementation false [get_files -all {{c:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz_board.xdc}}]
 set_property used_in_implementation false [get_files -all {{c:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz.xdc}}]
 set_property used_in_implementation false [get_files -all {{c:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz_ooc.xdc}}]
@@ -110,8 +108,8 @@ OPTRACE "Adding files" END { }
 foreach dcp [get_files -quiet -all -filter file_type=="Design\ Checkpoint"] {
   set_property used_in_implementation false $dcp
 }
-read_xdc {{C:/git/git repositories/CHIP8-FPGA/Arty-A7-100-display.xdc}}
-set_property used_in_implementation false [get_files {{C:/git/git repositories/CHIP8-FPGA/Arty-A7-100-display.xdc}}]
+read_xdc {{C:/git/git repositories/CHIP8-FPGA/constraints/Arty-A7-100-display.xdc}}
+set_property used_in_implementation false [get_files {{C:/git/git repositories/CHIP8-FPGA/constraints/Arty-A7-100-display.xdc}}]
 
 set_param ips.enableIPCacheLiteLoad 1
 

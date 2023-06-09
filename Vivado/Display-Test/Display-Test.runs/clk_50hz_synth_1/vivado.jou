@@ -2,12 +2,12 @@
 # Vivado v2022.2 (64-bit)
 # SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
 # IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
-# Start of session at: Thu Jun  8 16:49:00 2023
-# Process ID: 20852
-# Current directory: D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/clk_50hz_synth_1
+# Start of session at: Fri Jun  9 11:50:27 2023
+# Process ID: 25336
+# Current directory: C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/clk_50hz_synth_1
 # Command line: vivado.exe -log clk_50hz.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source clk_50hz.tcl
-# Log file: D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/clk_50hz_synth_1/clk_50hz.vds
-# Journal file: D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/clk_50hz_synth_1\vivado.jou
-# Running On: DESKTOP-MATTHIJS, OS: Windows, CPU Frequency: 3700 MHz, CPU Physical cores: 16, Host memory: 25715 MB
+# Log file: C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/clk_50hz_synth_1/clk_50hz.vds
+# Journal file: C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/clk_50hz_synth_1\vivado.jou
+# Running On: LAPTOP-IT23Q15D, OS: Windows, CPU Frequency: 1797 MHz, CPU Physical cores: 16, Host memory: 14887 MB
 #-----------------------------------------------------------
 source clk_50hz.tcl -notrace

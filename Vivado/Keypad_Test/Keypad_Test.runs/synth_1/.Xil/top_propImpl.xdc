@@ -27,3 +27,5 @@ set_property src_info {type:XDC file:1 line:94 export:INPUT save:INPUT read:READ
 set_property -dict { PACKAGE_PIN T16   IOSTANDARD LVCMOS33 } [get_ports { i_keypad_col2  }]; #IO_L15N_T2_DQS_DOUT_CSO_B_14 Sch=ck_io[7]
 set_property src_info {type:XDC file:1 line:95 export:INPUT save:INPUT read:READ} [current_design]
 set_property -dict { PACKAGE_PIN N15   IOSTANDARD LVCMOS33 } [get_ports { i_keypad_col1  }]; #IO_L11P_T1_SRCC_14 Sch=ck_io[8]
+set_property src_info {type:XDC file:1 line:102 export:INPUT save:INPUT read:READ} [current_design]
+set_property IOB TRUE [get_ports {o_keypad_row4 o_keypad_row3 o_keypad_row2 o_keypad_row1}];

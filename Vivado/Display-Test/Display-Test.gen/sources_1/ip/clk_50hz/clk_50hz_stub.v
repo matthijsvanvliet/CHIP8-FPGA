@@ -1,10 +1,10 @@
 // Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
-// Date        : Thu Jun  8 16:49:56 2023
-// Host        : DESKTOP-MATTHIJS running 64-bit major release  (build 9200)
-// Command     : write_verilog -force -mode synth_stub
-//               d:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz_stub.v
+// Date        : Fri Jun  9 11:51:20 2023
+// Host        : LAPTOP-IT23Q15D running 64-bit major release  (build 9200)
+// Command     : write_verilog -force -mode synth_stub {c:/git/git
+//               repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz_stub.v}
 // Design      : clk_50hz
 // Purpose     : Stub declaration of top-level module interface
 // Device      : xc7a100tcsg324-1

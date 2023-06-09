@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="synth_1" LaunchPart="xc7a100tcsg324-1" LaunchTime="1685708743" LaunchIncrCheckpoint="$PSRCDIR/utils_1/imports/synth_1/display.dcp">
+<GenRun Id="synth_1" LaunchPart="xc7a100tcsg324-1" LaunchTime="1686304648" LaunchIncrCheckpoint="$PSRCDIR/utils_1/imports/synth_1/display.dcp">
   <File Type="PA-TCL" Name="display.tcl"/>
+  <File Type="RDS-PROPCONSTRS" Name="display_drc_synth.rpt"/>
   <File Type="REPORTS-TCL" Name="display_reports.tcl"/>
   <File Type="RDS-RDS" Name="display.vds"/>
   <File Type="RDS-UTIL" Name="display_utilization_synth.rpt"/>
   <File Type="RDS-UTIL-PB" Name="display_utilization_synth.pb"/>
   <File Type="RDS-DCP" Name="display.dcp"/>
+  <File Type="VDS-TIMINGSUMMARY" Name="display_timing_summary_synth.rpt"/>
+  <File Type="VDS-TIMING-PB" Name="display_timing_summary_synth.pb"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1" RelGenDir="$PGENDIR/sources_1">
     <Filter Type="Srcs"/>
     <File Path="$PPRDIR/../../i2c_master.vhd">
@@ -28,14 +31,13 @@
   </FileSet>
   <FileSet Name="constrs_in" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1">
     <Filter Type="Constrs"/>
-    <File Path="$PPRDIR/../../Arty-A7-100-display.xdc">
+    <File Path="$PPRDIR/../../constraints/Arty-A7-100-display.xdc">
       <FileInfo>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="implementation"/>
       </FileInfo>
     </File>
     <Config>
-      <Option Name="TargetConstrsFile" Val="$PPRDIR/../../Arty-A7-100-display.xdc"/>
       <Option Name="ConstrsType" Val="XDC"/>
     </Config>
   </FileSet>

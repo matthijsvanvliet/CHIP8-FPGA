@@ -5,7 +5,7 @@
 
 ## Clock signal
 set_property -dict {PACKAGE_PIN E3 IOSTANDARD LVCMOS33} [get_ports i_clck]
-create_clock -period 10.000 -name sys_clk_pin -waveform {0.000 5.000} [get_ports i_clck]
+# create_clock -period 10.000 -name sys_clk_pin -waveform {0.000 5.000} [get_ports i_clck]
 
 ## Switches
 #set_property -dict { PACKAGE_PIN A8    IOSTANDARD LVCMOS33 } [get_ports { sw[0] }]; #IO_L12N_T1_MRCC_16 Sch=sw[0]
@@ -135,10 +135,12 @@ create_clock -period 10.000 -name sys_clk_pin -waveform {0.000 5.000} [get_ports
 #set_property -dict { PACKAGE_PIN D14   IOSTANDARD LVCMOS33 } [get_ports { vaux0_p  }]; #IO_L1P_T0_AD0P_15 	   Sch=ck_an_p[5] ChipKit pin=A5
 ## ChipKit Outer Analog Header - as Digital I/O
 ## NOTE: The following constraints should be used when using these ports as digital I/O.
-set_property -dict {PACKAGE_PIN F5 IOSTANDARD LVCMOS33} [get_ports o_oled_sda]
-set_property PULLUP true [get_ports o_oled_sda]
-set_property -dict {PACKAGE_PIN D8 IOSTANDARD LVCMOS33} [get_ports o_oled_scl]
-set_property PULLUP true [get_ports o_oled_scl]
+set_property -dict {PACKAGE_PIN F5 IOSTANDARD LVCMOS33 PULLUP true } [get_ports o_oled_sda]
+set_property -dict {PACKAGE_PIN D8 IOSTANDARD LVCMOS33 PULLUP true } [get_ports o_oled_scl]
+set_property IOB TRUE [get_ports {o_oled_scl o_oled_sda}]
+set_output_delay -clock i_clck 0 [get_ports {o_oled_scl o_oled_sda}]
+set_false_path -to [get_ports {o_oled_scl o_oled_sda}]
+
 set_property -dict {PACKAGE_PIN C7 IOSTANDARD LVCMOS33} [get_ports o_oled_vcc]
 set_property -dict {PACKAGE_PIN E7 IOSTANDARD LVCMOS33} [get_ports o_oled_gnd]
 #set_property -dict { PACKAGE_PIN D7    IOSTANDARD LVCMOS33 } [get_ports { ck_a4 }]; #IO_L6N_T0_VREF_35 Sch=ck_a[4]
