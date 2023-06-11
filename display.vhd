@@ -3,6 +3,10 @@ use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
 entity display is
+    generic
+    (
+        g_INPUT_CLOCK_FREQ : integer := 50_000_000
+    );
     port (
         -- clock
         i_clck      : in    std_logic;
@@ -36,7 +40,7 @@ architecture rtl of display is
     signal w_LOCKED         : std_logic;
     --signal r_CLOCK_IN       : std_logic := '0';
 
-    constant c_INPUT_CLOCK  : integer := 50_000_000;
+    constant c_INPUT_CLOCK  : integer := g_INPUT_CLOCK_FREQ;
     constant c_BUS_CLOCK    : integer := 400_000;
 
     signal r_CLK        : std_logic := '0';
@@ -50,12 +54,14 @@ architecture rtl of display is
     signal w_DATA_RD    : std_logic_vector(7 downto 0);
     signal w_ACK_ERROR  : std_logic;
 
+    signal w_SDA        : std_logic;
+    signal w_SCL        : std_logic;
+
     type t_SM_DISPLAY is (
         s_CLOCK_INIT,
         s_COM_INIT,
         s_SEND_CONTROL,
         s_INIT,
-        s_INIT_RESET,
         s_START,
         s_TEMP
     );
@@ -128,6 +134,35 @@ architecture rtl of display is
         c_SSD1306_DISPLAYON
     );
 
+    constant c_DISPLAY_BUFFER_WIDTH     : natural   := 64;
+    constant c_DISPLAY_BUFFER_HEIGHT    : natural   := 32;
+
+    signal r_DISPLAY_BUFFER : std_logic_vector(c_DISPLAY_BUFFER_WIDTH * c_DISPLAY_BUFFER_HEIGHT - 1 downto 0) := (others => '0');
+
+    constant c_BUFFER_LENGTH : natural := c_DISPLAY_BUFFER_WIDTH * ((c_DISPLAY_BUFFER_HEIGHT + 7) / 8);
+    type t_BUFFER_BYTE is array (0 to c_BUFFER_LENGTH) of std_logic_vector(7 downto 0);
+    signal r_BUFFER : t_BUFFER_BYTE := (others => x"00");
+
+    function get_x(
+            i : natural
+        )
+        return natural is
+            variable x : natural := 0;
+    begin
+        x := i mod (c_DISPLAY_BUFFER_WIDTH - 1);
+        return x;
+    end get_x;
+
+    function get_y(
+            i : natural
+        )
+        return natural is
+            variable y : natural := 0;
+    begin
+        y := (i - get_x(i)) mod (c_DISPLAY_BUFFER_HEIGHT - 1);
+        return y;
+    end get_y;
+
 begin
 
     I2C_CONTROLLER : entity work.i2c_master
@@ -145,8 +180,8 @@ begin
             busy        => w_BUSY,     
             data_rd     => w_DATA_RD,  
             ack_error   => w_ACK_ERROR,
-            sda         => o_oled_sda,
-            scl         => o_oled_scl
+            sda         => w_SDA,
+            scl         => w_SCL
         );
 
     CLOCK_50HZ : clk_50hz
@@ -162,12 +197,25 @@ begin
     o_oled_vcc <= '1';
     o_oled_gnd <= '0';
 
+    o_oled_sda <= w_SDA;
+    o_oled_scl <= w_SCL;
+
     r_CLK <= w_CLOCK_OUT1;
+
+    p_FILL_BUFFER : process (w_CLOCK_OUT1) is
+    begin
+        for i in 0 to c_BUFFER_LENGTH loop
+            r_BUFFER(get_x(i) + (get_y(i) / 8) * c_DISPLAY_BUFFER_WIDTH) <= r_BUFFER(get_x(i) + (get_y(i) / 8) * c_DISPLAY_BUFFER_WIDTH) or std_logic_vector(shift_left(to_unsigned(1, 8), to_integer(to_unsigned(get_y(i), 8) and x"7")));
+        end loop;
+    end process p_FILL_BUFFER;
 
     p_INITIALISE : process is
     begin
         r_ADDR <= c_SLAVE_ADDRESS;
         r_RW <= '0';
+        for i in 1230 to 1567 loop
+            r_DISPLAY_BUFFER(i) <= '1';
+        end loop;
         wait;
     end process p_INITIALISE;
 
@@ -177,79 +225,45 @@ begin
         if rising_edge(w_CLOCK_OUT1) then
             r_PREV_BUSY <= w_BUSY;
 
-            if w_BUSY = '0' and r_PREV_BUSY = '1' then
-                case r_SM_DISPLAY is
-                    when s_SEND_CONTROL =>
+            case r_SM_DISPLAY is
+                when s_CLOCK_INIT =>
+                    r_ENA <= '0';
+                    if w_LOCKED = '1' and w_BUSY = '0' then
+                        r_SM_DISPLAY <= s_SEND_CONTROL;
+                    end if; 
+                when s_SEND_CONTROL =>
+                    r_DATA_WR <= x"00";
+                    r_ENA <= '1';
+                    
+                    if w_BUSY = '1' and r_PREV_BUSY = '0' then
                         r_SM_DISPLAY <= s_START;
                         if r_COM_COUNTER /= c_INIT_COMMAND_LENGTH - 1 then
                             r_SM_DISPLAY <= s_INIT;
                         end if;
-                    when s_INIT =>
-                        if r_COM_COUNTER = c_INIT_COMMAND_LENGTH - 1 then
-                            r_SM_DISPLAY <= s_START;
-                        else
-                            r_COM_COUNTER <= r_COM_COUNTER + 1;
-                            r_SM_DISPLAY <= s_SEND_CONTROL;
-                        end if;
-                    when others => NULL;
-                end case;
-            end if;
+                    end if;
 
-            case r_SM_DISPLAY is
-                when s_CLOCK_INIT =>
-                    r_ENA <= '0';
-                    if w_LOCKED = '1' then
-                        r_SM_DISPLAY <= s_SEND_CONTROL;
-                    end if; 
-                when s_SEND_CONTROL =>
-                    r_ENA <= '1';
-                    r_DATA_WR <= x"00";
-
-                    
-
-                    -- r_ENA <= '1';
-
-                    -- if w_BUSY = '1' and r_PREV_BUSY = '0' then
-                    --     r_ENA <= '0';
-                    -- end if;
-
-                    -- if w_BUSY = '0' and r_PREV_BUSY = '1' then
-                    --     if r_COM_COUNTER /= c_INIT_COMMAND_LENGTH - 1 then
-                    --         r_SM_DISPLAY <= s_INIT;
-                    --     else
-                    --         r_SM_DISPLAY <= s_START;
-                    --     end if;
-                    -- end if;
                 when s_INIT =>
                     r_DATA_WR <= c_INIT_COMMANDS(r_COM_COUNTER);
-                    
-                    
-                    -- r_ENA <= '1';
 
-                    -- if w_BUSY = '1' and r_PREV_BUSY = '0' then
-                    --     r_ENA <= '0';
-                    -- end if;
-                when s_INIT_RESET =>
-                    r_DELAY_COUNTER <= r_DELAY_COUNTER + 1;
-
-                    if r_DELAY_COUNTER = c_DELAY_BETWEEN_COM then
-                        r_SM_DISPLAY <= s_SEND_CONTROL;
-                        r_ENA <= '1';
-                        r_DELAY_COUNTER <= 0;
+                    if w_BUSY = '1' and r_PREV_BUSY = '0' then
+                        if r_COM_COUNTER = c_INIT_COMMAND_LENGTH - 1 then
+                            r_SM_DISPLAY <= s_TEMP;
+                        else
+                            r_COM_COUNTER <= r_COM_COUNTER + 1;
+                        end if;
                     end if;
+                    
                 when s_START =>
                     r_DATA_WR <= c_SSD1306_INVERTDISPLAY;
 
-                    if w_BUSY = '1' then
-                        r_ENA <= '0';
-                    end if;
-
-                    if w_BUSY = '0' and r_PREV_BUSY = '1' then
+                    if w_BUSY = '1' and r_PREV_BUSY = '0' then
                         r_SM_DISPLAY <= s_TEMP;
                     end if;
+
                 when s_TEMP =>
+                    r_ENA <= '0';
                     v_COUNTER := v_COUNTER + 1;
-                    if v_COUNTER >= 2134234 then
+                    if v_COUNTER >= 123432 then
                         v_COUNTER := 0;
                         r_SM_DISPLAY <= s_SEND_CONTROL;
                     end if;

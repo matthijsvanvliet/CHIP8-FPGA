@@ -137,9 +137,10 @@ set_property -dict {PACKAGE_PIN E3 IOSTANDARD LVCMOS33} [get_ports i_clck]
 ## NOTE: The following constraints should be used when using these ports as digital I/O.
 set_property -dict {PACKAGE_PIN F5 IOSTANDARD LVCMOS33 PULLUP true } [get_ports o_oled_sda]
 set_property -dict {PACKAGE_PIN D8 IOSTANDARD LVCMOS33 PULLUP true } [get_ports o_oled_scl]
-set_property IOB TRUE [get_ports {o_oled_scl o_oled_sda}]
-set_output_delay -clock i_clck 0 [get_ports {o_oled_scl o_oled_sda}]
-set_false_path -to [get_ports {o_oled_scl o_oled_sda}]
+#set_property IOB TRUE [get_ports {o_oled_scl o_oled_sda}]
+#set_output_delay -clock i_clck 0 [get_ports {o_oled_scl o_oled_sda}]
+#set_input_delay -clock i_clck 0 [get_ports {o_oled_scl}]
+#set_false_path -to [get_ports {o_oled_scl o_oled_sda}]
 
 set_property -dict {PACKAGE_PIN C7 IOSTANDARD LVCMOS33} [get_ports o_oled_vcc]
 set_property -dict {PACKAGE_PIN E7 IOSTANDARD LVCMOS33} [get_ports o_oled_gnd]

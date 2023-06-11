@@ -1,10 +1,10 @@
 -- Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
--- Date        : Fri Jun  9 13:28:38 2023
--- Host        : LAPTOP-IT23Q15D running 64-bit major release  (build 9200)
--- Command     : write_vhdl -mode funcsim -nolib -force -file {C:/git/git
---               repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.sim/sim_1/impl/func/xsim/display_tb_func_impl.vhd}
+-- Date        : Sat Jun 10 22:41:52 2023
+-- Host        : DESKTOP-MATTHIJS running 64-bit major release  (build 9200)
+-- Command     : write_vhdl -mode funcsim -nolib -force -file
+--               D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.sim/sim_1/impl/func/xsim/display_tb_func_impl.vhd
 -- Design      : display
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -169,22 +169,24 @@ use UNISIM.VCOMPONENTS.ALL;
 entity i2c_master is
   port (
     w_BUSY : out STD_LOGIC;
-    \FSM_sequential_r_SM_DISPLAY_reg[0]\ : out STD_LOGIC;
-    \FSM_sequential_r_SM_DISPLAY_reg[2]\ : out STD_LOGIC;
-    \FSM_sequential_r_SM_DISPLAY_reg[1]\ : out STD_LOGIC;
+    r_ENA_reg : out STD_LOGIC;
     sel : out STD_LOGIC;
-    busy_reg_0 : out STD_LOGIC;
+    \FSM_sequential_r_SM_DISPLAY_reg[2]\ : out STD_LOGIC;
+    \FSM_sequential_r_SM_DISPLAY_reg[0]\ : out STD_LOGIC;
+    \FSM_sequential_r_SM_DISPLAY_reg[0]_0\ : out STD_LOGIC;
+    \FSM_sequential_r_SM_DISPLAY_reg[0]_1\ : out STD_LOGIC;
     o_oled_sda_TRI : out STD_LOGIC;
     o_oled_scl_TRI : out STD_LOGIC;
     o_oled_sda_OBUF : out STD_LOGIC;
     clk_out1 : in STD_LOGIC;
-    \r_SM_DISPLAY__0\ : in STD_LOGIC_VECTOR ( 2 downto 0 );
-    \FSM_sequential_r_SM_DISPLAY_reg[1]_0\ : in STD_LOGIC;
-    r_PREV_BUSY : in STD_LOGIC;
-    locked : in STD_LOGIC;
-    CO : in STD_LOGIC_VECTOR ( 0 to 0 );
-    data0 : in STD_LOGIC;
     sda_int_reg_0 : in STD_LOGIC;
+    \r_SM_DISPLAY__0\ : in STD_LOGIC_VECTOR ( 2 downto 0 );
+    r_ENA_reg_0 : in STD_LOGIC;
+    r_PREV_BUSY : in STD_LOGIC;
+    \r_COM_COUNTER_reg[31]\ : in STD_LOGIC;
+    locked : in STD_LOGIC;
+    data0 : in STD_LOGIC;
+    CO : in STD_LOGIC_VECTOR ( 0 to 0 );
     D : in STD_LOGIC_VECTOR ( 7 downto 0 )
   );
 end i2c_master;
@@ -206,7 +208,6 @@ architecture STRUCTURE of i2c_master is
   signal \FSM_onehot_state_reg_n_0_[5]\ : STD_LOGIC;
   signal \FSM_onehot_state_reg_n_0_[8]\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_2_n_0\ : STD_LOGIC;
-  signal \FSM_sequential_r_SM_DISPLAY[2]_i_4_n_0\ : STD_LOGIC;
   signal addr_rw0 : STD_LOGIC;
   signal bit_cnt : STD_LOGIC_VECTOR ( 2 downto 0 );
   signal \bit_cnt[0]_i_1_n_0\ : STD_LOGIC;
@@ -227,6 +228,7 @@ architecture STRUCTURE of i2c_master is
   signal data_clk_prev : STD_LOGIC;
   signal data_clk_reg_n_0 : STD_LOGIC;
   signal data_tx : STD_LOGIC_VECTOR ( 7 downto 0 );
+  signal r_ENA_i_2_n_0 : STD_LOGIC;
   signal scl_clk : STD_LOGIC;
   signal scl_clk_reg_n_0 : STD_LOGIC;
   signal scl_ena_i_1_n_0 : STD_LOGIC;
@@ -250,17 +252,17 @@ architecture STRUCTURE of i2c_master is
   signal stretch_i_2_n_0 : STD_LOGIC;
   signal stretch_i_3_n_0 : STD_LOGIC;
   signal \^w_busy\ : STD_LOGIC;
+  attribute \PinAttr:I2:HOLD_DETOUR\ : integer;
+  attribute \PinAttr:I2:HOLD_DETOUR\ of \FSM_onehot_state[0]_i_1\ : label is 193;
   attribute SOFT_HLUTNM : string;
-  attribute SOFT_HLUTNM of \FSM_onehot_state[0]_i_1\ : label is "soft_lutpair9";
-  attribute SOFT_HLUTNM of \FSM_onehot_state[1]_i_1\ : label is "soft_lutpair9";
-  attribute \PinAttr:I4:HOLD_DETOUR\ : integer;
-  attribute \PinAttr:I4:HOLD_DETOUR\ of \FSM_onehot_state[2]_i_1\ : label is 194;
-  attribute SOFT_HLUTNM of \FSM_onehot_state[2]_i_1\ : label is "soft_lutpair4";
-  attribute \PinAttr:I0:HOLD_DETOUR\ : integer;
-  attribute \PinAttr:I0:HOLD_DETOUR\ of \FSM_onehot_state[3]_i_1\ : label is 194;
-  attribute SOFT_HLUTNM of \FSM_onehot_state[3]_i_1\ : label is "soft_lutpair4";
-  attribute SOFT_HLUTNM of \FSM_onehot_state[4]_i_1\ : label is "soft_lutpair1";
-  attribute SOFT_HLUTNM of \FSM_onehot_state[8]_i_2\ : label is "soft_lutpair1";
+  attribute SOFT_HLUTNM of \FSM_onehot_state[0]_i_1\ : label is "soft_lutpair8";
+  attribute \PinAttr:I1:HOLD_DETOUR\ : integer;
+  attribute \PinAttr:I1:HOLD_DETOUR\ of \FSM_onehot_state[1]_i_1\ : label is 193;
+  attribute SOFT_HLUTNM of \FSM_onehot_state[1]_i_1\ : label is "soft_lutpair8";
+  attribute SOFT_HLUTNM of \FSM_onehot_state[2]_i_1\ : label is "soft_lutpair3";
+  attribute SOFT_HLUTNM of \FSM_onehot_state[3]_i_1\ : label is "soft_lutpair3";
+  attribute SOFT_HLUTNM of \FSM_onehot_state[4]_i_1\ : label is "soft_lutpair0";
+  attribute SOFT_HLUTNM of \FSM_onehot_state[8]_i_2\ : label is "soft_lutpair0";
   attribute FSM_ENCODED_STATES : string;
   attribute FSM_ENCODED_STATES of \FSM_onehot_state_reg[0]\ : label is "slv_ack1:000001000,wr:000010000,command:000000100,start:000000010,ready:000000001,mstr_ack:010000000,slv_ack2:000100000,stop:100000000,rd:001000000";
   attribute FSM_ENCODED_STATES of \FSM_onehot_state_reg[1]\ : label is "slv_ack1:000001000,wr:000010000,command:000000100,start:000000010,ready:000000001,mstr_ack:010000000,slv_ack2:000100000,stop:100000000,rd:001000000";
@@ -269,12 +271,10 @@ architecture STRUCTURE of i2c_master is
   attribute FSM_ENCODED_STATES of \FSM_onehot_state_reg[4]\ : label is "slv_ack1:000001000,wr:000010000,command:000000100,start:000000010,ready:000000001,mstr_ack:010000000,slv_ack2:000100000,stop:100000000,rd:001000000";
   attribute FSM_ENCODED_STATES of \FSM_onehot_state_reg[5]\ : label is "slv_ack1:000001000,wr:000010000,command:000000100,start:000000010,ready:000000001,mstr_ack:010000000,slv_ack2:000100000,stop:100000000,rd:001000000";
   attribute FSM_ENCODED_STATES of \FSM_onehot_state_reg[8]\ : label is "slv_ack1:000001000,wr:000010000,command:000000100,start:000000010,ready:000000001,mstr_ack:010000000,slv_ack2:000100000,stop:100000000,rd:001000000";
-  attribute SOFT_HLUTNM of \FSM_sequential_r_SM_DISPLAY[0]_i_1\ : label is "soft_lutpair0";
-  attribute SOFT_HLUTNM of \FSM_sequential_r_SM_DISPLAY[1]_i_1\ : label is "soft_lutpair0";
-  attribute SOFT_HLUTNM of \count[3]_i_1\ : label is "soft_lutpair3";
-  attribute SOFT_HLUTNM of \count[4]_i_1\ : label is "soft_lutpair3";
-  attribute \PinAttr:I2:HOLD_DETOUR\ : integer;
-  attribute \PinAttr:I2:HOLD_DETOUR\ of data_clk_i_1 : label is 187;
+  attribute \PinAttr:I3:HOLD_DETOUR\ : integer;
+  attribute \PinAttr:I3:HOLD_DETOUR\ of \bit_cnt[2]_i_1\ : label is 189;
+  attribute SOFT_HLUTNM of \count[3]_i_1\ : label is "soft_lutpair2";
+  attribute SOFT_HLUTNM of \count[4]_i_1\ : label is "soft_lutpair2";
   attribute OPT_MODIFIED : string;
   attribute OPT_MODIFIED of stretch_i_1 : label is "RETARGET";
 begin
@@ -449,65 +449,55 @@ begin
       Q => \FSM_onehot_state_reg_n_0_[8]\,
       R => '0'
     );
-\FSM_sequential_r_SM_DISPLAY[0]_i_1\: unisim.vcomponents.LUT5
+\FSM_sequential_r_SM_DISPLAY[0]_i_1\: unisim.vcomponents.LUT6
     generic map(
-      INIT => X"01FF3F00"
+      INIT => X"4746666647466E6E"
     )
         port map (
-      I0 => \FSM_sequential_r_SM_DISPLAY_reg[1]_0\,
-      I1 => \r_SM_DISPLAY__0\(1),
-      I2 => \r_SM_DISPLAY__0\(2),
-      I3 => \FSM_sequential_r_SM_DISPLAY[2]_i_2_n_0\,
-      I4 => \r_SM_DISPLAY__0\(0),
-      O => \FSM_sequential_r_SM_DISPLAY_reg[1]\
+      I0 => \FSM_sequential_r_SM_DISPLAY[2]_i_2_n_0\,
+      I1 => \r_SM_DISPLAY__0\(0),
+      I2 => \r_SM_DISPLAY__0\(1),
+      I3 => CO(0),
+      I4 => \r_SM_DISPLAY__0\(2),
+      I5 => \r_COM_COUNTER_reg[31]\,
+      O => \FSM_sequential_r_SM_DISPLAY_reg[0]\
     );
 \FSM_sequential_r_SM_DISPLAY[1]_i_1\: unisim.vcomponents.LUT5
     generic map(
-      INIT => X"01FF3000"
+      INIT => X"50585078"
     )
         port map (
-      I0 => \FSM_sequential_r_SM_DISPLAY_reg[1]_0\,
-      I1 => \r_SM_DISPLAY__0\(2),
-      I2 => \r_SM_DISPLAY__0\(0),
-      I3 => \FSM_sequential_r_SM_DISPLAY[2]_i_2_n_0\,
-      I4 => \r_SM_DISPLAY__0\(1),
-      O => \FSM_sequential_r_SM_DISPLAY_reg[2]\
-    );
-\FSM_sequential_r_SM_DISPLAY[2]_i_1\: unisim.vcomponents.LUT4
-    generic map(
-      INIT => X"0F80"
-    )
-        port map (
-      I0 => \r_SM_DISPLAY__0\(0),
-      I1 => \r_SM_DISPLAY__0\(1),
-      I2 => \FSM_sequential_r_SM_DISPLAY[2]_i_2_n_0\,
+      I0 => \FSM_sequential_r_SM_DISPLAY[2]_i_2_n_0\,
+      I1 => \r_SM_DISPLAY__0\(0),
+      I2 => \r_SM_DISPLAY__0\(1),
       I3 => \r_SM_DISPLAY__0\(2),
-      O => \FSM_sequential_r_SM_DISPLAY_reg[0]\
+      I4 => \r_COM_COUNTER_reg[31]\,
+      O => \FSM_sequential_r_SM_DISPLAY_reg[0]_0\
+    );
+\FSM_sequential_r_SM_DISPLAY[2]_i_1\: unisim.vcomponents.LUT5
+    generic map(
+      INIT => X"54558080"
+    )
+        port map (
+      I0 => \FSM_sequential_r_SM_DISPLAY[2]_i_2_n_0\,
+      I1 => \r_SM_DISPLAY__0\(0),
+      I2 => \r_SM_DISPLAY__0\(1),
+      I3 => CO(0),
+      I4 => \r_SM_DISPLAY__0\(2),
+      O => \FSM_sequential_r_SM_DISPLAY_reg[0]_1\
     );
 \FSM_sequential_r_SM_DISPLAY[2]_i_2\: unisim.vcomponents.LUT6
     generic map(
-      INIT => X"FFFFFFFF00540004"
+      INIT => X"000000000F0E0002"
     )
         port map (
-      I0 => \r_SM_DISPLAY__0\(1),
-      I1 => locked,
+      I0 => locked,
+      I1 => \r_SM_DISPLAY__0\(0),
       I2 => \r_SM_DISPLAY__0\(2),
-      I3 => \r_SM_DISPLAY__0\(0),
-      I4 => CO(0),
-      I5 => \FSM_sequential_r_SM_DISPLAY[2]_i_4_n_0\,
+      I3 => \r_SM_DISPLAY__0\(1),
+      I4 => r_PREV_BUSY,
+      I5 => \^w_busy\,
       O => \FSM_sequential_r_SM_DISPLAY[2]_i_2_n_0\
-    );
-\FSM_sequential_r_SM_DISPLAY[2]_i_4\: unisim.vcomponents.LUT5
-    generic map(
-      INIT => X"00440040"
-    )
-        port map (
-      I0 => \^w_busy\,
-      I1 => r_PREV_BUSY,
-      I2 => \r_SM_DISPLAY__0\(1),
-      I3 => \r_SM_DISPLAY__0\(2),
-      I4 => \r_SM_DISPLAY__0\(0),
-      O => \FSM_sequential_r_SM_DISPLAY[2]_i_4_n_0\
     );
 \bit_cnt[0]_i_1\: unisim.vcomponents.LUT5
     generic map(
@@ -1012,28 +1002,51 @@ o_oled_sda_OBUFT_inst_i_2: unisim.vcomponents.LUT4
     );
 \r_COM_COUNTER[0]_i_1\: unisim.vcomponents.LUT6
     generic map(
-      INIT => X"0002000000000000"
+      INIT => X"0000020000000000"
     )
         port map (
-      I0 => \r_SM_DISPLAY__0\(1),
-      I1 => \r_SM_DISPLAY__0\(2),
-      I2 => \r_SM_DISPLAY__0\(0),
-      I3 => \^w_busy\,
-      I4 => r_PREV_BUSY,
-      I5 => \FSM_sequential_r_SM_DISPLAY_reg[1]_0\,
+      I0 => r_PREV_BUSY,
+      I1 => \^w_busy\,
+      I2 => \r_SM_DISPLAY__0\(2),
+      I3 => \r_SM_DISPLAY__0\(1),
+      I4 => \r_SM_DISPLAY__0\(0),
+      I5 => \r_COM_COUNTER_reg[31]\,
       O => sel
     );
-r_ENA_i_1: unisim.vcomponents.LUT5
+r_ENA_i_1: unisim.vcomponents.LUT6
     generic map(
-      INIT => X"F7FC000C"
+      INIT => X"A0A0A0A0AAA8AFAC"
+    )
+        port map (
+      I0 => sda_int_reg_0,
+      I1 => \r_SM_DISPLAY__0\(1),
+      I2 => \r_SM_DISPLAY__0\(2),
+      I3 => \r_SM_DISPLAY__0\(0),
+      I4 => r_ENA_reg_0,
+      I5 => r_ENA_i_2_n_0,
+      O => r_ENA_reg
+    );
+r_ENA_i_2: unisim.vcomponents.LUT2
+    generic map(
+      INIT => X"2"
     )
         port map (
       I0 => \^w_busy\,
-      I1 => \r_SM_DISPLAY__0\(0),
-      I2 => \r_SM_DISPLAY__0\(2),
-      I3 => \r_SM_DISPLAY__0\(1),
-      I4 => sda_int_reg_0,
-      O => busy_reg_0
+      I1 => r_PREV_BUSY,
+      O => r_ENA_i_2_n_0
+    );
+r_HAS_LATCHED_i_1: unisim.vcomponents.LUT6
+    generic map(
+      INIT => X"DD9DDD9DDD9DCC0C"
+    )
+        port map (
+      I0 => \r_SM_DISPLAY__0\(2),
+      I1 => r_ENA_reg_0,
+      I2 => r_PREV_BUSY,
+      I3 => \^w_busy\,
+      I4 => \r_SM_DISPLAY__0\(0),
+      I5 => \r_SM_DISPLAY__0\(1),
+      O => \FSM_sequential_r_SM_DISPLAY_reg[2]\
     );
 scl_clk_i_1: unisim.vcomponents.LUT6
     generic map(
@@ -1336,7 +1349,9 @@ entity display is
   attribute NotValidForBitStream : boolean;
   attribute NotValidForBitStream of display : entity is true;
   attribute ECO_CHECKSUM : string;
-  attribute ECO_CHECKSUM of display : entity is "8bfe465a";
+  attribute ECO_CHECKSUM of display : entity is "d9352af3";
+  attribute g_INPUT_CLOCK_FREQ : integer;
+  attribute g_INPUT_CLOCK_FREQ of display : entity is 50000000;
 end display;
 
 architecture STRUCTURE of display is
@@ -1351,7 +1366,7 @@ architecture STRUCTURE of display is
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_10_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_11_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_12_n_0\ : STD_LOGIC;
-  signal \FSM_sequential_r_SM_DISPLAY[2]_i_13_n_0\ : STD_LOGIC;
+  signal \FSM_sequential_r_SM_DISPLAY[2]_i_14_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_15_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_16_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_17_n_0\ : STD_LOGIC;
@@ -1359,40 +1374,44 @@ architecture STRUCTURE of display is
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_19_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_20_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_21_n_0\ : STD_LOGIC;
-  signal \FSM_sequential_r_SM_DISPLAY[2]_i_22_n_0\ : STD_LOGIC;
+  signal \FSM_sequential_r_SM_DISPLAY[2]_i_26_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_27_n_0\ : STD_LOGIC;
+  signal \FSM_sequential_r_SM_DISPLAY[2]_i_28_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_29_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_30_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_31_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_32_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_33_n_0\ : STD_LOGIC;
-  signal \FSM_sequential_r_SM_DISPLAY[2]_i_34_n_0\ : STD_LOGIC;
+  signal \FSM_sequential_r_SM_DISPLAY[2]_i_36_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_37_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_38_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_39_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_40_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_41_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_42_n_0\ : STD_LOGIC;
+  signal \FSM_sequential_r_SM_DISPLAY[2]_i_43_n_0\ : STD_LOGIC;
+  signal \FSM_sequential_r_SM_DISPLAY[2]_i_5_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_6_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_7_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_8_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY[2]_i_9_n_0\ : STD_LOGIC;
-  signal \FSM_sequential_r_SM_DISPLAY_reg[2]_i_14_n_0\ : STD_LOGIC;
+  signal \FSM_sequential_r_SM_DISPLAY_reg[2]_i_13_n_0\ : STD_LOGIC;
+  signal \FSM_sequential_r_SM_DISPLAY_reg[2]_i_23_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY_reg[2]_i_24_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY_reg[2]_i_25_n_0\ : STD_LOGIC;
-  signal \FSM_sequential_r_SM_DISPLAY_reg[2]_i_26_n_0\ : STD_LOGIC;
-  signal \FSM_sequential_r_SM_DISPLAY_reg[2]_i_28_n_0\ : STD_LOGIC;
+  signal \FSM_sequential_r_SM_DISPLAY_reg[2]_i_34_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY_reg[2]_i_35_n_0\ : STD_LOGIC;
-  signal \FSM_sequential_r_SM_DISPLAY_reg[2]_i_36_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY_reg[2]_i_3_n_0\ : STD_LOGIC;
-  signal \FSM_sequential_r_SM_DISPLAY_reg[2]_i_43_n_0\ : STD_LOGIC;
   signal \FSM_sequential_r_SM_DISPLAY_reg[2]_i_44_n_0\ : STD_LOGIC;
-  signal \FSM_sequential_r_SM_DISPLAY_reg[2]_i_5_n_0\ : STD_LOGIC;
+  signal \FSM_sequential_r_SM_DISPLAY_reg[2]_i_45_n_0\ : STD_LOGIC;
+  signal \FSM_sequential_r_SM_DISPLAY_reg[2]_i_46_n_0\ : STD_LOGIC;
+  signal \FSM_sequential_r_SM_DISPLAY_reg[2]_i_4_n_0\ : STD_LOGIC;
   signal I2C_CONTROLLER_n_1 : STD_LOGIC;
   signal I2C_CONTROLLER_n_2 : STD_LOGIC;
   signal I2C_CONTROLLER_n_3 : STD_LOGIC;
   signal I2C_CONTROLLER_n_4 : STD_LOGIC;
   signal I2C_CONTROLLER_n_5 : STD_LOGIC;
+  signal I2C_CONTROLLER_n_6 : STD_LOGIC;
   signal g0_b0_n_0 : STD_LOGIC;
   signal g0_b1_n_0 : STD_LOGIC;
   signal g0_b2_n_0 : STD_LOGIC;
@@ -1406,6 +1425,7 @@ architecture STRUCTURE of display is
   signal o_oled_scl_TRI : STD_LOGIC;
   signal o_oled_sda_OBUF : STD_LOGIC;
   signal o_oled_sda_TRI : STD_LOGIC;
+  signal \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\ : STD_LOGIC;
   signal \p_STATE_MACHINE.v_COUNTER[0]_i_3_n_0\ : STD_LOGIC;
   signal \p_STATE_MACHINE.v_COUNTER[0]_i_4_n_0\ : STD_LOGIC;
   signal \p_STATE_MACHINE.v_COUNTER[0]_i_5_n_0\ : STD_LOGIC;
@@ -1528,29 +1548,29 @@ architecture STRUCTURE of display is
   signal \r_DATA_WR[7]_i_1_n_0\ : STD_LOGIC;
   signal \r_DATA_WR[7]_i_2_n_0\ : STD_LOGIC;
   signal r_ENA_reg_n_0 : STD_LOGIC;
+  signal r_HAS_LATCHED_reg_n_0 : STD_LOGIC;
   signal r_PREV_BUSY : STD_LOGIC;
   signal r_SM_DISPLAY2 : STD_LOGIC_VECTOR ( 31 downto 1 );
   signal \r_SM_DISPLAY__0\ : STD_LOGIC_VECTOR ( 2 downto 0 );
-  signal v_COUNTER : STD_LOGIC;
   signal w_BUSY : STD_LOGIC;
   signal w_CLOCK_OUT1 : STD_LOGIC;
-  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_14_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
-  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_14_O_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 downto 0 );
-  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_23_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 downto 0 );
-  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_23_O_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 to 3 );
+  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_13_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
+  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_13_O_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 downto 0 );
+  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_22_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 downto 0 );
+  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_22_O_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 to 3 );
+  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_23_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
   signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_24_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
   signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_25_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
-  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_26_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
-  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_26_O_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 downto 0 );
-  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_28_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
+  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_25_O_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 downto 0 );
   signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_3_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
   signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_3_O_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 downto 0 );
+  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_34_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
   signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_35_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
-  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_36_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
-  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_43_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
+  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_4_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
+  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_4_O_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 downto 0 );
   signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_44_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
-  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_5_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
-  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_5_O_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 downto 0 );
+  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_45_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
+  signal \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_46_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
   signal \NLW_p_STATE_MACHINE.v_COUNTER_reg[0]_i_2_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
   signal \NLW_p_STATE_MACHINE.v_COUNTER_reg[12]_i_1_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
   signal \NLW_p_STATE_MACHINE.v_COUNTER_reg[16]_i_1_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
@@ -1568,7 +1588,7 @@ architecture STRUCTURE of display is
   signal \NLW_r_COM_COUNTER_reg[4]_i_1_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
   signal \NLW_r_COM_COUNTER_reg[8]_i_1_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 2 downto 0 );
   attribute IMPORTED_FROM : string;
-  attribute IMPORTED_FROM of CLOCK_50HZ : label is "c:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz.dcp";
+  attribute IMPORTED_FROM of CLOCK_50HZ : label is "d:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz.dcp";
   attribute IMPORTED_TYPE : string;
   attribute IMPORTED_TYPE of CLOCK_50HZ : label is "CHECKPOINT";
   attribute IS_IMPORTED : boolean;
@@ -1580,19 +1600,19 @@ architecture STRUCTURE of display is
   attribute FSM_ENCODED_STATES of \FSM_sequential_r_SM_DISPLAY_reg[1]\ : label is "iSTATE:000,iSTATE0:100,iSTATE1:100,iSTATE2:010,iSTATE3:001,iSTATE4:011";
   attribute FSM_ENCODED_STATES of \FSM_sequential_r_SM_DISPLAY_reg[2]\ : label is "iSTATE:000,iSTATE0:100,iSTATE1:100,iSTATE2:010,iSTATE3:001,iSTATE4:011";
   attribute COMPARATOR_THRESHOLD : integer;
-  attribute COMPARATOR_THRESHOLD of \FSM_sequential_r_SM_DISPLAY_reg[2]_i_14\ : label is 11;
+  attribute COMPARATOR_THRESHOLD of \FSM_sequential_r_SM_DISPLAY_reg[2]_i_13\ : label is 11;
   attribute ADDER_THRESHOLD : integer;
+  attribute ADDER_THRESHOLD of \FSM_sequential_r_SM_DISPLAY_reg[2]_i_22\ : label is 35;
   attribute ADDER_THRESHOLD of \FSM_sequential_r_SM_DISPLAY_reg[2]_i_23\ : label is 35;
   attribute ADDER_THRESHOLD of \FSM_sequential_r_SM_DISPLAY_reg[2]_i_24\ : label is 35;
-  attribute ADDER_THRESHOLD of \FSM_sequential_r_SM_DISPLAY_reg[2]_i_25\ : label is 35;
-  attribute COMPARATOR_THRESHOLD of \FSM_sequential_r_SM_DISPLAY_reg[2]_i_26\ : label is 11;
-  attribute ADDER_THRESHOLD of \FSM_sequential_r_SM_DISPLAY_reg[2]_i_28\ : label is 35;
+  attribute COMPARATOR_THRESHOLD of \FSM_sequential_r_SM_DISPLAY_reg[2]_i_25\ : label is 11;
   attribute COMPARATOR_THRESHOLD of \FSM_sequential_r_SM_DISPLAY_reg[2]_i_3\ : label is 11;
+  attribute ADDER_THRESHOLD of \FSM_sequential_r_SM_DISPLAY_reg[2]_i_34\ : label is 35;
   attribute ADDER_THRESHOLD of \FSM_sequential_r_SM_DISPLAY_reg[2]_i_35\ : label is 35;
-  attribute ADDER_THRESHOLD of \FSM_sequential_r_SM_DISPLAY_reg[2]_i_36\ : label is 35;
-  attribute ADDER_THRESHOLD of \FSM_sequential_r_SM_DISPLAY_reg[2]_i_43\ : label is 35;
+  attribute COMPARATOR_THRESHOLD of \FSM_sequential_r_SM_DISPLAY_reg[2]_i_4\ : label is 11;
   attribute ADDER_THRESHOLD of \FSM_sequential_r_SM_DISPLAY_reg[2]_i_44\ : label is 35;
-  attribute COMPARATOR_THRESHOLD of \FSM_sequential_r_SM_DISPLAY_reg[2]_i_5\ : label is 11;
+  attribute ADDER_THRESHOLD of \FSM_sequential_r_SM_DISPLAY_reg[2]_i_45\ : label is 35;
+  attribute ADDER_THRESHOLD of \FSM_sequential_r_SM_DISPLAY_reg[2]_i_46\ : label is 35;
   attribute ADDER_THRESHOLD of \p_STATE_MACHINE.v_COUNTER_reg[0]_i_2\ : label is 11;
   attribute ADDER_THRESHOLD of \p_STATE_MACHINE.v_COUNTER_reg[12]_i_1\ : label is 11;
   attribute ADDER_THRESHOLD of \p_STATE_MACHINE.v_COUNTER_reg[16]_i_1\ : label is 11;
@@ -1725,8 +1745,8 @@ CLOCK_50HZ: entity work.clk_50hz
       INIT => X"1"
     )
         port map (
-      I0 => r_SM_DISPLAY2(31),
-      I1 => r_SM_DISPLAY2(30),
+      I0 => r_SM_DISPLAY2(29),
+      I1 => r_SM_DISPLAY2(28),
       O => \FSM_sequential_r_SM_DISPLAY[2]_i_10_n_0\
     );
 \FSM_sequential_r_SM_DISPLAY[2]_i_11\: unisim.vcomponents.LUT2
@@ -1734,8 +1754,8 @@ CLOCK_50HZ: entity work.clk_50hz
       INIT => X"1"
     )
         port map (
-      I0 => r_SM_DISPLAY2(29),
-      I1 => r_SM_DISPLAY2(28),
+      I0 => r_SM_DISPLAY2(27),
+      I1 => r_SM_DISPLAY2(26),
       O => \FSM_sequential_r_SM_DISPLAY[2]_i_11_n_0\
     );
 \FSM_sequential_r_SM_DISPLAY[2]_i_12\: unisim.vcomponents.LUT2
@@ -1743,35 +1763,35 @@ CLOCK_50HZ: entity work.clk_50hz
       INIT => X"1"
     )
         port map (
-      I0 => r_SM_DISPLAY2(27),
-      I1 => r_SM_DISPLAY2(26),
-      O => \FSM_sequential_r_SM_DISPLAY[2]_i_12_n_0\
-    );
-\FSM_sequential_r_SM_DISPLAY[2]_i_13\: unisim.vcomponents.LUT2
-    generic map(
-      INIT => X"1"
-    )
-        port map (
       I0 => r_SM_DISPLAY2(25),
       I1 => r_SM_DISPLAY2(24),
-      O => \FSM_sequential_r_SM_DISPLAY[2]_i_13_n_0\
+      O => \FSM_sequential_r_SM_DISPLAY[2]_i_12_n_0\
     );
-\FSM_sequential_r_SM_DISPLAY[2]_i_15\: unisim.vcomponents.LUT2
+\FSM_sequential_r_SM_DISPLAY[2]_i_14\: unisim.vcomponents.LUT2
     generic map(
       INIT => X"E"
     )
         port map (
       I0 => r_SM_DISPLAY2(22),
       I1 => r_SM_DISPLAY2(23),
-      O => \FSM_sequential_r_SM_DISPLAY[2]_i_15_n_0\
+      O => \FSM_sequential_r_SM_DISPLAY[2]_i_14_n_0\
     );
-\FSM_sequential_r_SM_DISPLAY[2]_i_16\: unisim.vcomponents.LUT2
+\FSM_sequential_r_SM_DISPLAY[2]_i_15\: unisim.vcomponents.LUT2
     generic map(
-      INIT => X"8"
+      INIT => X"E"
     )
         port map (
       I0 => r_SM_DISPLAY2(20),
       I1 => r_SM_DISPLAY2(21),
+      O => \FSM_sequential_r_SM_DISPLAY[2]_i_15_n_0\
+    );
+\FSM_sequential_r_SM_DISPLAY[2]_i_16\: unisim.vcomponents.LUT2
+    generic map(
+      INIT => X"E"
+    )
+        port map (
+      I0 => r_SM_DISPLAY2(18),
+      I1 => r_SM_DISPLAY2(19),
       O => \FSM_sequential_r_SM_DISPLAY[2]_i_16_n_0\
     );
 \FSM_sequential_r_SM_DISPLAY[2]_i_17\: unisim.vcomponents.LUT2
@@ -1779,17 +1799,17 @@ CLOCK_50HZ: entity work.clk_50hz
       INIT => X"E"
     )
         port map (
-      I0 => r_SM_DISPLAY2(18),
-      I1 => r_SM_DISPLAY2(19),
+      I0 => r_SM_DISPLAY2(16),
+      I1 => r_SM_DISPLAY2(17),
       O => \FSM_sequential_r_SM_DISPLAY[2]_i_17_n_0\
     );
 \FSM_sequential_r_SM_DISPLAY[2]_i_18\: unisim.vcomponents.LUT2
     generic map(
-      INIT => X"E"
+      INIT => X"1"
     )
         port map (
-      I0 => r_SM_DISPLAY2(16),
-      I1 => r_SM_DISPLAY2(17),
+      I0 => r_SM_DISPLAY2(23),
+      I1 => r_SM_DISPLAY2(22),
       O => \FSM_sequential_r_SM_DISPLAY[2]_i_18_n_0\
     );
 \FSM_sequential_r_SM_DISPLAY[2]_i_19\: unisim.vcomponents.LUT2
@@ -1797,17 +1817,17 @@ CLOCK_50HZ: entity work.clk_50hz
       INIT => X"1"
     )
         port map (
-      I0 => r_SM_DISPLAY2(23),
-      I1 => r_SM_DISPLAY2(22),
+      I0 => r_SM_DISPLAY2(21),
+      I1 => r_SM_DISPLAY2(20),
       O => \FSM_sequential_r_SM_DISPLAY[2]_i_19_n_0\
     );
 \FSM_sequential_r_SM_DISPLAY[2]_i_20\: unisim.vcomponents.LUT2
     generic map(
-      INIT => X"2"
+      INIT => X"1"
     )
         port map (
-      I0 => r_SM_DISPLAY2(21),
-      I1 => r_SM_DISPLAY2(20),
+      I0 => r_SM_DISPLAY2(19),
+      I1 => r_SM_DISPLAY2(18),
       O => \FSM_sequential_r_SM_DISPLAY[2]_i_20_n_0\
     );
 \FSM_sequential_r_SM_DISPLAY[2]_i_21\: unisim.vcomponents.LUT2
@@ -1815,62 +1835,71 @@ CLOCK_50HZ: entity work.clk_50hz
       INIT => X"1"
     )
         port map (
-      I0 => r_SM_DISPLAY2(19),
-      I1 => r_SM_DISPLAY2(18),
-      O => \FSM_sequential_r_SM_DISPLAY[2]_i_21_n_0\
-    );
-\FSM_sequential_r_SM_DISPLAY[2]_i_22\: unisim.vcomponents.LUT2
-    generic map(
-      INIT => X"1"
-    )
-        port map (
       I0 => r_SM_DISPLAY2(17),
       I1 => r_SM_DISPLAY2(16),
-      O => \FSM_sequential_r_SM_DISPLAY[2]_i_22_n_0\
+      O => \FSM_sequential_r_SM_DISPLAY[2]_i_21_n_0\
     );
-\FSM_sequential_r_SM_DISPLAY[2]_i_27\: unisim.vcomponents.LUT2
+\FSM_sequential_r_SM_DISPLAY[2]_i_26\: unisim.vcomponents.LUT2
     generic map(
-      INIT => X"8"
+      INIT => X"E"
     )
         port map (
       I0 => r_SM_DISPLAY2(14),
       I1 => r_SM_DISPLAY2(15),
+      O => \FSM_sequential_r_SM_DISPLAY[2]_i_26_n_0\
+    );
+\FSM_sequential_r_SM_DISPLAY[2]_i_27\: unisim.vcomponents.LUT2
+    generic map(
+      INIT => X"E"
+    )
+        port map (
+      I0 => r_SM_DISPLAY2(12),
+      I1 => r_SM_DISPLAY2(13),
       O => \FSM_sequential_r_SM_DISPLAY[2]_i_27_n_0\
     );
-\FSM_sequential_r_SM_DISPLAY[2]_i_29\: unisim.vcomponents.LUT2
+\FSM_sequential_r_SM_DISPLAY[2]_i_28\: unisim.vcomponents.LUT2
     generic map(
       INIT => X"E"
     )
         port map (
       I0 => r_SM_DISPLAY2(10),
       I1 => r_SM_DISPLAY2(11),
-      O => \FSM_sequential_r_SM_DISPLAY[2]_i_29_n_0\
+      O => \FSM_sequential_r_SM_DISPLAY[2]_i_28_n_0\
     );
-\FSM_sequential_r_SM_DISPLAY[2]_i_30\: unisim.vcomponents.LUT2
+\FSM_sequential_r_SM_DISPLAY[2]_i_29\: unisim.vcomponents.LUT2
     generic map(
       INIT => X"E"
     )
         port map (
       I0 => r_SM_DISPLAY2(8),
       I1 => r_SM_DISPLAY2(9),
-      O => \FSM_sequential_r_SM_DISPLAY[2]_i_30_n_0\
+      O => \FSM_sequential_r_SM_DISPLAY[2]_i_29_n_0\
     );
-\FSM_sequential_r_SM_DISPLAY[2]_i_31\: unisim.vcomponents.LUT2
+\FSM_sequential_r_SM_DISPLAY[2]_i_30\: unisim.vcomponents.LUT2
     generic map(
-      INIT => X"2"
+      INIT => X"1"
     )
         port map (
       I0 => r_SM_DISPLAY2(15),
       I1 => r_SM_DISPLAY2(14),
+      O => \FSM_sequential_r_SM_DISPLAY[2]_i_30_n_0\
+    );
+\FSM_sequential_r_SM_DISPLAY[2]_i_31\: unisim.vcomponents.LUT2
+    generic map(
+      INIT => X"1"
+    )
+        port map (
+      I0 => r_SM_DISPLAY2(13),
+      I1 => r_SM_DISPLAY2(12),
       O => \FSM_sequential_r_SM_DISPLAY[2]_i_31_n_0\
     );
 \FSM_sequential_r_SM_DISPLAY[2]_i_32\: unisim.vcomponents.LUT2
     generic map(
-      INIT => X"2"
+      INIT => X"1"
     )
         port map (
-      I0 => r_SM_DISPLAY2(12),
-      I1 => r_SM_DISPLAY2(13),
+      I0 => r_SM_DISPLAY2(11),
+      I1 => r_SM_DISPLAY2(10),
       O => \FSM_sequential_r_SM_DISPLAY[2]_i_32_n_0\
     );
 \FSM_sequential_r_SM_DISPLAY[2]_i_33\: unisim.vcomponents.LUT2
@@ -1878,80 +1907,98 @@ CLOCK_50HZ: entity work.clk_50hz
       INIT => X"1"
     )
         port map (
-      I0 => r_SM_DISPLAY2(11),
-      I1 => r_SM_DISPLAY2(10),
-      O => \FSM_sequential_r_SM_DISPLAY[2]_i_33_n_0\
-    );
-\FSM_sequential_r_SM_DISPLAY[2]_i_34\: unisim.vcomponents.LUT2
-    generic map(
-      INIT => X"1"
-    )
-        port map (
       I0 => r_SM_DISPLAY2(9),
       I1 => r_SM_DISPLAY2(8),
-      O => \FSM_sequential_r_SM_DISPLAY[2]_i_34_n_0\
+      O => \FSM_sequential_r_SM_DISPLAY[2]_i_33_n_0\
+    );
+\FSM_sequential_r_SM_DISPLAY[2]_i_36\: unisim.vcomponents.LUT2
+    generic map(
+      INIT => X"E"
+    )
+        port map (
+      I0 => r_SM_DISPLAY2(6),
+      I1 => r_SM_DISPLAY2(7),
+      O => \FSM_sequential_r_SM_DISPLAY[2]_i_36_n_0\
     );
 \FSM_sequential_r_SM_DISPLAY[2]_i_37\: unisim.vcomponents.LUT2
+    generic map(
+      INIT => X"E"
+    )
+        port map (
+      I0 => r_SM_DISPLAY2(4),
+      I1 => r_SM_DISPLAY2(5),
+      O => \FSM_sequential_r_SM_DISPLAY[2]_i_37_n_0\
+    );
+\FSM_sequential_r_SM_DISPLAY[2]_i_38\: unisim.vcomponents.LUT2
     generic map(
       INIT => X"8"
     )
         port map (
       I0 => r_SM_DISPLAY2(2),
       I1 => r_SM_DISPLAY2(3),
-      O => \FSM_sequential_r_SM_DISPLAY[2]_i_37_n_0\
+      O => \FSM_sequential_r_SM_DISPLAY[2]_i_38_n_0\
     );
-\FSM_sequential_r_SM_DISPLAY[2]_i_38\: unisim.vcomponents.LUT2
+\FSM_sequential_r_SM_DISPLAY[2]_i_39\: unisim.vcomponents.LUT2
     generic map(
       INIT => X"2"
     )
         port map (
       I0 => r_SM_DISPLAY2(1),
       I1 => \p_STATE_MACHINE.v_COUNTER_reg\(0),
-      O => \FSM_sequential_r_SM_DISPLAY[2]_i_38_n_0\
-    );
-\FSM_sequential_r_SM_DISPLAY[2]_i_39\: unisim.vcomponents.LUT2
-    generic map(
-      INIT => X"8"
-    )
-        port map (
-      I0 => r_SM_DISPLAY2(6),
-      I1 => r_SM_DISPLAY2(7),
       O => \FSM_sequential_r_SM_DISPLAY[2]_i_39_n_0\
     );
 \FSM_sequential_r_SM_DISPLAY[2]_i_40\: unisim.vcomponents.LUT2
     generic map(
-      INIT => X"2"
+      INIT => X"1"
     )
         port map (
-      I0 => r_SM_DISPLAY2(4),
-      I1 => r_SM_DISPLAY2(5),
+      I0 => r_SM_DISPLAY2(7),
+      I1 => r_SM_DISPLAY2(6),
       O => \FSM_sequential_r_SM_DISPLAY[2]_i_40_n_0\
     );
 \FSM_sequential_r_SM_DISPLAY[2]_i_41\: unisim.vcomponents.LUT2
+    generic map(
+      INIT => X"1"
+    )
+        port map (
+      I0 => r_SM_DISPLAY2(5),
+      I1 => r_SM_DISPLAY2(4),
+      O => \FSM_sequential_r_SM_DISPLAY[2]_i_41_n_0\
+    );
+\FSM_sequential_r_SM_DISPLAY[2]_i_42\: unisim.vcomponents.LUT2
     generic map(
       INIT => X"2"
     )
         port map (
       I0 => r_SM_DISPLAY2(3),
       I1 => r_SM_DISPLAY2(2),
-      O => \FSM_sequential_r_SM_DISPLAY[2]_i_41_n_0\
+      O => \FSM_sequential_r_SM_DISPLAY[2]_i_42_n_0\
     );
-\FSM_sequential_r_SM_DISPLAY[2]_i_42\: unisim.vcomponents.LUT2
+\FSM_sequential_r_SM_DISPLAY[2]_i_43\: unisim.vcomponents.LUT2
     generic map(
       INIT => X"8"
     )
         port map (
       I0 => \p_STATE_MACHINE.v_COUNTER_reg\(0),
       I1 => r_SM_DISPLAY2(1),
-      O => \FSM_sequential_r_SM_DISPLAY[2]_i_42_n_0\
+      O => \FSM_sequential_r_SM_DISPLAY[2]_i_43_n_0\
     );
-\FSM_sequential_r_SM_DISPLAY[2]_i_6\: unisim.vcomponents.LUT2
+\FSM_sequential_r_SM_DISPLAY[2]_i_5\: unisim.vcomponents.LUT2
     generic map(
       INIT => X"2"
     )
         port map (
       I0 => r_SM_DISPLAY2(30),
       I1 => r_SM_DISPLAY2(31),
+      O => \FSM_sequential_r_SM_DISPLAY[2]_i_5_n_0\
+    );
+\FSM_sequential_r_SM_DISPLAY[2]_i_6\: unisim.vcomponents.LUT2
+    generic map(
+      INIT => X"E"
+    )
+        port map (
+      I0 => r_SM_DISPLAY2(28),
+      I1 => r_SM_DISPLAY2(29),
       O => \FSM_sequential_r_SM_DISPLAY[2]_i_6_n_0\
     );
 \FSM_sequential_r_SM_DISPLAY[2]_i_7\: unisim.vcomponents.LUT2
@@ -1959,8 +2006,8 @@ CLOCK_50HZ: entity work.clk_50hz
       INIT => X"E"
     )
         port map (
-      I0 => r_SM_DISPLAY2(28),
-      I1 => r_SM_DISPLAY2(29),
+      I0 => r_SM_DISPLAY2(26),
+      I1 => r_SM_DISPLAY2(27),
       O => \FSM_sequential_r_SM_DISPLAY[2]_i_7_n_0\
     );
 \FSM_sequential_r_SM_DISPLAY[2]_i_8\: unisim.vcomponents.LUT2
@@ -1968,17 +2015,17 @@ CLOCK_50HZ: entity work.clk_50hz
       INIT => X"E"
     )
         port map (
-      I0 => r_SM_DISPLAY2(26),
-      I1 => r_SM_DISPLAY2(27),
+      I0 => r_SM_DISPLAY2(24),
+      I1 => r_SM_DISPLAY2(25),
       O => \FSM_sequential_r_SM_DISPLAY[2]_i_8_n_0\
     );
 \FSM_sequential_r_SM_DISPLAY[2]_i_9\: unisim.vcomponents.LUT2
     generic map(
-      INIT => X"E"
+      INIT => X"1"
     )
         port map (
-      I0 => r_SM_DISPLAY2(24),
-      I1 => r_SM_DISPLAY2(25),
+      I0 => r_SM_DISPLAY2(31),
+      I1 => r_SM_DISPLAY2(30),
       O => \FSM_sequential_r_SM_DISPLAY[2]_i_9_n_0\
     );
 \FSM_sequential_r_SM_DISPLAY_reg[0]\: unisim.vcomponents.FDRE
@@ -1988,7 +2035,7 @@ CLOCK_50HZ: entity work.clk_50hz
         port map (
       C => w_CLOCK_OUT1,
       CE => '1',
-      D => I2C_CONTROLLER_n_3,
+      D => I2C_CONTROLLER_n_4,
       Q => \r_SM_DISPLAY__0\(0),
       R => '0'
     );
@@ -1999,7 +2046,7 @@ CLOCK_50HZ: entity work.clk_50hz
         port map (
       C => w_CLOCK_OUT1,
       CE => '1',
-      D => I2C_CONTROLLER_n_2,
+      D => I2C_CONTROLLER_n_5,
       Q => \r_SM_DISPLAY__0\(1),
       R => '0'
     );
@@ -2010,174 +2057,176 @@ CLOCK_50HZ: entity work.clk_50hz
         port map (
       C => w_CLOCK_OUT1,
       CE => '1',
-      D => I2C_CONTROLLER_n_1,
+      D => I2C_CONTROLLER_n_6,
       Q => \r_SM_DISPLAY__0\(2),
       R => '0'
     );
-\FSM_sequential_r_SM_DISPLAY_reg[2]_i_14\: unisim.vcomponents.CARRY4
+\FSM_sequential_r_SM_DISPLAY_reg[2]_i_13\: unisim.vcomponents.CARRY4
      port map (
-      CI => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_26_n_0\,
-      CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_14_n_0\,
-      CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_14_CO_UNCONNECTED\(2 downto 0),
+      CI => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_25_n_0\,
+      CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_13_n_0\,
+      CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_13_CO_UNCONNECTED\(2 downto 0),
       CYINIT => '0',
-      DI(3) => \FSM_sequential_r_SM_DISPLAY[2]_i_27_n_0\,
-      DI(2) => r_SM_DISPLAY2(13),
-      DI(1) => \FSM_sequential_r_SM_DISPLAY[2]_i_29_n_0\,
-      DI(0) => \FSM_sequential_r_SM_DISPLAY[2]_i_30_n_0\,
-      O(3 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_14_O_UNCONNECTED\(3 downto 0),
-      S(3) => \FSM_sequential_r_SM_DISPLAY[2]_i_31_n_0\,
-      S(2) => \FSM_sequential_r_SM_DISPLAY[2]_i_32_n_0\,
-      S(1) => \FSM_sequential_r_SM_DISPLAY[2]_i_33_n_0\,
-      S(0) => \FSM_sequential_r_SM_DISPLAY[2]_i_34_n_0\
+      DI(3) => \FSM_sequential_r_SM_DISPLAY[2]_i_26_n_0\,
+      DI(2) => \FSM_sequential_r_SM_DISPLAY[2]_i_27_n_0\,
+      DI(1) => \FSM_sequential_r_SM_DISPLAY[2]_i_28_n_0\,
+      DI(0) => \FSM_sequential_r_SM_DISPLAY[2]_i_29_n_0\,
+      O(3 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_13_O_UNCONNECTED\(3 downto 0),
+      S(3) => \FSM_sequential_r_SM_DISPLAY[2]_i_30_n_0\,
+      S(2) => \FSM_sequential_r_SM_DISPLAY[2]_i_31_n_0\,
+      S(1) => \FSM_sequential_r_SM_DISPLAY[2]_i_32_n_0\,
+      S(0) => \FSM_sequential_r_SM_DISPLAY[2]_i_33_n_0\
     );
-\FSM_sequential_r_SM_DISPLAY_reg[2]_i_23\: unisim.vcomponents.CARRY4
+\FSM_sequential_r_SM_DISPLAY_reg[2]_i_22\: unisim.vcomponents.CARRY4
      port map (
-      CI => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_24_n_0\,
-      CO(3 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_23_CO_UNCONNECTED\(3 downto 0),
+      CI => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_23_n_0\,
+      CO(3 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_22_CO_UNCONNECTED\(3 downto 0),
       CYINIT => '0',
       DI(3 downto 0) => B"0000",
-      O(3) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_23_O_UNCONNECTED\(3),
+      O(3) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_22_O_UNCONNECTED\(3),
       O(2 downto 0) => r_SM_DISPLAY2(31 downto 29),
       S(3) => '0',
       S(2 downto 0) => \p_STATE_MACHINE.v_COUNTER_reg\(31 downto 29)
     );
-\FSM_sequential_r_SM_DISPLAY_reg[2]_i_24\: unisim.vcomponents.CARRY4
+\FSM_sequential_r_SM_DISPLAY_reg[2]_i_23\: unisim.vcomponents.CARRY4
      port map (
-      CI => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_25_n_0\,
-      CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_24_n_0\,
-      CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_24_CO_UNCONNECTED\(2 downto 0),
+      CI => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_24_n_0\,
+      CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_23_n_0\,
+      CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_23_CO_UNCONNECTED\(2 downto 0),
       CYINIT => '0',
       DI(3 downto 0) => B"0000",
       O(3 downto 0) => r_SM_DISPLAY2(28 downto 25),
       S(3 downto 0) => \p_STATE_MACHINE.v_COUNTER_reg\(28 downto 25)
     );
-\FSM_sequential_r_SM_DISPLAY_reg[2]_i_25\: unisim.vcomponents.CARRY4
+\FSM_sequential_r_SM_DISPLAY_reg[2]_i_24\: unisim.vcomponents.CARRY4
      port map (
-      CI => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_35_n_0\,
-      CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_25_n_0\,
-      CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_25_CO_UNCONNECTED\(2 downto 0),
+      CI => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_34_n_0\,
+      CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_24_n_0\,
+      CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_24_CO_UNCONNECTED\(2 downto 0),
       CYINIT => '0',
       DI(3 downto 0) => B"0000",
       O(3 downto 0) => r_SM_DISPLAY2(24 downto 21),
       S(3 downto 0) => \p_STATE_MACHINE.v_COUNTER_reg\(24 downto 21)
     );
-\FSM_sequential_r_SM_DISPLAY_reg[2]_i_26\: unisim.vcomponents.CARRY4
+\FSM_sequential_r_SM_DISPLAY_reg[2]_i_25\: unisim.vcomponents.CARRY4
      port map (
       CI => '0',
-      CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_26_n_0\,
-      CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_26_CO_UNCONNECTED\(2 downto 0),
+      CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_25_n_0\,
+      CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_25_CO_UNCONNECTED\(2 downto 0),
       CYINIT => '1',
-      DI(3) => '0',
-      DI(2) => r_SM_DISPLAY2(5),
-      DI(1) => \FSM_sequential_r_SM_DISPLAY[2]_i_37_n_0\,
-      DI(0) => \FSM_sequential_r_SM_DISPLAY[2]_i_38_n_0\,
-      O(3 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_26_O_UNCONNECTED\(3 downto 0),
-      S(3) => \FSM_sequential_r_SM_DISPLAY[2]_i_39_n_0\,
-      S(2) => \FSM_sequential_r_SM_DISPLAY[2]_i_40_n_0\,
-      S(1) => \FSM_sequential_r_SM_DISPLAY[2]_i_41_n_0\,
-      S(0) => \FSM_sequential_r_SM_DISPLAY[2]_i_42_n_0\
-    );
-\FSM_sequential_r_SM_DISPLAY_reg[2]_i_28\: unisim.vcomponents.CARRY4
-     port map (
-      CI => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_43_n_0\,
-      CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_28_n_0\,
-      CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_28_CO_UNCONNECTED\(2 downto 0),
-      CYINIT => '0',
-      DI(3 downto 0) => B"0000",
-      O(3 downto 0) => r_SM_DISPLAY2(16 downto 13),
-      S(3 downto 0) => \p_STATE_MACHINE.v_COUNTER_reg\(16 downto 13)
+      DI(3) => \FSM_sequential_r_SM_DISPLAY[2]_i_36_n_0\,
+      DI(2) => \FSM_sequential_r_SM_DISPLAY[2]_i_37_n_0\,
+      DI(1) => \FSM_sequential_r_SM_DISPLAY[2]_i_38_n_0\,
+      DI(0) => \FSM_sequential_r_SM_DISPLAY[2]_i_39_n_0\,
+      O(3 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_25_O_UNCONNECTED\(3 downto 0),
+      S(3) => \FSM_sequential_r_SM_DISPLAY[2]_i_40_n_0\,
+      S(2) => \FSM_sequential_r_SM_DISPLAY[2]_i_41_n_0\,
+      S(1) => \FSM_sequential_r_SM_DISPLAY[2]_i_42_n_0\,
+      S(0) => \FSM_sequential_r_SM_DISPLAY[2]_i_43_n_0\
     );
 \FSM_sequential_r_SM_DISPLAY_reg[2]_i_3\: unisim.vcomponents.CARRY4
      port map (
-      CI => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_5_n_0\,
+      CI => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_4_n_0\,
       CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_3_n_0\,
       CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_3_CO_UNCONNECTED\(2 downto 0),
       CYINIT => '0',
-      DI(3) => \FSM_sequential_r_SM_DISPLAY[2]_i_6_n_0\,
-      DI(2) => \FSM_sequential_r_SM_DISPLAY[2]_i_7_n_0\,
-      DI(1) => \FSM_sequential_r_SM_DISPLAY[2]_i_8_n_0\,
-      DI(0) => \FSM_sequential_r_SM_DISPLAY[2]_i_9_n_0\,
+      DI(3) => \FSM_sequential_r_SM_DISPLAY[2]_i_5_n_0\,
+      DI(2) => \FSM_sequential_r_SM_DISPLAY[2]_i_6_n_0\,
+      DI(1) => \FSM_sequential_r_SM_DISPLAY[2]_i_7_n_0\,
+      DI(0) => \FSM_sequential_r_SM_DISPLAY[2]_i_8_n_0\,
       O(3 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_3_O_UNCONNECTED\(3 downto 0),
-      S(3) => \FSM_sequential_r_SM_DISPLAY[2]_i_10_n_0\,
-      S(2) => \FSM_sequential_r_SM_DISPLAY[2]_i_11_n_0\,
-      S(1) => \FSM_sequential_r_SM_DISPLAY[2]_i_12_n_0\,
-      S(0) => \FSM_sequential_r_SM_DISPLAY[2]_i_13_n_0\
+      S(3) => \FSM_sequential_r_SM_DISPLAY[2]_i_9_n_0\,
+      S(2) => \FSM_sequential_r_SM_DISPLAY[2]_i_10_n_0\,
+      S(1) => \FSM_sequential_r_SM_DISPLAY[2]_i_11_n_0\,
+      S(0) => \FSM_sequential_r_SM_DISPLAY[2]_i_12_n_0\
     );
-\FSM_sequential_r_SM_DISPLAY_reg[2]_i_35\: unisim.vcomponents.CARRY4
+\FSM_sequential_r_SM_DISPLAY_reg[2]_i_34\: unisim.vcomponents.CARRY4
      port map (
-      CI => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_28_n_0\,
-      CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_35_n_0\,
-      CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_35_CO_UNCONNECTED\(2 downto 0),
+      CI => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_35_n_0\,
+      CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_34_n_0\,
+      CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_34_CO_UNCONNECTED\(2 downto 0),
       CYINIT => '0',
       DI(3 downto 0) => B"0000",
       O(3 downto 0) => r_SM_DISPLAY2(20 downto 17),
       S(3 downto 0) => \p_STATE_MACHINE.v_COUNTER_reg\(20 downto 17)
     );
-\FSM_sequential_r_SM_DISPLAY_reg[2]_i_36\: unisim.vcomponents.CARRY4
+\FSM_sequential_r_SM_DISPLAY_reg[2]_i_35\: unisim.vcomponents.CARRY4
      port map (
       CI => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_44_n_0\,
-      CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_36_n_0\,
-      CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_36_CO_UNCONNECTED\(2 downto 0),
+      CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_35_n_0\,
+      CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_35_CO_UNCONNECTED\(2 downto 0),
       CYINIT => '0',
       DI(3 downto 0) => B"0000",
-      O(3 downto 0) => r_SM_DISPLAY2(8 downto 5),
-      S(3 downto 0) => \p_STATE_MACHINE.v_COUNTER_reg\(8 downto 5)
+      O(3 downto 0) => r_SM_DISPLAY2(16 downto 13),
+      S(3 downto 0) => \p_STATE_MACHINE.v_COUNTER_reg\(16 downto 13)
     );
-\FSM_sequential_r_SM_DISPLAY_reg[2]_i_43\: unisim.vcomponents.CARRY4
+\FSM_sequential_r_SM_DISPLAY_reg[2]_i_4\: unisim.vcomponents.CARRY4
      port map (
-      CI => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_36_n_0\,
-      CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_43_n_0\,
-      CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_43_CO_UNCONNECTED\(2 downto 0),
+      CI => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_13_n_0\,
+      CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_4_n_0\,
+      CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_4_CO_UNCONNECTED\(2 downto 0),
+      CYINIT => '0',
+      DI(3) => \FSM_sequential_r_SM_DISPLAY[2]_i_14_n_0\,
+      DI(2) => \FSM_sequential_r_SM_DISPLAY[2]_i_15_n_0\,
+      DI(1) => \FSM_sequential_r_SM_DISPLAY[2]_i_16_n_0\,
+      DI(0) => \FSM_sequential_r_SM_DISPLAY[2]_i_17_n_0\,
+      O(3 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_4_O_UNCONNECTED\(3 downto 0),
+      S(3) => \FSM_sequential_r_SM_DISPLAY[2]_i_18_n_0\,
+      S(2) => \FSM_sequential_r_SM_DISPLAY[2]_i_19_n_0\,
+      S(1) => \FSM_sequential_r_SM_DISPLAY[2]_i_20_n_0\,
+      S(0) => \FSM_sequential_r_SM_DISPLAY[2]_i_21_n_0\
+    );
+\FSM_sequential_r_SM_DISPLAY_reg[2]_i_44\: unisim.vcomponents.CARRY4
+     port map (
+      CI => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_45_n_0\,
+      CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_44_n_0\,
+      CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_44_CO_UNCONNECTED\(2 downto 0),
       CYINIT => '0',
       DI(3 downto 0) => B"0000",
       O(3 downto 0) => r_SM_DISPLAY2(12 downto 9),
       S(3 downto 0) => \p_STATE_MACHINE.v_COUNTER_reg\(12 downto 9)
     );
-\FSM_sequential_r_SM_DISPLAY_reg[2]_i_44\: unisim.vcomponents.CARRY4
+\FSM_sequential_r_SM_DISPLAY_reg[2]_i_45\: unisim.vcomponents.CARRY4
+     port map (
+      CI => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_46_n_0\,
+      CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_45_n_0\,
+      CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_45_CO_UNCONNECTED\(2 downto 0),
+      CYINIT => '0',
+      DI(3 downto 0) => B"0000",
+      O(3 downto 0) => r_SM_DISPLAY2(8 downto 5),
+      S(3 downto 0) => \p_STATE_MACHINE.v_COUNTER_reg\(8 downto 5)
+    );
+\FSM_sequential_r_SM_DISPLAY_reg[2]_i_46\: unisim.vcomponents.CARRY4
      port map (
       CI => '0',
-      CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_44_n_0\,
-      CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_44_CO_UNCONNECTED\(2 downto 0),
+      CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_46_n_0\,
+      CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_46_CO_UNCONNECTED\(2 downto 0),
       CYINIT => \p_STATE_MACHINE.v_COUNTER_reg\(0),
       DI(3 downto 0) => B"0000",
       O(3 downto 0) => r_SM_DISPLAY2(4 downto 1),
       S(3 downto 0) => \p_STATE_MACHINE.v_COUNTER_reg\(4 downto 1)
     );
-\FSM_sequential_r_SM_DISPLAY_reg[2]_i_5\: unisim.vcomponents.CARRY4
-     port map (
-      CI => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_14_n_0\,
-      CO(3) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_5_n_0\,
-      CO(2 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_5_CO_UNCONNECTED\(2 downto 0),
-      CYINIT => '0',
-      DI(3) => \FSM_sequential_r_SM_DISPLAY[2]_i_15_n_0\,
-      DI(2) => \FSM_sequential_r_SM_DISPLAY[2]_i_16_n_0\,
-      DI(1) => \FSM_sequential_r_SM_DISPLAY[2]_i_17_n_0\,
-      DI(0) => \FSM_sequential_r_SM_DISPLAY[2]_i_18_n_0\,
-      O(3 downto 0) => \NLW_FSM_sequential_r_SM_DISPLAY_reg[2]_i_5_O_UNCONNECTED\(3 downto 0),
-      S(3) => \FSM_sequential_r_SM_DISPLAY[2]_i_19_n_0\,
-      S(2) => \FSM_sequential_r_SM_DISPLAY[2]_i_20_n_0\,
-      S(1) => \FSM_sequential_r_SM_DISPLAY[2]_i_21_n_0\,
-      S(0) => \FSM_sequential_r_SM_DISPLAY[2]_i_22_n_0\
-    );
 I2C_CONTROLLER: entity work.i2c_master
      port map (
       CO(0) => \FSM_sequential_r_SM_DISPLAY_reg[2]_i_3_n_0\,
       D(7 downto 0) => r_DATA_WR(7 downto 0),
-      \FSM_sequential_r_SM_DISPLAY_reg[0]\ => I2C_CONTROLLER_n_1,
-      \FSM_sequential_r_SM_DISPLAY_reg[1]\ => I2C_CONTROLLER_n_3,
-      \FSM_sequential_r_SM_DISPLAY_reg[1]_0\ => \FSM_sequential_r_SM_DISPLAY[1]_i_2_n_0\,
-      \FSM_sequential_r_SM_DISPLAY_reg[2]\ => I2C_CONTROLLER_n_2,
-      busy_reg_0 => I2C_CONTROLLER_n_5,
+      \FSM_sequential_r_SM_DISPLAY_reg[0]\ => I2C_CONTROLLER_n_4,
+      \FSM_sequential_r_SM_DISPLAY_reg[0]_0\ => I2C_CONTROLLER_n_5,
+      \FSM_sequential_r_SM_DISPLAY_reg[0]_1\ => I2C_CONTROLLER_n_6,
+      \FSM_sequential_r_SM_DISPLAY_reg[2]\ => I2C_CONTROLLER_n_3,
       clk_out1 => w_CLOCK_OUT1,
       data0 => o_oled_scl_IBUF,
       locked => locked,
       o_oled_scl_TRI => o_oled_scl_TRI,
       o_oled_sda_OBUF => o_oled_sda_OBUF,
       o_oled_sda_TRI => o_oled_sda_TRI,
+      \r_COM_COUNTER_reg[31]\ => \FSM_sequential_r_SM_DISPLAY[1]_i_2_n_0\,
+      r_ENA_reg => I2C_CONTROLLER_n_1,
+      r_ENA_reg_0 => r_HAS_LATCHED_reg_n_0,
       r_PREV_BUSY => r_PREV_BUSY,
       \r_SM_DISPLAY__0\(2 downto 0) => \r_SM_DISPLAY__0\(2 downto 0),
       sda_int_reg_0 => r_ENA_reg_n_0,
-      sel => I2C_CONTROLLER_n_4,
+      sel => I2C_CONTROLLER_n_2,
       w_BUSY => w_BUSY
     );
 g0_b0: unisim.vcomponents.LUT6
@@ -2306,13 +2355,13 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     );
 \p_STATE_MACHINE.v_COUNTER[0]_i_1\: unisim.vcomponents.LUT3
     generic map(
-      INIT => X"04"
+      INIT => X"10"
     )
         port map (
       I0 => \r_SM_DISPLAY__0\(1),
-      I1 => \r_SM_DISPLAY__0\(2),
-      I2 => \r_SM_DISPLAY__0\(0),
-      O => v_COUNTER
+      I1 => \r_SM_DISPLAY__0\(0),
+      I2 => \r_SM_DISPLAY__0\(2),
+      O => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\
     );
 \p_STATE_MACHINE.v_COUNTER[0]_i_3\: unisim.vcomponents.LUT1
     generic map(
@@ -2616,7 +2665,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[0]_i_2_n_7\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(0),
       R => '0'
@@ -2644,7 +2693,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[8]_i_1_n_5\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(10),
       R => '0'
@@ -2655,7 +2704,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[8]_i_1_n_4\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(11),
       R => '0'
@@ -2666,7 +2715,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[12]_i_1_n_7\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(12),
       R => '0'
@@ -2693,7 +2742,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[12]_i_1_n_6\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(13),
       R => '0'
@@ -2704,7 +2753,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[12]_i_1_n_5\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(14),
       R => '0'
@@ -2715,7 +2764,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[12]_i_1_n_4\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(15),
       R => '0'
@@ -2726,7 +2775,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[16]_i_1_n_7\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(16),
       R => '0'
@@ -2753,7 +2802,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[16]_i_1_n_6\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(17),
       R => '0'
@@ -2764,7 +2813,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[16]_i_1_n_5\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(18),
       R => '0'
@@ -2775,7 +2824,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[16]_i_1_n_4\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(19),
       R => '0'
@@ -2786,7 +2835,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[0]_i_2_n_6\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(1),
       R => '0'
@@ -2797,7 +2846,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[20]_i_1_n_7\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(20),
       R => '0'
@@ -2824,7 +2873,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[20]_i_1_n_6\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(21),
       R => '0'
@@ -2835,7 +2884,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[20]_i_1_n_5\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(22),
       R => '0'
@@ -2846,7 +2895,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[20]_i_1_n_4\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(23),
       R => '0'
@@ -2857,7 +2906,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[24]_i_1_n_7\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(24),
       R => '0'
@@ -2884,7 +2933,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[24]_i_1_n_6\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(25),
       R => '0'
@@ -2895,7 +2944,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[24]_i_1_n_5\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(26),
       R => '0'
@@ -2906,7 +2955,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[24]_i_1_n_4\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(27),
       R => '0'
@@ -2917,7 +2966,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[28]_i_1_n_7\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(28),
       R => '0'
@@ -2943,7 +2992,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[28]_i_1_n_6\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(29),
       R => '0'
@@ -2954,7 +3003,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[0]_i_2_n_5\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(2),
       R => '0'
@@ -2965,7 +3014,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[28]_i_1_n_5\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(30),
       R => '0'
@@ -2976,7 +3025,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[28]_i_1_n_4\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(31),
       R => '0'
@@ -2987,7 +3036,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[0]_i_2_n_4\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(3),
       R => '0'
@@ -2998,7 +3047,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[4]_i_1_n_7\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(4),
       R => '0'
@@ -3025,7 +3074,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[4]_i_1_n_6\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(5),
       R => '0'
@@ -3036,7 +3085,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[4]_i_1_n_5\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(6),
       R => '0'
@@ -3047,7 +3096,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[4]_i_1_n_4\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(7),
       R => '0'
@@ -3058,7 +3107,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[8]_i_1_n_7\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(8),
       R => '0'
@@ -3085,7 +3134,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => v_COUNTER,
+      CE => \p_STATE_MACHINE.v_COUNTER[0]_i_1_n_0\,
       D => \p_STATE_MACHINE.v_COUNTER_reg[8]_i_1_n_6\,
       Q => \p_STATE_MACHINE.v_COUNTER_reg\(9),
       R => '0'
@@ -3104,7 +3153,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[0]_i_2_n_7\,
       Q => r_COM_COUNTER_reg(0),
       R => '0'
@@ -3129,7 +3178,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[8]_i_1_n_5\,
       Q => \r_COM_COUNTER_reg__0\(10),
       R => '0'
@@ -3140,7 +3189,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[8]_i_1_n_4\,
       Q => \r_COM_COUNTER_reg__0\(11),
       R => '0'
@@ -3151,7 +3200,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[12]_i_1_n_7\,
       Q => \r_COM_COUNTER_reg__0\(12),
       R => '0'
@@ -3175,7 +3224,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[12]_i_1_n_6\,
       Q => \r_COM_COUNTER_reg__0\(13),
       R => '0'
@@ -3186,7 +3235,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[12]_i_1_n_5\,
       Q => \r_COM_COUNTER_reg__0\(14),
       R => '0'
@@ -3197,7 +3246,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[12]_i_1_n_4\,
       Q => \r_COM_COUNTER_reg__0\(15),
       R => '0'
@@ -3208,7 +3257,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[16]_i_1_n_7\,
       Q => \r_COM_COUNTER_reg__0\(16),
       R => '0'
@@ -3232,7 +3281,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[16]_i_1_n_6\,
       Q => \r_COM_COUNTER_reg__0\(17),
       R => '0'
@@ -3243,7 +3292,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[16]_i_1_n_5\,
       Q => \r_COM_COUNTER_reg__0\(18),
       R => '0'
@@ -3254,7 +3303,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[16]_i_1_n_4\,
       Q => \r_COM_COUNTER_reg__0\(19),
       R => '0'
@@ -3265,7 +3314,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[0]_i_2_n_6\,
       Q => r_COM_COUNTER_reg(1),
       R => '0'
@@ -3276,7 +3325,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[20]_i_1_n_7\,
       Q => \r_COM_COUNTER_reg__0\(20),
       R => '0'
@@ -3300,7 +3349,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[20]_i_1_n_6\,
       Q => \r_COM_COUNTER_reg__0\(21),
       R => '0'
@@ -3311,7 +3360,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[20]_i_1_n_5\,
       Q => \r_COM_COUNTER_reg__0\(22),
       R => '0'
@@ -3322,7 +3371,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[20]_i_1_n_4\,
       Q => \r_COM_COUNTER_reg__0\(23),
       R => '0'
@@ -3333,7 +3382,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[24]_i_1_n_7\,
       Q => \r_COM_COUNTER_reg__0\(24),
       R => '0'
@@ -3357,7 +3406,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[24]_i_1_n_6\,
       Q => \r_COM_COUNTER_reg__0\(25),
       R => '0'
@@ -3368,7 +3417,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[24]_i_1_n_5\,
       Q => \r_COM_COUNTER_reg__0\(26),
       R => '0'
@@ -3379,7 +3428,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[24]_i_1_n_4\,
       Q => \r_COM_COUNTER_reg__0\(27),
       R => '0'
@@ -3390,7 +3439,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[28]_i_1_n_7\,
       Q => \r_COM_COUNTER_reg__0\(28),
       R => '0'
@@ -3413,7 +3462,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[28]_i_1_n_6\,
       Q => \r_COM_COUNTER_reg__0\(29),
       R => '0'
@@ -3424,7 +3473,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[0]_i_2_n_5\,
       Q => r_COM_COUNTER_reg(2),
       R => '0'
@@ -3435,7 +3484,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[28]_i_1_n_5\,
       Q => \r_COM_COUNTER_reg__0\(30),
       R => '0'
@@ -3446,7 +3495,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[28]_i_1_n_4\,
       Q => \r_COM_COUNTER_reg__0\(31),
       R => '0'
@@ -3457,7 +3506,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[0]_i_2_n_4\,
       Q => r_COM_COUNTER_reg(3),
       R => '0'
@@ -3468,7 +3517,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[4]_i_1_n_7\,
       Q => r_COM_COUNTER_reg(4),
       R => '0'
@@ -3493,7 +3542,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[4]_i_1_n_6\,
       Q => \r_COM_COUNTER_reg__0\(5),
       R => '0'
@@ -3504,7 +3553,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[4]_i_1_n_5\,
       Q => \r_COM_COUNTER_reg__0\(6),
       R => '0'
@@ -3515,7 +3564,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[4]_i_1_n_4\,
       Q => \r_COM_COUNTER_reg__0\(7),
       R => '0'
@@ -3526,7 +3575,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[8]_i_1_n_7\,
       Q => \r_COM_COUNTER_reg__0\(8),
       R => '0'
@@ -3550,7 +3599,7 @@ o_oled_vcc_OBUF_inst: unisim.vcomponents.OBUF
     )
         port map (
       C => w_CLOCK_OUT1,
-      CE => I2C_CONTROLLER_n_4,
+      CE => I2C_CONTROLLER_n_2,
       D => \r_COM_COUNTER_reg[8]_i_1_n_6\,
       Q => \r_COM_COUNTER_reg__0\(9),
       R => '0'
@@ -3706,8 +3755,19 @@ r_ENA_reg: unisim.vcomponents.FDRE
         port map (
       C => w_CLOCK_OUT1,
       CE => '1',
-      D => I2C_CONTROLLER_n_5,
+      D => I2C_CONTROLLER_n_1,
       Q => r_ENA_reg_n_0,
+      R => '0'
+    );
+r_HAS_LATCHED_reg: unisim.vcomponents.FDRE
+    generic map(
+      INIT => '0'
+    )
+        port map (
+      C => w_CLOCK_OUT1,
+      CE => '1',
+      D => I2C_CONTROLLER_n_3,
+      Q => r_HAS_LATCHED_reg_n_0,
       R => '0'
     );
 r_PREV_BUSY_reg: unisim.vcomponents.FDRE
