@@ -4,7 +4,7 @@
 
 set TIME_start [clock seconds] 
 namespace eval ::optrace {
-  variable script "D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1/display.tcl"
+  variable script "C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1/display.tcl"
   variable category "vivado_synth"
 }
 
@@ -77,25 +77,25 @@ set_param project.singleFileAddWarning.threshold 0
 set_param project.compositeFile.enableAutoGeneration 0
 set_param synth.vivado.isSynthRun true
 set_msg_config -source 4 -id {IP_Flow 19-2162} -severity warning -new_severity info
-set_property webtalk.parent_dir D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.cache/wt [current_project]
-set_property parent.project_path D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.xpr [current_project]
+set_property webtalk.parent_dir {C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.cache/wt} [current_project]
+set_property parent.project_path {C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.xpr} [current_project]
 set_property XPM_LIBRARIES XPM_CDC [current_project]
 set_property default_lib xil_defaultlib [current_project]
 set_property target_language VHDL [current_project]
 set_property board_part_repo_paths {C:/Users/Matthijs/AppData/Roaming/Xilinx/Vivado/2022.2/xhub/board_store/xilinx_board_store} [current_project]
 set_property board_part digilentinc.com:arty-a7-100:part0:1.1 [current_project]
-set_property ip_output_repo d:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.cache/ip [current_project]
+set_property ip_output_repo {c:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.cache/ip} [current_project]
 set_property ip_cache_permissions {read write} [current_project]
 OPTRACE "Creating in-memory project" END { }
 OPTRACE "Adding files" START { }
 read_vhdl -library xil_defaultlib {
-  D:/git/Overig/CHIP8-FPGA/i2c_master.vhd
-  D:/git/Overig/CHIP8-FPGA/display.vhd
+  {C:/git/git repositories/CHIP8-FPGA/i2c_master.vhd}
+  {C:/git/git repositories/CHIP8-FPGA/display.vhd}
 }
-read_ip -quiet D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.srcs/sources_1/ip/clk_50hz/clk_50hz.xci
-set_property used_in_implementation false [get_files -all d:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz_board.xdc]
-set_property used_in_implementation false [get_files -all d:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz.xdc]
-set_property used_in_implementation false [get_files -all d:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz_ooc.xdc]
+read_ip -quiet {{C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.srcs/sources_1/ip/clk_50hz/clk_50hz.xci}}
+set_property used_in_implementation false [get_files -all {{c:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz_board.xdc}}]
+set_property used_in_implementation false [get_files -all {{c:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz.xdc}}]
+set_property used_in_implementation false [get_files -all {{c:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz_ooc.xdc}}]
 
 OPTRACE "Adding files" END { }
 # Mark all dcp files as not used in implementation to prevent them from being
@@ -106,12 +106,12 @@ OPTRACE "Adding files" END { }
 foreach dcp [get_files -quiet -all -filter file_type=="Design\ Checkpoint"] {
   set_property used_in_implementation false $dcp
 }
-read_xdc D:/git/Overig/CHIP8-FPGA/constraints/Arty-A7-100-display.xdc
-set_property used_in_implementation false [get_files D:/git/Overig/CHIP8-FPGA/constraints/Arty-A7-100-display.xdc]
+read_xdc {{C:/git/git repositories/CHIP8-FPGA/constraints/Arty-A7-100-display.xdc}}
+set_property used_in_implementation false [get_files {{C:/git/git repositories/CHIP8-FPGA/constraints/Arty-A7-100-display.xdc}}]
 
 set_param ips.enableIPCacheLiteLoad 1
 
-read_checkpoint -auto_incremental -incremental D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.srcs/utils_1/imports/synth_1/display.dcp
+read_checkpoint -auto_incremental -incremental {C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.srcs/utils_1/imports/synth_1/display.dcp}
 close [open __synthesis_is_running__ w]
 
 OPTRACE "synth_design" START { }

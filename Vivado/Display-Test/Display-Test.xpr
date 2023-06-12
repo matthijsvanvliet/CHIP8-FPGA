@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="61" Path="D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.xpr">
+<Project Version="7" Minor="61" Path="C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="2f7d5b36d08945548cc06147dd015c56"/>
@@ -45,7 +45,7 @@
     <Option Name="TargetLanguage" Val="VHDL"/>
     <Option Name="SimulatorLanguage" Val="VHDL"/>
     <Option Name="BoardPart" Val="digilentinc.com:arty-a7-100:part0:1.1"/>
-    <Option Name="BoardPartRepoPaths" Val="C:/Users/Matthijs/AppData/Roaming/Xilinx/Vivado/2022.2/xhub/board_store/xilinx_board_store"/>
+    <Option Name="BoardPartRepoPaths" Val="$PPRDIR/../../../../../Users/Matthijs/AppData/Roaming/Xilinx/Vivado/2022.2/xhub/board_store/xilinx_board_store"/>
     <Option Name="ActiveSimSet" Val="sim_1"/>
     <Option Name="DefaultLib" Val="xil_defaultlib"/>
     <Option Name="ProjectType" Val="Default"/>
@@ -61,7 +61,7 @@
     <Option Name="IPStaticSourceDir" Val="$PIPUSERFILESDIR/ipstatic"/>
     <Option Name="EnableBDX" Val="FALSE"/>
     <Option Name="DSABoardId" Val="arty-a7-100"/>
-    <Option Name="WTXSimLaunchSim" Val="240"/>
+    <Option Name="WTXSimLaunchSim" Val="270"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>

@@ -23,6 +23,14 @@ end display;
 
 architecture rtl of display is
 
+    constant c_DISPLAY_BUFFER_WIDTH     : natural   := 64;
+    constant c_DISPLAY_BUFFER_HEIGHT    : natural   := 32;
+    constant c_DISPLAY_LENGTH           : natural   := c_DISPLAY_BUFFER_WIDTH * c_DISPLAY_BUFFER_HEIGHT;
+    constant c_DISPLAY_BUFFER_LENGTH    : natural   := c_DISPLAY_LENGTH / 8;
+
+    signal r_DISPLAY_BUFFER : std_logic_vector(c_DISPLAY_LENGTH - 1 downto 0) := (others => '0');
+
+
     component clk_50hz
     port
     (-- Clock in ports
@@ -62,8 +70,8 @@ architecture rtl of display is
         s_COM_INIT,
         s_SEND_CONTROL,
         s_INIT,
-        s_START,
-        s_TEMP
+        s_REFRESH,
+        s_SEND_PIXEL_DATA
     );
     signal r_SM_DISPLAY : t_SM_DISPLAY := s_CLOCK_INIT;
 
@@ -98,7 +106,6 @@ architecture rtl of display is
     constant c_SSD1306_SET_VERTICAL_SCROLL_AREA             : std_logic_vector(7 downto 0) := x"A3"; -- Set scroll range
 
     signal r_PREV_BUSY      : std_logic := '0';
-    signal r_COM_COUNTER    : integer   := 0;
 
     constant c_DELAY_BETWEEN_COM : integer := (c_INPUT_CLOCK / c_BUS_CLOCK) * 10; -- 10 scl clock cycles between commands (~30 us)
     signal r_DELAY_COUNTER : integer := 0;
@@ -134,34 +141,20 @@ architecture rtl of display is
         c_SSD1306_DISPLAYON
     );
 
-    constant c_DISPLAY_BUFFER_WIDTH     : natural   := 64;
-    constant c_DISPLAY_BUFFER_HEIGHT    : natural   := 32;
+    constant c_REFRESH_COMMAND_LENGTH : integer := 6;
+    type t_REFRESH_COMMANDS is array (0 to c_REFRESH_COMMAND_LENGTH-1) of std_logic_vector(7 downto 0);
+    constant c_REFRESH_COMMANDS : t_REFRESH_COMMANDS := (
+        c_SSD1306_PAGEADDR,
+        x"00",
+        x"FF",
+        c_SSD1306_COLUMNADDR,
+        x"00",
+        std_logic_vector(to_unsigned(c_DISPLAY_BUFFER_WIDTH - 1, 8))
+    );
 
-    signal r_DISPLAY_BUFFER : std_logic_vector(c_DISPLAY_BUFFER_WIDTH * c_DISPLAY_BUFFER_HEIGHT - 1 downto 0) := (others => '0');
-
-    constant c_BUFFER_LENGTH : natural := c_DISPLAY_BUFFER_WIDTH * ((c_DISPLAY_BUFFER_HEIGHT + 7) / 8);
-    type t_BUFFER_BYTE is array (0 to c_BUFFER_LENGTH) of std_logic_vector(7 downto 0);
-    signal r_BUFFER : t_BUFFER_BYTE := (others => x"00");
-
-    function get_x(
-            i : natural
-        )
-        return natural is
-            variable x : natural := 0;
-    begin
-        x := i mod (c_DISPLAY_BUFFER_WIDTH - 1);
-        return x;
-    end get_x;
-
-    function get_y(
-            i : natural
-        )
-        return natural is
-            variable y : natural := 0;
-    begin
-        y := (i - get_x(i)) mod (c_DISPLAY_BUFFER_HEIGHT - 1);
-        return y;
-    end get_y;
+    signal r_COM_COUNTER        : integer   := 0;
+    signal r_REFRESH_COUNTER    : integer   := 0;
+    signal r_PIXEL_COUNTER      : integer   := 0;
 
 begin
 
@@ -202,18 +195,11 @@ begin
 
     r_CLK <= w_CLOCK_OUT1;
 
-    p_FILL_BUFFER : process (w_CLOCK_OUT1) is
-    begin
-        for i in 0 to c_BUFFER_LENGTH loop
-            r_BUFFER(get_x(i) + (get_y(i) / 8) * c_DISPLAY_BUFFER_WIDTH) <= r_BUFFER(get_x(i) + (get_y(i) / 8) * c_DISPLAY_BUFFER_WIDTH) or std_logic_vector(shift_left(to_unsigned(1, 8), to_integer(to_unsigned(get_y(i), 8) and x"7")));
-        end loop;
-    end process p_FILL_BUFFER;
-
     p_INITIALISE : process is
     begin
         r_ADDR <= c_SLAVE_ADDRESS;
         r_RW <= '0';
-        for i in 1230 to 1567 loop
+        for i in 1234 to 1678 loop
             r_DISPLAY_BUFFER(i) <= '1';
         end loop;
         wait;
@@ -236,7 +222,7 @@ begin
                     r_ENA <= '1';
                     
                     if w_BUSY = '1' and r_PREV_BUSY = '0' then
-                        r_SM_DISPLAY <= s_START;
+                        r_SM_DISPLAY <= s_REFRESH;
                         if r_COM_COUNTER /= c_INIT_COMMAND_LENGTH - 1 then
                             r_SM_DISPLAY <= s_INIT;
                         end if;
@@ -247,26 +233,41 @@ begin
 
                     if w_BUSY = '1' and r_PREV_BUSY = '0' then
                         if r_COM_COUNTER = c_INIT_COMMAND_LENGTH - 1 then
-                            r_SM_DISPLAY <= s_TEMP;
+                            r_SM_DISPLAY <= s_SEND_CONTROL;
+                            r_ENA <= '0';
                         else
                             r_COM_COUNTER <= r_COM_COUNTER + 1;
                         end if;
                     end if;
                     
-                when s_START =>
-                    r_DATA_WR <= c_SSD1306_INVERTDISPLAY;
+                when s_REFRESH =>
+                    r_DATA_WR <= c_REFRESH_COMMANDS(r_REFRESH_COUNTER);
 
                     if w_BUSY = '1' and r_PREV_BUSY = '0' then
-                        r_SM_DISPLAY <= s_TEMP;
+                        if r_REFRESH_COUNTER = c_REFRESH_COMMAND_LENGTH - 1 then
+                            r_SM_DISPLAY <= s_SEND_PIXEL_DATA;
+                            r_REFRESH_COUNTER <= 0;
+                        else
+                            r_REFRESH_COUNTER <= r_REFRESH_COUNTER + 1;
+                        end if;
                     end if;
 
-                when s_TEMP =>
-                    r_ENA <= '0';
-                    v_COUNTER := v_COUNTER + 1;
-                    if v_COUNTER >= 123432 then
-                        v_COUNTER := 0;
-                        r_SM_DISPLAY <= s_SEND_CONTROL;
+                when s_SEND_PIXEL_DATA =>
+                    r_DATA_WR <= r_DISPLAY_BUFFER(c_DISPLAY_LENGTH - 1 - r_PIXEL_COUNTER * 8 downto (c_DISPLAY_LENGTH - 1 - r_PIXEL_COUNTER * 8) - 7);
+
+                    if w_BUSY = '1' and r_PREV_BUSY = '0' then
+                        if r_PIXEL_COUNTER /= c_DISPLAY_BUFFER_LENGTH - 2 then
+                            r_PIXEL_COUNTER <= r_PIXEL_COUNTER + 1;
+                        end if;
                     end if;
+
+                    if w_BUSY = '0' and r_PREV_BUSY = '1' then
+                        if r_PIXEL_COUNTER = c_DISPLAY_BUFFER_LENGTH - 2 then
+                            r_PIXEL_COUNTER <= 0;
+                            r_SM_DISPLAY <= s_SEND_CONTROL;
+                        end if;
+                    end if;
+
                 when others => NULL;
             end case;
         end if;
