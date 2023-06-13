@@ -156,6 +156,8 @@ architecture rtl of display is
     signal r_REFRESH_COUNTER    : integer   := 0;
     signal r_PIXEL_COUNTER      : integer   := 0;
 
+    signal r_START_PIXEL_DATA   : std_logic := '0';
+
 begin
 
     I2C_CONTROLLER : entity work.i2c_master
@@ -218,11 +220,19 @@ begin
                         r_SM_DISPLAY <= s_SEND_CONTROL;
                     end if; 
                 when s_SEND_CONTROL =>
-                    r_DATA_WR <= x"00";
+                    if r_START_PIXEL_DATA = '0' then
+                        r_DATA_WR <= x"00";
+                    else
+                        r_DATA_WR <= c_SSD1306_SETSTARTLINE;
+                    end if;
                     r_ENA <= '1';
                     
                     if w_BUSY = '1' and r_PREV_BUSY = '0' then
-                        r_SM_DISPLAY <= s_REFRESH;
+                        if r_START_PIXEL_DATA = '0' then
+                            r_SM_DISPLAY <= s_REFRESH;
+                        else
+                            r_SM_DISPLAY <= s_SEND_PIXEL_DATA;
+                        end if;
                         if r_COM_COUNTER /= c_INIT_COMMAND_LENGTH - 1 then
                             r_SM_DISPLAY <= s_INIT;
                         end if;
@@ -245,7 +255,9 @@ begin
 
                     if w_BUSY = '1' and r_PREV_BUSY = '0' then
                         if r_REFRESH_COUNTER = c_REFRESH_COMMAND_LENGTH - 1 then
-                            r_SM_DISPLAY <= s_SEND_PIXEL_DATA;
+                            r_ENA <= '0';
+                            r_START_PIXEL_DATA <= '1';
+                            r_SM_DISPLAY <= s_SEND_CONTROL;
                             r_REFRESH_COUNTER <= 0;
                         else
                             r_REFRESH_COUNTER <= r_REFRESH_COUNTER + 1;
@@ -258,12 +270,15 @@ begin
                     if w_BUSY = '1' and r_PREV_BUSY = '0' then
                         if r_PIXEL_COUNTER /= c_DISPLAY_BUFFER_LENGTH - 2 then
                             r_PIXEL_COUNTER <= r_PIXEL_COUNTER + 1;
+                        else
+                            r_ENA <= '0';
                         end if;
                     end if;
 
                     if w_BUSY = '0' and r_PREV_BUSY = '1' then
                         if r_PIXEL_COUNTER = c_DISPLAY_BUFFER_LENGTH - 2 then
                             r_PIXEL_COUNTER <= 0;
+                            r_START_PIXEL_DATA <= '0';
                             r_SM_DISPLAY <= s_SEND_CONTROL;
                         end if;
                     end if;
