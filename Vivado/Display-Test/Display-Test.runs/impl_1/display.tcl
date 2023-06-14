@@ -17,7 +17,7 @@ proc create_report { reportName command } {
   }
 }
 namespace eval ::optrace {
-  variable script "C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/impl_1/display.tcl"
+  variable script "D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/impl_1/display.tcl"
   variable category "vivado_impl"
 }
 
@@ -132,17 +132,17 @@ OPTRACE "create in-memory project" START { }
   set_param project.singleFileAddWarning.threshold 0
 OPTRACE "create in-memory project" END { }
 OPTRACE "set parameters" START { }
-  set_property webtalk.parent_dir {C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.cache/wt} [current_project]
-  set_property parent.project_path {C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.xpr} [current_project]
-  set_property ip_output_repo {{C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.cache/ip}} [current_project]
+  set_property webtalk.parent_dir D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.cache/wt [current_project]
+  set_property parent.project_path D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.xpr [current_project]
+  set_property ip_output_repo D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.cache/ip [current_project]
   set_property ip_cache_permissions {read write} [current_project]
   set_property XPM_LIBRARIES XPM_CDC [current_project]
 OPTRACE "set parameters" END { }
 OPTRACE "add files" START { }
-  add_files -quiet {{C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1/display.dcp}}
-  read_ip -quiet {{C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.srcs/sources_1/ip/clk_50hz/clk_50hz.xci}}
+  add_files -quiet D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1/display.dcp
+  read_ip -quiet D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.srcs/sources_1/ip/clk_50hz/clk_50hz.xci
 OPTRACE "read constraints: implementation" START { }
-  read_xdc {{C:/git/git repositories/CHIP8-FPGA/constraints/Arty-A7-100-display.xdc}}
+  read_xdc D:/git/Overig/CHIP8-FPGA/constraints/Arty-A7-100-display.xdc
 OPTRACE "read constraints: implementation" END { }
 OPTRACE "add files" END { }
 OPTRACE "link_design" START { }

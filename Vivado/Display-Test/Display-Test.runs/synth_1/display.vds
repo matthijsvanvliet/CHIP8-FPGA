@@ -2,18 +2,18 @@
 # Vivado v2022.2 (64-bit)
 # SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
 # IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
-# Start of session at: Tue Jun 13 15:40:52 2023
-# Process ID: 9840
-# Current directory: C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1
+# Start of session at: Wed Jun 14 22:49:37 2023
+# Process ID: 21704
+# Current directory: D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1
 # Command line: vivado.exe -log display.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source display.tcl
-# Log file: C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1/display.vds
-# Journal file: C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1\vivado.jou
-# Running On: LAPTOP-IT23Q15D, OS: Windows, CPU Frequency: 1797 MHz, CPU Physical cores: 16, Host memory: 14887 MB
+# Log file: D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1/display.vds
+# Journal file: D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1\vivado.jou
+# Running On: DESKTOP-MATTHIJS, OS: Windows, CPU Frequency: 3700 MHz, CPU Physical cores: 16, Host memory: 25715 MB
 #-----------------------------------------------------------
 source display.tcl -notrace
-create_project: Time (s): cpu = 00:00:09 ; elapsed = 00:00:10 . Memory (MB): peak = 396.277 ; gain = 62.332
-Command: read_checkpoint -auto_incremental -incremental {C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.srcs/utils_1/imports/synth_1/display.dcp}
-INFO: [Vivado 12-5825] Read reference checkpoint from C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.srcs/utils_1/imports/synth_1/display.dcp for incremental synthesis
+create_project: Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 393.875 ; gain = 73.941
+Command: read_checkpoint -auto_incremental -incremental D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.srcs/utils_1/imports/synth_1/display.dcp
+INFO: [Vivado 12-5825] Read reference checkpoint from D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.srcs/utils_1/imports/synth_1/display.dcp for incremental synthesis
 INFO: [Vivado 12-7989] Please ensure there are no constraint changes
 Command: synth_design -top display -part xc7a100tcsg324-1
 Starting synth_design
@@ -24,72 +24,73 @@ INFO: [Designutils 20-5440] No compile time benefit to using incremental synthes
 INFO: [Designutils 20-4379] Flow is switching to default flow due to incremental criteria not met. If you would like to alter this behaviour and have the flow terminate instead, please set the following parameter config_implementation {autoIncr.Synth.RejectBehavior Terminate}
 INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
 INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
-INFO: [Synth 8-7075] Helper process launched with PID 9228
-INFO: [Synth 8-11241] undeclared symbol 'REGCCE', assumed default net type 'wire' [C:/Xilinx/Vivado/2022.2/data/verilog/src/unimacro/BRAM_SINGLE_MACRO.v:2170]
+INFO: [Synth 8-7075] Helper process launched with PID 4308
+INFO: [Synth 8-11241] undeclared symbol 'REGCCE', assumed default net type 'wire' [F:/Xilinx/Vivado/2022.2/data/verilog/src/unimacro/BRAM_SINGLE_MACRO.v:2170]
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:12 ; elapsed = 00:00:13 . Memory (MB): peak = 1234.445 ; gain = 407.387
+Starting RTL Elaboration : Time (s): cpu = 00:00:06 ; elapsed = 00:00:07 . Memory (MB): peak = 1233.605 ; gain = 408.539
 ---------------------------------------------------------------------------------
-INFO: [Synth 8-638] synthesizing module 'display' [C:/git/git repositories/CHIP8-FPGA/display.vhd:24]
-INFO: [Synth 8-638] synthesizing module 'i2c_master' [C:/git/git repositories/CHIP8-FPGA/i2c_master.vhd:54]
+INFO: [Synth 8-638] synthesizing module 'display' [D:/git/Overig/CHIP8-FPGA/display.vhd:24]
+INFO: [Synth 8-638] synthesizing module 'i2c_master' [D:/git/Overig/CHIP8-FPGA/i2c_master.vhd:54]
 	Parameter input_clk bound to: 50000000 - type: integer 
 	Parameter bus_clk bound to: 400000 - type: integer 
-INFO: [Synth 8-256] done synthesizing module 'i2c_master' (0#1) [C:/git/git repositories/CHIP8-FPGA/i2c_master.vhd:54]
-INFO: [Synth 8-3491] module 'clk_50hz' declared at 'C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1/.Xil/Vivado-9840-LAPTOP-IT23Q15D/realtime/clk_50hz_stub.vhdl:5' bound to instance 'CLOCK_50HZ' of component 'clk_50hz' [C:/git/git repositories/CHIP8-FPGA/display.vhd:182]
-INFO: [Synth 8-638] synthesizing module 'clk_50hz' [C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1/.Xil/Vivado-9840-LAPTOP-IT23Q15D/realtime/clk_50hz_stub.vhdl:15]
-INFO: [Synth 8-256] done synthesizing module 'display' (0#1) [C:/git/git repositories/CHIP8-FPGA/display.vhd:24]
+INFO: [Synth 8-256] done synthesizing module 'i2c_master' (0#1) [D:/git/Overig/CHIP8-FPGA/i2c_master.vhd:54]
+INFO: [Synth 8-3491] module 'clk_50hz' declared at 'D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1/.Xil/Vivado-21704-DESKTOP-MATTHIJS/realtime/clk_50hz_stub.vhdl:5' bound to instance 'CLOCK_50HZ' of component 'clk_50hz' [D:/git/Overig/CHIP8-FPGA/display.vhd:189]
+INFO: [Synth 8-638] synthesizing module 'clk_50hz' [D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1/.Xil/Vivado-21704-DESKTOP-MATTHIJS/realtime/clk_50hz_stub.vhdl:15]
+INFO: [Synth 8-256] done synthesizing module 'display' (0#1) [D:/git/Overig/CHIP8-FPGA/display.vhd:24]
+WARNING: [Synth 8-6014] Unused sequential element r_DRAW_COUNTER_reg was removed.  [D:/git/Overig/CHIP8-FPGA/display.vhd:262]
 WARNING: [Synth 8-3917] design display has port o_oled_vcc driven by constant 1
 WARNING: [Synth 8-3917] design display has port o_oled_gnd driven by constant 0
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:17 ; elapsed = 00:00:18 . Memory (MB): peak = 1406.695 ; gain = 579.637
+Finished RTL Elaboration : Time (s): cpu = 00:00:10 ; elapsed = 00:00:11 . Memory (MB): peak = 1514.004 ; gain = 688.938
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:18 ; elapsed = 00:00:18 . Memory (MB): peak = 1406.695 ; gain = 579.637
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:10 ; elapsed = 00:00:11 . Memory (MB): peak = 1514.004 ; gain = 688.938
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:18 ; elapsed = 00:00:18 . Memory (MB): peak = 1406.695 ; gain = 579.637
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:10 ; elapsed = 00:00:11 . Memory (MB): peak = 1514.004 ; gain = 688.938
 ---------------------------------------------------------------------------------
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.060 . Memory (MB): peak = 1406.695 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.031 . Memory (MB): peak = 1514.004 ; gain = 0.000
 INFO: [Project 1-570] Preparing netlist for logic optimization
 
 Processing XDC Constraints
 Initializing timing engine
-Parsing XDC File [c:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz/clk_50hz_in_context.xdc] for cell 'CLOCK_50HZ'
-Finished Parsing XDC File [c:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz/clk_50hz_in_context.xdc] for cell 'CLOCK_50HZ'
-Parsing XDC File [C:/git/git repositories/CHIP8-FPGA/constraints/Arty-A7-100-display.xdc]
-Finished Parsing XDC File [C:/git/git repositories/CHIP8-FPGA/constraints/Arty-A7-100-display.xdc]
-INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [C:/git/git repositories/CHIP8-FPGA/constraints/Arty-A7-100-display.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/display_propImpl.xdc].
+Parsing XDC File [d:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz/clk_50hz_in_context.xdc] for cell 'CLOCK_50HZ'
+Finished Parsing XDC File [d:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz/clk_50hz_in_context.xdc] for cell 'CLOCK_50HZ'
+Parsing XDC File [D:/git/Overig/CHIP8-FPGA/constraints/Arty-A7-100-display.xdc]
+Finished Parsing XDC File [D:/git/Overig/CHIP8-FPGA/constraints/Arty-A7-100-display.xdc]
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [D:/git/Overig/CHIP8-FPGA/constraints/Arty-A7-100-display.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/display_propImpl.xdc].
 Resolution: To avoid this warning, move constraints listed in [.Xil/display_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
 Completed Processing XDC Constraints
 
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1406.695 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1514.004 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.008 . Memory (MB): peak = 1406.695 ; gain = 0.000
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.005 . Memory (MB): peak = 1514.004 ; gain = 0.000
 INFO: [Designutils 20-5440] No compile time benefit to using incremental synthesis; A full resynthesis will be run
 INFO: [Designutils 20-4379] Flow is switching to default flow due to incremental criteria not met. If you would like to alter this behaviour and have the flow terminate instead, please set the following parameter config_implementation {autoIncr.Synth.RejectBehavior Terminate}
-INFO: [Synth 8-11241] undeclared symbol 'REGCCE', assumed default net type 'wire' [C:/Xilinx/Vivado/2022.2/data/verilog/src/unimacro/BRAM_SINGLE_MACRO.v:2170]
+INFO: [Synth 8-11241] undeclared symbol 'REGCCE', assumed default net type 'wire' [F:/Xilinx/Vivado/2022.2/data/verilog/src/unimacro/BRAM_SINGLE_MACRO.v:2170]
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:00:36 ; elapsed = 00:00:37 . Memory (MB): peak = 1406.695 ; gain = 579.637
+Finished Constraint Validation : Time (s): cpu = 00:00:20 ; elapsed = 00:00:21 . Memory (MB): peak = 1514.004 ; gain = 688.938
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7a100tcsg324-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:00:36 ; elapsed = 00:00:37 . Memory (MB): peak = 1406.695 ; gain = 579.637
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:20 ; elapsed = 00:00:21 . Memory (MB): peak = 1514.004 ; gain = 688.938
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
 ---------------------------------------------------------------------------------
-Applied set_property IO_BUFFER_TYPE = NONE for i_clck. (constraint file  {c:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz/clk_50hz_in_context.xdc}, line 3).
-Applied set_property CLOCK_BUFFER_TYPE = NONE for i_clck. (constraint file  {c:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz/clk_50hz_in_context.xdc}, line 4).
+Applied set_property IO_BUFFER_TYPE = NONE for i_clck. (constraint file  d:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz/clk_50hz_in_context.xdc, line 3).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for i_clck. (constraint file  d:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz/clk_50hz_in_context.xdc, line 4).
 Applied set_property KEEP_HIERARCHY = SOFT for CLOCK_50HZ. (constraint file  auto generated constraint).
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:36 ; elapsed = 00:00:37 . Memory (MB): peak = 1406.695 ; gain = 579.637
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:20 ; elapsed = 00:00:21 . Memory (MB): peak = 1514.004 ; gain = 688.938
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'i2c_master'
 ---------------------------------------------------------------------------------------------------
@@ -107,38 +108,39 @@ INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'i2c_m
 ---------------------------------------------------------------------------------------------------
 INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'one-hot' in module 'i2c_master'
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:38 ; elapsed = 00:00:40 . Memory (MB): peak = 1406.695 ; gain = 579.637
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:23 ; elapsed = 00:00:24 . Memory (MB): peak = 1514.004 ; gain = 688.938
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start RTL Component Statistics 
 ---------------------------------------------------------------------------------
 Detailed RTL Component Info : 
 +---Adders : 
-	   2 Input   32 Bit       Adders := 2     
+	   2 Input   32 Bit       Adders := 3     
 	   2 Input   12 Bit       Adders := 1     
 	   2 Input    7 Bit       Adders := 1     
 	   2 Input    4 Bit       Adders := 1     
 	   2 Input    3 Bit       Adders := 1     
 +---Registers : 
-	               32 Bit    Registers := 1     
+	               32 Bit    Registers := 2     
 	                8 Bit    Registers := 5     
 	                7 Bit    Registers := 1     
 	                3 Bit    Registers := 2     
-	                1 Bit    Registers := 11    
+	                1 Bit    Registers := 12    
 +---Muxes : 
-	   2 Input   32 Bit        Muxes := 2     
+	   2 Input   32 Bit        Muxes := 5     
 	   9 Input    9 Bit        Muxes := 1     
 	   2 Input    9 Bit        Muxes := 9     
 	   6 Input    8 Bit        Muxes := 2     
 	   2 Input    8 Bit        Muxes := 3     
 	   2 Input    3 Bit        Muxes := 1     
-	   6 Input    3 Bit        Muxes := 1     
+	   8 Input    3 Bit        Muxes := 1     
 	   3 Input    3 Bit        Muxes := 1     
 	   4 Input    1 Bit        Muxes := 3     
-	   2 Input    1 Bit        Muxes := 14    
-	   3 Input    1 Bit        Muxes := 3     
+	   2 Input    1 Bit        Muxes := 15    
+	   3 Input    1 Bit        Muxes := 4     
 	   9 Input    1 Bit        Muxes := 7     
-	   6 Input    1 Bit        Muxes := 11    
+	   6 Input    1 Bit        Muxes := 3     
+	   8 Input    1 Bit        Muxes := 9     
 ---------------------------------------------------------------------------------
 Finished RTL Component Statistics 
 ---------------------------------------------------------------------------------
@@ -158,7 +160,7 @@ WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
 WARNING: [Synth 8-3917] design display has port o_oled_vcc driven by constant 1
 WARNING: [Synth 8-3917] design display has port o_oled_gnd driven by constant 0
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:48 ; elapsed = 00:00:50 . Memory (MB): peak = 1406.695 ; gain = 579.637
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:28 ; elapsed = 00:00:29 . Memory (MB): peak = 1514.004 ; gain = 688.938
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start ROM, RAM, DSP, Shift Register and Retiming Reporting
@@ -179,13 +181,13 @@ Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
 Start Applying XDC Timing Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:01:00 ; elapsed = 00:01:02 . Memory (MB): peak = 1406.695 ; gain = 579.637
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:34 ; elapsed = 00:00:36 . Memory (MB): peak = 1514.004 ; gain = 688.938
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:01:02 ; elapsed = 00:01:04 . Memory (MB): peak = 1421.273 ; gain = 594.215
+Finished Timing Optimization : Time (s): cpu = 00:00:36 ; elapsed = 00:00:37 . Memory (MB): peak = 1514.004 ; gain = 688.938
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Technology Mapping
@@ -193,7 +195,7 @@ Start Technology Mapping
 WARNING: [Synth 8-3332] Sequential element (I2C_CONTROLLER/FSM_onehot_state_reg[7]) is unused and will be removed from module display.
 WARNING: [Synth 8-3332] Sequential element (I2C_CONTROLLER/FSM_onehot_state_reg[6]) is unused and will be removed from module display.
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:01:02 ; elapsed = 00:01:04 . Memory (MB): peak = 1421.289 ; gain = 594.230
+Finished Technology Mapping : Time (s): cpu = 00:00:36 ; elapsed = 00:00:37 . Memory (MB): peak = 1514.004 ; gain = 688.938
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start IO Insertion
@@ -211,37 +213,37 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:01:15 ; elapsed = 00:01:18 . Memory (MB): peak = 1421.289 ; gain = 594.230
+Finished IO Insertion : Time (s): cpu = 00:00:41 ; elapsed = 00:00:43 . Memory (MB): peak = 1514.004 ; gain = 688.938
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:01:15 ; elapsed = 00:01:18 . Memory (MB): peak = 1421.289 ; gain = 594.230
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:41 ; elapsed = 00:00:43 . Memory (MB): peak = 1514.004 ; gain = 688.938
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:01:15 ; elapsed = 00:01:18 . Memory (MB): peak = 1421.289 ; gain = 594.230
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:42 ; elapsed = 00:00:43 . Memory (MB): peak = 1514.004 ; gain = 688.938
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:01:15 ; elapsed = 00:01:18 . Memory (MB): peak = 1421.289 ; gain = 594.230
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:42 ; elapsed = 00:00:43 . Memory (MB): peak = 1514.004 ; gain = 688.938
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:01:15 ; elapsed = 00:01:18 . Memory (MB): peak = 1421.289 ; gain = 594.230
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:42 ; elapsed = 00:00:43 . Memory (MB): peak = 1514.004 ; gain = 688.938
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:01:15 ; elapsed = 00:01:18 . Memory (MB): peak = 1421.289 ; gain = 594.230
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:42 ; elapsed = 00:00:43 . Memory (MB): peak = 1514.004 ; gain = 688.938
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -259,41 +261,41 @@ Report Cell Usage:
 |      |Cell          |Count |
 +------+--------------+------+
 |1     |clk_50hz_bbox |     1|
-|2     |CARRY4        |    32|
+|2     |CARRY4        |    40|
 |3     |LUT1          |     2|
-|4     |LUT2          |    13|
-|5     |LUT3          |    13|
-|6     |LUT4          |    34|
-|7     |LUT5          |    68|
-|8     |LUT6          |    46|
+|4     |LUT2          |    44|
+|5     |LUT3          |    16|
+|6     |LUT4          |    29|
+|7     |LUT5          |    44|
+|8     |LUT6          |    98|
 |9     |MUXF7         |     2|
-|10    |FDRE          |   142|
+|10    |FDRE          |   175|
 |11    |IOBUF         |     1|
 |12    |OBUF          |     2|
 |13    |OBUFT         |     1|
 +------+--------------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:01:15 ; elapsed = 00:01:18 . Memory (MB): peak = 1421.289 ; gain = 594.230
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:42 ; elapsed = 00:00:43 . Memory (MB): peak = 1514.004 ; gain = 688.938
 ---------------------------------------------------------------------------------
 Synthesis finished with 0 errors, 0 critical warnings and 5 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:00:54 ; elapsed = 00:01:13 . Memory (MB): peak = 1421.289 ; gain = 594.230
-Synthesis Optimization Complete : Time (s): cpu = 00:01:16 ; elapsed = 00:01:18 . Memory (MB): peak = 1421.289 ; gain = 594.230
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:29 ; elapsed = 00:00:40 . Memory (MB): peak = 1514.004 ; gain = 688.938
+Synthesis Optimization Complete : Time (s): cpu = 00:00:42 ; elapsed = 00:00:43 . Memory (MB): peak = 1514.004 ; gain = 688.938
 INFO: [Project 1-571] Translating synthesized netlist
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.018 . Memory (MB): peak = 1424.914 ; gain = 0.000
-INFO: [Netlist 29-17] Analyzing 35 Unisim elements for replacement
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.009 . Memory (MB): peak = 1514.004 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 43 Unisim elements for replacement
 INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1428.449 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1514.004 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
   A total of 1 instances were transformed.
   IOBUF => IOBUF (IBUF, OBUFT): 1 instance 
 
-Synth Design complete, checksum: f9d1ed0
+Synth Design complete, checksum: 564be82c
 INFO: [Common 17-83] Releasing license: Synthesis
-31 Infos, 7 Warnings, 0 Critical Warnings and 0 Errors encountered.
+31 Infos, 8 Warnings, 0 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:01:26 ; elapsed = 00:01:30 . Memory (MB): peak = 1428.449 ; gain = 997.457
-INFO: [Common 17-1381] The checkpoint 'C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1/display.dcp' has been generated.
+synth_design: Time (s): cpu = 00:00:47 ; elapsed = 00:00:49 . Memory (MB): peak = 1514.004 ; gain = 1083.426
+INFO: [Common 17-1381] The checkpoint 'D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1/display.dcp' has been generated.
 INFO: [runtcl-4] Executing : report_utilization -file display_utilization_synth.rpt -pb display_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Tue Jun 13 15:42:40 2023...
+INFO: [Common 17-206] Exiting Vivado at Wed Jun 14 22:50:35 2023...

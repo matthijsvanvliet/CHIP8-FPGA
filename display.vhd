@@ -71,7 +71,9 @@ architecture rtl of display is
         s_SEND_CONTROL,
         s_INIT,
         s_REFRESH,
-        s_SEND_PIXEL_DATA
+        s_DELAY,
+        s_SEND_PIXEL_DATA,
+        s_SET_PIXEL
     );
     signal r_SM_DISPLAY : t_SM_DISPLAY := s_CLOCK_INIT;
 
@@ -107,9 +109,6 @@ architecture rtl of display is
 
     signal r_PREV_BUSY      : std_logic := '0';
 
-    constant c_DELAY_BETWEEN_COM : integer := (c_INPUT_CLOCK / c_BUS_CLOCK) * 10; -- 10 scl clock cycles between commands (~30 us)
-    signal r_DELAY_COUNTER : integer := 0;
-
     constant c_INIT_COMMAND_LENGTH : integer := 26;
     type t_INIT_COMMANDS is array (0 to c_INIT_COMMAND_LENGTH-1) of std_logic_vector(7 downto 0);
     constant c_INIT_COMMANDS : t_INIT_COMMANDS := (
@@ -128,16 +127,16 @@ architecture rtl of display is
         c_SSD1306_SEGREMAP or x"01",
         c_SSD1306_COMSCANDEC,
         c_SSD1306_SETCOMPINS,
-        x"02",
+        x"12",
         c_SSD1306_SETCONTRAST,
-        x"8F",
+        x"CF",
         c_SSD1306_SETPRECHARGE,
-        x"F1",
+        x"22",
         c_SSD1306_SETVCOMDETECT,
-        x"40",
+        x"00",
+        c_SSD1306_DEACTIVATE_SCROLL,
         c_SSD1306_DISPLAYALLON_RESUME,
         c_SSD1306_NORMALDISPLAY,
-        c_SSD1306_DEACTIVATE_SCROLL,
         c_SSD1306_DISPLAYON
     );
 
@@ -146,7 +145,7 @@ architecture rtl of display is
     constant c_REFRESH_COMMANDS : t_REFRESH_COMMANDS := (
         c_SSD1306_PAGEADDR,
         x"00",
-        x"FF",
+        x"07",
         c_SSD1306_COLUMNADDR,
         x"00",
         std_logic_vector(to_unsigned(c_DISPLAY_BUFFER_WIDTH - 1, 8))
@@ -156,7 +155,15 @@ architecture rtl of display is
     signal r_REFRESH_COUNTER    : integer   := 0;
     signal r_PIXEL_COUNTER      : integer   := 0;
 
-    signal r_START_PIXEL_DATA   : std_logic := '0';
+    signal r_START_PIXEL_DATA   : std_logic := '1';
+
+    constant c_DELAY_TIME       : integer   := (c_INPUT_CLOCK / c_BUS_CLOCK) * 100; -- 100 sla clock pulses
+    constant c_SETUP_DELAY_TIME : integer   := 50_000_000 / 50_000; -- 1 sec
+    signal r_SETUP_TIME_ENABLE  : std_logic := '1';
+    signal r_DELAY_COUNTER      : integer   := 0;
+
+
+    signal r_DRAW_COUNTER : integer := 0;
 
 begin
 
@@ -201,7 +208,7 @@ begin
     begin
         r_ADDR <= c_SLAVE_ADDRESS;
         r_RW <= '0';
-        for i in 1234 to 1678 loop
+        for i in 690 to 1903 loop
             r_DISPLAY_BUFFER(i) <= '1';
         end loop;
         wait;
@@ -210,14 +217,14 @@ begin
     p_STATE_MACHINE : process (w_CLOCK_OUT1) is
         variable v_COUNTER : integer := 0;
     begin
-        if rising_edge(w_CLOCK_OUT1) then
+        if rising_edge(w_CLOCK_OUT1) then    
             r_PREV_BUSY <= w_BUSY;
 
             case r_SM_DISPLAY is
                 when s_CLOCK_INIT =>
                     r_ENA <= '0';
                     if w_LOCKED = '1' and w_BUSY = '0' then
-                        r_SM_DISPLAY <= s_SEND_CONTROL;
+                        r_SM_DISPLAY <= s_DELAY;
                     end if; 
                 when s_SEND_CONTROL =>
                     if r_START_PIXEL_DATA = '0' then
@@ -243,10 +250,44 @@ begin
 
                     if w_BUSY = '1' and r_PREV_BUSY = '0' then
                         if r_COM_COUNTER = c_INIT_COMMAND_LENGTH - 1 then
-                            r_SM_DISPLAY <= s_SEND_CONTROL;
+                            r_SM_DISPLAY <= s_DELAY;
                             r_ENA <= '0';
                         else
                             r_COM_COUNTER <= r_COM_COUNTER + 1;
+                        end if;
+                    end if;
+                
+                when s_SET_PIXEL =>
+                    --r_DISPLAY_BUFFER(r_DRAW_COUNTER) <= '1';
+                    r_DRAW_COUNTER <= r_DRAW_COUNTER + 1;
+                    if r_DRAW_COUNTER + 1 = c_DISPLAY_LENGTH then
+                        r_DRAW_COUNTER <= 0;
+                    end if;
+
+                    if r_DRAW_COUNTER > 0 then
+                        --r_DISPLAY_BUFFER(r_DRAW_COUNTER-1) <= '0';
+                    end if;
+                
+                    r_SM_DISPLAY <= s_DELAY;
+                when s_DELAY =>
+                    r_DELAY_COUNTER <= r_DELAY_COUNTER + 1;
+                    r_ENA <= '0';
+
+                    if r_SETUP_TIME_ENABLE = '1' then
+                        if r_DELAY_COUNTER = c_SETUP_DELAY_TIME then
+                            r_SETUP_TIME_ENABLE <= '0';
+                            r_DELAY_COUNTER <= 0;
+                            r_SM_DISPLAY <= s_SEND_CONTROL;
+                        end if;
+                    elsif r_SETUP_TIME_ENABLE = '0' then
+                        if r_DELAY_COUNTER = c_DELAY_TIME then
+                            r_DELAY_COUNTER <= 0;
+                            r_SM_DISPLAY <= s_SEND_CONTROL;
+                            if r_START_PIXEL_DATA = '0' then
+                                r_START_PIXEL_DATA <= '1';
+                            elsif r_START_PIXEL_DATA = '1' then
+                                r_START_PIXEL_DATA <= '0';
+                            end if;
                         end if;
                     end if;
                     
@@ -256,8 +297,8 @@ begin
                     if w_BUSY = '1' and r_PREV_BUSY = '0' then
                         if r_REFRESH_COUNTER = c_REFRESH_COMMAND_LENGTH - 1 then
                             r_ENA <= '0';
-                            r_START_PIXEL_DATA <= '1';
-                            r_SM_DISPLAY <= s_SEND_CONTROL;
+                            --r_START_PIXEL_DATA <= '1';
+                            r_SM_DISPLAY <= s_SET_PIXEL;
                             r_REFRESH_COUNTER <= 0;
                         else
                             r_REFRESH_COUNTER <= r_REFRESH_COUNTER + 1;
@@ -278,8 +319,8 @@ begin
                     if w_BUSY = '0' and r_PREV_BUSY = '1' then
                         if r_PIXEL_COUNTER = c_DISPLAY_BUFFER_LENGTH - 2 then
                             r_PIXEL_COUNTER <= 0;
-                            r_START_PIXEL_DATA <= '0';
-                            r_SM_DISPLAY <= s_SEND_CONTROL;
+                            --r_START_PIXEL_DATA <= '0';
+                            r_SM_DISPLAY <= s_DELAY;
                         end if;
                     end if;
 
