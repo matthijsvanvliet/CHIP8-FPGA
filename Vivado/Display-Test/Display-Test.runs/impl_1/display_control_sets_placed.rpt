@@ -1,8 +1,8 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
-| Date         : Wed Jun 14 22:51:20 2023
-| Host         : DESKTOP-MATTHIJS running 64-bit major release  (build 9200)
+| Date         : Thu Jun 15 15:14:35 2023
+| Host         : LAPTOP-IT23Q15D running 64-bit major release  (build 9200)
 | Command      : report_control_sets -verbose -file display_control_sets_placed.rpt
 | Design       : display
 | Device       : xc7a100t
@@ -23,11 +23,11 @@ Table of Contents
 +----------------------------------------------------------+-------+
 |                          Status                          | Count |
 +----------------------------------------------------------+-------+
-| Total control sets                                       |     8 |
-|    Minimum number of control sets                        |     8 |
+| Total control sets                                       |    10 |
+|    Minimum number of control sets                        |    10 |
 |    Addition due to synthesis replication                 |     0 |
 |    Addition due to physical synthesis replication        |     0 |
-| Unused register locations in slices containing registers |     9 |
+| Unused register locations in slices containing registers |    15 |
 +----------------------------------------------------------+-------+
 * Control sets can be merged at opt_design using control_set_merge or merge_equivalent_drivers
 ** Run report_qor_suggestions for automated merging and remapping suggestions
@@ -39,15 +39,15 @@ Table of Contents
 +--------------------+-------+
 |       Fanout       | Count |
 +--------------------+-------+
-| Total control sets |     8 |
-| >= 0 to < 4        |     0 |
+| Total control sets |    10 |
+| >= 0 to < 4        |     1 |
 | >= 4 to < 6        |     0 |
 | >= 6 to < 8        |     1 |
 | >= 8 to < 10       |     2 |
 | >= 10 to < 12      |     0 |
 | >= 12 to < 14      |     0 |
 | >= 14 to < 16      |     0 |
-| >= 16              |     5 |
+| >= 16              |     6 |
 +--------------------+-------+
 * Control sets can be remapped at either synth_design or opt_design
 
@@ -58,10 +58,10 @@ Table of Contents
 +--------------+-----------------------+------------------------+-----------------+--------------+
 | Clock Enable | Synchronous Set/Reset | Asynchronous Set/Reset | Total Registers | Total Slices |
 +--------------+-----------------------+------------------------+-----------------+--------------+
-| No           | No                    | No                     |              26 |           14 |
+| No           | No                    | No                     |            2075 |          603 |
 | No           | No                    | Yes                    |               0 |            0 |
 | No           | Yes                   | No                     |               0 |            0 |
-| Yes          | No                    | No                     |              87 |           25 |
+| Yes          | No                    | No                     |             128 |           40 |
 | Yes          | No                    | Yes                    |               0 |            0 |
 | Yes          | Yes                   | No                     |              62 |           16 |
 +--------------+-----------------------+------------------------+-----------------+--------------+
@@ -70,17 +70,19 @@ Table of Contents
 4. Detailed Control Set Information
 -----------------------------------
 
-+---------------------------+--------------------------------------+------------------------------------------+------------------+----------------+--------------+
-|        Clock Signal       |             Enable Signal            |             Set/Reset Signal             | Slice Load Count | Bel Load Count | Bels / Slice |
-+---------------------------+--------------------------------------+------------------------------------------+------------------+----------------+--------------+
-|  CLOCK_50HZ/inst/clk_out1 | I2C_CONTROLLER/busy1                 |                                          |                3 |              7 |         2.33 |
-|  CLOCK_50HZ/inst/clk_out1 | I2C_CONTROLLER/addr_rw0              |                                          |                3 |              8 |         2.67 |
-|  CLOCK_50HZ/inst/clk_out1 | r_DATA_WR[7]_i_1_n_0                 |                                          |                3 |              8 |         2.67 |
-|  CLOCK_50HZ/inst/clk_out1 |                                      |                                          |               14 |             26 |         1.86 |
-|  CLOCK_50HZ/inst/clk_out1 | I2C_CONTROLLER/r_SM_DISPLAY_reg[1]_0 | I2C_CONTROLLER/r_REFRESH_COUNTER_reg[28] |                8 |             31 |         3.88 |
-|  CLOCK_50HZ/inst/clk_out1 | r_DELAY_COUNTER[30]_i_2_n_0          | r_DELAY_COUNTER[30]_i_1_n_0              |                8 |             31 |         3.88 |
-|  CLOCK_50HZ/inst/clk_out1 | I2C_CONTROLLER/busy_reg_0            |                                          |                8 |             32 |         4.00 |
-|  CLOCK_50HZ/inst/clk_out1 | I2C_CONTROLLER/sel                   |                                          |                8 |             32 |         4.00 |
-+---------------------------+--------------------------------------+------------------------------------------+------------------+----------------+--------------+
++---------------------------+--------------------------------+------------------------------------+------------------+----------------+--------------+
+|        Clock Signal       |          Enable Signal         |          Set/Reset Signal          | Slice Load Count | Bel Load Count | Bels / Slice |
++---------------------------+--------------------------------+------------------------------------+------------------+----------------+--------------+
+|  CLOCK_50HZ/inst/clk_out1 | r_DELAY_COUNTER[31]_i_2_n_0    |                                    |                1 |              1 |         1.00 |
+|  CLOCK_50HZ/inst/clk_out1 | I2C_CONTROLLER/busy1           |                                    |                1 |              7 |         7.00 |
+|  CLOCK_50HZ/inst/clk_out1 | I2C_CONTROLLER/addr_rw0        |                                    |                2 |              8 |         4.00 |
+|  CLOCK_50HZ/inst/clk_out1 | r_DATA_WR[7]_i_1_n_0           |                                    |                4 |              8 |         2.00 |
+|  CLOCK_50HZ/inst/clk_out1 | I2C_CONTROLLER/r_PREV_BUSY_reg | I2C_CONTROLLER/r_SM_DISPLAY_reg[2] |                8 |             31 |         3.88 |
+|  CLOCK_50HZ/inst/clk_out1 | r_DELAY_COUNTER[31]_i_2_n_0    | r_DELAY_COUNTER[31]_i_1_n_0        |                8 |             31 |         3.88 |
+|  CLOCK_50HZ/inst/clk_out1 | I2C_CONTROLLER/sel             |                                    |                8 |             32 |         4.00 |
+|  CLOCK_50HZ/inst/clk_out1 | r_DRAW_COUNTER[0]_i_1_n_0      |                                    |                8 |             32 |         4.00 |
+|  CLOCK_50HZ/inst/clk_out1 | I2C_CONTROLLER/busy_reg_0      |                                    |               16 |             40 |         2.50 |
+|  CLOCK_50HZ/inst/clk_out1 |                                |                                    |              603 |           2075 |         3.44 |
++---------------------------+--------------------------------+------------------------------------+------------------+----------------+--------------+
 
 

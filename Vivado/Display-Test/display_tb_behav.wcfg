@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000000 us"></ZoomStartTime>
-      <ZoomEndTime time="1,146.000001 us"></ZoomEndTime>
-      <Cursor1Time time="0.000000 us"></Cursor1Time>
+      <ZoomStartTime time="7,183.620000 us"></ZoomStartTime>
+      <ZoomEndTime time="7,474.020001 us"></ZoomEndTime>
+      <Cursor1Time time="7,312.020000 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="180"></NameColumnWidth>
-      <ValueColumnWidth column_width="142"></ValueColumnWidth>
+      <ValueColumnWidth column_width="137"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="6" />
+   <WVObjectSize size="10" />
    <wvobject fp_name="/display_tb/r_CLOCK" type="logic">
       <obj_property name="ElementShortName">r_CLOCK</obj_property>
       <obj_property name="ObjectShortName">r_CLOCK</obj_property>
@@ -32,16 +32,32 @@
       <obj_property name="ElementShortName">w_OLED_VCC</obj_property>
       <obj_property name="ObjectShortName">w_OLED_VCC</obj_property>
    </wvobject>
-   <wvobject fp_name="/display_tb/w_OLED_SCL" type="logic">
-      <obj_property name="ElementShortName">w_OLED_SCL</obj_property>
-      <obj_property name="ObjectShortName">w_OLED_SCL</obj_property>
-   </wvobject>
    <wvobject fp_name="/display_tb/w_OLED_SDA" type="logic">
       <obj_property name="ElementShortName">w_OLED_SDA</obj_property>
       <obj_property name="ObjectShortName">w_OLED_SDA</obj_property>
    </wvobject>
+   <wvobject fp_name="/display_tb/w_OLED_SCL" type="logic">
+      <obj_property name="ElementShortName">w_OLED_SCL</obj_property>
+      <obj_property name="ObjectShortName">w_OLED_SCL</obj_property>
+   </wvobject>
    <wvobject fp_name="/display_tb/DUT/r_SM_DISPLAY" type="other">
       <obj_property name="ElementShortName">r_SM_DISPLAY</obj_property>
       <obj_property name="ObjectShortName">r_SM_DISPLAY</obj_property>
+   </wvobject>
+   <wvobject fp_name="/display_tb/DUT/r_DATA_WR" type="array">
+      <obj_property name="ElementShortName">r_DATA_WR[7:0]</obj_property>
+      <obj_property name="ObjectShortName">r_DATA_WR[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/display_tb/DUT/w_BUSY" type="logic">
+      <obj_property name="ElementShortName">w_BUSY</obj_property>
+      <obj_property name="ObjectShortName">w_BUSY</obj_property>
+   </wvobject>
+   <wvobject fp_name="/display_tb/DUT/r_PREV_BUSY" type="logic">
+      <obj_property name="ElementShortName">r_PREV_BUSY</obj_property>
+      <obj_property name="ObjectShortName">r_PREV_BUSY</obj_property>
+   </wvobject>
+   <wvobject fp_name="/display_tb/DUT/r_ENA" type="logic">
+      <obj_property name="ElementShortName">r_ENA</obj_property>
+      <obj_property name="ObjectShortName">r_ENA</obj_property>
    </wvobject>
 </wave_config>

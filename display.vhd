@@ -49,7 +49,7 @@ architecture rtl of display is
     --signal r_CLOCK_IN       : std_logic := '0';
 
     constant c_INPUT_CLOCK  : integer := g_INPUT_CLOCK_FREQ;
-    constant c_BUS_CLOCK    : integer := 400_000;
+    constant c_BUS_CLOCK    : integer := 100_000;
 
     signal r_CLK        : std_logic := '0';
     signal r_RESET_N    : std_logic := '1';
@@ -129,11 +129,11 @@ architecture rtl of display is
         c_SSD1306_SETCOMPINS,
         x"12",
         c_SSD1306_SETCONTRAST,
-        x"CF",
+        x"8F",
         c_SSD1306_SETPRECHARGE,
-        x"22",
+        x"F1",
         c_SSD1306_SETVCOMDETECT,
-        x"00",
+        x"40",
         c_SSD1306_DEACTIVATE_SCROLL,
         c_SSD1306_DISPLAYALLON_RESUME,
         c_SSD1306_NORMALDISPLAY,
@@ -147,18 +147,18 @@ architecture rtl of display is
         x"00",
         x"07",
         c_SSD1306_COLUMNADDR,
-        x"00",
-        std_logic_vector(to_unsigned(c_DISPLAY_BUFFER_WIDTH - 1, 8))
+        x"3F",
+        std_logic_vector(to_unsigned((c_DISPLAY_BUFFER_WIDTH * 2) - 1, 8))
     );
 
     signal r_COM_COUNTER        : integer   := 0;
     signal r_REFRESH_COUNTER    : integer   := 0;
     signal r_PIXEL_COUNTER      : integer   := 0;
 
-    signal r_START_PIXEL_DATA   : std_logic := '1';
+    signal r_START_PIXEL_DATA   : std_logic := '0';
 
     constant c_DELAY_TIME       : integer   := (c_INPUT_CLOCK / c_BUS_CLOCK) * 100; -- 100 sla clock pulses
-    constant c_SETUP_DELAY_TIME : integer   := 50_000_000 / 50_000; -- 1 sec
+    constant c_SETUP_DELAY_TIME : integer   := 50_000_000 * 2; -- 1 sec
     signal r_SETUP_TIME_ENABLE  : std_logic := '1';
     signal r_DELAY_COUNTER      : integer   := 0;
 
@@ -208,9 +208,9 @@ begin
     begin
         r_ADDR <= c_SLAVE_ADDRESS;
         r_RW <= '0';
-        for i in 690 to 1903 loop
-            r_DISPLAY_BUFFER(i) <= '1';
-        end loop;
+        -- for i in 690 to 1903 loop
+        --     r_DISPLAY_BUFFER(i) <= '1';
+        -- end loop;
         wait;
     end process p_INITIALISE;
 
@@ -258,14 +258,14 @@ begin
                     end if;
                 
                 when s_SET_PIXEL =>
-                    --r_DISPLAY_BUFFER(r_DRAW_COUNTER) <= '1';
+                    r_DISPLAY_BUFFER(r_DRAW_COUNTER) <= '1';
                     r_DRAW_COUNTER <= r_DRAW_COUNTER + 1;
                     if r_DRAW_COUNTER + 1 = c_DISPLAY_LENGTH then
                         r_DRAW_COUNTER <= 0;
                     end if;
 
                     if r_DRAW_COUNTER > 0 then
-                        --r_DISPLAY_BUFFER(r_DRAW_COUNTER-1) <= '0';
+                        r_DISPLAY_BUFFER(r_DRAW_COUNTER-1) <= '0';
                     end if;
                 
                     r_SM_DISPLAY <= s_DELAY;
