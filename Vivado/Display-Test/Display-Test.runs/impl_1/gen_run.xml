@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="impl_1" LaunchPart="xc7a100tcsg324-1" LaunchTime="1687106327">
+<GenRun Id="impl_1" LaunchPart="xc7a100tcsg324-1" LaunchTime="1687107363">
   <File Type="ROUTE-PWR" Name="display_power_routed.rpt"/>
   <File Type="PA-TCL" Name="display.tcl"/>
   <File Type="BITSTR-MMI" Name="display.mmi"/>
@@ -81,6 +81,12 @@
   <File Type="POSTROUTE-PHYSOPT-RQS-RPT" Name="postroute_physopt_report_qor_suggestions_0.rpt"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1" RelGenDir="$PGENDIR/sources_1">
     <Filter Type="Srcs"/>
+    <File Path="$PPRDIR/../../ssd1306.vhd">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
     <File Path="$PPRDIR/../../i2c_master.vhd">
       <FileInfo>
         <Attr Name="UsedIn" Val="synthesis"/>

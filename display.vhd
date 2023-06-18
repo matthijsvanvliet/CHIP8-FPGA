@@ -1,6 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use work.ssd1306.all;
 
 entity display is
     generic
@@ -74,45 +75,15 @@ architecture arch_display of display is
 
     type t_SM_DISPLAY is (
         s_CLOCK_INIT,
-        s_COM_INIT,
         s_SEND_CONTROL,
         s_INIT,
         s_REFRESH,
         s_DELAY,
-        s_SEND_PIXEL_DATA,
-        s_SET_PIXEL
+        s_SEND_PIXEL_DATA
     );
     signal r_SM_DISPLAY : t_SM_DISPLAY := s_CLOCK_INIT;
 
     constant c_SLAVE_ADDRESS : std_logic_vector(6 downto 0) := "0111100"; -- 0x3C
-
-    constant c_SSD1306_MEMORYMODE           : std_logic_vector(7 downto 0) := x"20";
-    constant c_SSD1306_COLUMNADDR           : std_logic_vector(7 downto 0) := x"21";
-    constant c_SSD1306_PAGEADDR             : std_logic_vector(7 downto 0) := x"22";
-    constant c_SSD1306_SETSTARTLINE         : std_logic_vector(7 downto 0) := x"40";
-    constant c_SSD1306_SETCONTRAST          : std_logic_vector(7 downto 0) := x"81";
-    constant c_SSD1306_CHARGEPUMP           : std_logic_vector(7 downto 0) := x"8D";
-    constant c_SSD1306_SEGREMAP             : std_logic_vector(7 downto 0) := x"A0";
-    constant c_SSD1306_DISPLAYALLON_RESUME  : std_logic_vector(7 downto 0) := x"A4";
-    constant c_SSD1306_NORMALDISPLAY        : std_logic_vector(7 downto 0) := x"A6";
-    constant c_SSD1306_INVERTDISPLAY        : std_logic_vector(7 downto 0) := x"A7";
-    constant c_SSD1306_SETMULTIPLEX         : std_logic_vector(7 downto 0) := x"A8";
-    constant c_SSD1306_DISPLAYOFF           : std_logic_vector(7 downto 0) := x"AE";
-    constant c_SSD1306_DISPLAYON            : std_logic_vector(7 downto 0) := x"AF";
-    constant c_SSD1306_COMSCANDEC           : std_logic_vector(7 downto 0) := x"C8";
-    constant c_SSD1306_SETDISPLAYOFFSET     : std_logic_vector(7 downto 0) := x"D3";
-    constant c_SSD1306_SETDISPLAYCLOCKDIV   : std_logic_vector(7 downto 0) := x"D5";
-    constant c_SSD1306_SETPRECHARGE         : std_logic_vector(7 downto 0) := x"D9";
-    constant c_SSD1306_SETCOMPINS           : std_logic_vector(7 downto 0) := x"DA";
-    constant c_SSD1306_SETVCOMDETECT        : std_logic_vector(7 downto 0) := x"DB";
-
-    constant c_SSD1306_RIGHT_HORIZONTAL_SCROLL              : std_logic_vector(7 downto 0) := x"26"; -- Init rt scroll
-    constant c_SSD1306_LEFT_HORIZONTAL_SCROLL               : std_logic_vector(7 downto 0) := x"27"; -- Init left scroll
-    constant c_SSD1306_VERTICAL_AND_RIGHT_HORIZONTAL_SCROLL : std_logic_vector(7 downto 0) := x"29"; -- Init diag scroll
-    constant c_SSD1306_VERTICAL_AND_LEFT_HORIZONTAL_SCROLL  : std_logic_vector(7 downto 0) := x"2A"; -- Init diag scroll
-    constant c_SSD1306_DEACTIVATE_SCROLL                    : std_logic_vector(7 downto 0) := x"2E"; -- Stop scroll
-    constant c_SSD1306_ACTIVATE_SCROLL                      : std_logic_vector(7 downto 0) := x"2F"; -- Start scroll
-    constant c_SSD1306_SET_VERTICAL_SCROLL_AREA             : std_logic_vector(7 downto 0) := x"A3"; -- Set scroll range
 
     signal r_PREV_BUSY      : std_logic := '0';
 
@@ -197,6 +168,7 @@ begin
     port map (-- Clock in ports
         -- Clock out ports
         clk_out1    => w_CLOCK_OUT1,
+
         -- Status and control signals
         reset       => r_CLOCK_RESET,
         locked      => w_LOCKED,
@@ -215,10 +187,12 @@ begin
         wait;
     end process p_INITIALISE;
 
+    -- Rotates vertical slices of 8 bits in the original buffer to an array
+    -- with a length of 256 ((width * length) / 8) where each value is 8 bits.
     p_REFORMAT_BUFFER : process (w_CLOCK_OUT1) is
         variable v_TEMP     : std_logic_vector(c_DISPLAY_LENGTH-1 downto 0) := (others => '0');
         constant c_SLICE    : natural := 8;
-        variable v_INDEX    : natural;
+        variable v_INDEX    : natural := 0;
     begin
         if rising_edge(w_CLOCK_OUT1) then 
             for i in 0 to c_DISPLAY_BUFFER_HEIGHT-1 loop
@@ -228,11 +202,9 @@ begin
 
             for i in 0 to c_DISPLAY_BUFFER_LENGTH - 1 loop
                 v_INDEX := i / c_DISPLAY_BUFFER_WIDTH;
-                --for l in 0 to 3 loop
                     for j in 0 to c_SLICE - 1 loop
                         r_FORMATTED_DISPLAY_BUFFER(c_DISPLAY_BUFFER_LENGTH-1-i)(c_SLICE - 1 - j) <= r_ARRAY_DISPLAY_BUFFER(j + (c_SLICE * v_INDEX))(c_DISPLAY_BUFFER_WIDTH - 1 - (i mod 64));
                     end loop;
-                --end loop;
             end loop;
         end if;
     end process p_REFORMAT_BUFFER;
@@ -267,7 +239,6 @@ begin
                             r_SM_DISPLAY <= s_INIT;
                         end if;
                     end if;
-
                 when s_INIT =>
                     r_DATA_WR <= c_INIT_COMMANDS(r_COM_COUNTER);
 
@@ -279,17 +250,6 @@ begin
                             r_COM_COUNTER <= r_COM_COUNTER + 1;
                         end if;
                     end if;
-                
-                when s_SET_PIXEL =>
-                    if r_DRAW_COUNTER + 1 = c_DISPLAY_LENGTH then
-                        r_DRAW_COUNTER <= 0;
-                    end if;
-
-                    if r_DRAW_COUNTER > 0 then
-                        r_DISPLAY_BUFFER(r_DRAW_COUNTER-1) <= '0';
-                    end if;
-                
-                    r_SM_DISPLAY <= s_DELAY;
                 when s_DELAY =>
                     r_DELAY_COUNTER <= r_DELAY_COUNTER + 1;
                     r_ENA <= '0';
@@ -306,7 +266,6 @@ begin
                             r_SM_DISPLAY <= s_SEND_CONTROL;
                         end if;
                     end if;
-                    
                 when s_REFRESH =>
                     r_DATA_WR <= c_REFRESH_COMMANDS(r_REFRESH_COUNTER);
 
@@ -314,13 +273,12 @@ begin
                         if r_REFRESH_COUNTER = c_REFRESH_COMMAND_LENGTH - 1 then
                             r_ENA <= '0';
                             r_START_PIXEL_DATA <= '1';
-                            r_SM_DISPLAY <= s_SET_PIXEL;
+                            r_SM_DISPLAY <= s_DELAY;
                             r_REFRESH_COUNTER <= 0;
                         else
                             r_REFRESH_COUNTER <= r_REFRESH_COUNTER + 1;
                         end if;
                     end if;
-
                 when s_SEND_PIXEL_DATA =>
                     r_DATA_WR <= r_FORMATTED_DISPLAY_BUFFER(r_PIXEL_COUNTER);
 
@@ -338,7 +296,6 @@ begin
                             r_SM_DISPLAY <= s_DELAY;
                         end if;
                     end if;
-
                 when others => NULL;
             end case;
         end if;

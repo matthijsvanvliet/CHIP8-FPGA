@@ -1,7 +1,7 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
-| Date         : Sun Jun 18 18:40:40 2023
+| Date         : Sun Jun 18 18:57:59 2023
 | Host         : DESKTOP-MATTHIJS running 64-bit major release  (build 9200)
 | Command      : report_control_sets -verbose -file display_control_sets_placed.rpt
 | Design       : display
@@ -58,10 +58,10 @@ Table of Contents
 +--------------+-----------------------+------------------------+-----------------+--------------+
 | Clock Enable | Synchronous Set/Reset | Asynchronous Set/Reset | Total Registers | Total Slices |
 +--------------+-----------------------+------------------------+-----------------+--------------+
-| No           | No                    | No                     |            1067 |          261 |
+| No           | No                    | No                     |              27 |           14 |
 | No           | No                    | Yes                    |               0 |            0 |
 | No           | Yes                   | No                     |               0 |            0 |
-| Yes          | No                    | No                     |              88 |           29 |
+| Yes          | No                    | No                     |              88 |           28 |
 | Yes          | No                    | Yes                    |               0 |            0 |
 | Yes          | Yes                   | No                     |              62 |           16 |
 +--------------+-----------------------+------------------------+-----------------+--------------+
@@ -73,15 +73,15 @@ Table of Contents
 +---------------------------+----------------------------------+------------------------------------------+------------------+----------------+--------------+
 |        Clock Signal       |           Enable Signal          |             Set/Reset Signal             | Slice Load Count | Bel Load Count | Bels / Slice |
 +---------------------------+----------------------------------+------------------------------------------+------------------+----------------+--------------+
-|  CLOCK_50HZ/inst/clk_out1 | r_DELAY_COUNTER                  |                                          |                1 |              1 |         1.00 |
+|  CLOCK_50HZ/inst/clk_out1 | r_DELAY_COUNTER[31]_i_2_n_0      |                                          |                1 |              1 |         1.00 |
 |  CLOCK_50HZ/inst/clk_out1 | I2C_CONTROLLER/busy1             |                                          |                3 |              7 |         2.33 |
-|  CLOCK_50HZ/inst/clk_out1 | r_DATA_WR                        |                                          |                7 |              8 |         1.14 |
 |  CLOCK_50HZ/inst/clk_out1 | I2C_CONTROLLER/addr_rw0          |                                          |                2 |              8 |         4.00 |
-|  CLOCK_50HZ/inst/clk_out1 | r_DELAY_COUNTER                  | r_DELAY_COUNTER[31]_i_1_n_0              |                8 |             31 |         3.88 |
-|  CLOCK_50HZ/inst/clk_out1 | I2C_CONTROLLER/r_REFRESH_COUNTER | I2C_CONTROLLER/r_REFRESH_COUNTER_reg[27] |                8 |             31 |         3.88 |
+|  CLOCK_50HZ/inst/clk_out1 | r_DATA_WR                        |                                          |                6 |              8 |         1.33 |
+|  CLOCK_50HZ/inst/clk_out1 |                                  |                                          |               14 |             27 |         1.93 |
+|  CLOCK_50HZ/inst/clk_out1 | I2C_CONTROLLER/r_REFRESH_COUNTER | I2C_CONTROLLER/r_REFRESH_COUNTER_reg[16] |                8 |             31 |         3.88 |
+|  CLOCK_50HZ/inst/clk_out1 | r_DELAY_COUNTER[31]_i_2_n_0      | r_DELAY_COUNTER[31]_i_1_n_0              |                8 |             31 |         3.88 |
 |  CLOCK_50HZ/inst/clk_out1 | I2C_CONTROLLER/r_COM_COUNTER     |                                          |                8 |             32 |         4.00 |
 |  CLOCK_50HZ/inst/clk_out1 | I2C_CONTROLLER/r_PIXEL_COUNTER   |                                          |                8 |             32 |         4.00 |
-|  CLOCK_50HZ/inst/clk_out1 |                                  |                                          |              261 |           1067 |         4.09 |
 +---------------------------+----------------------------------+------------------------------------------+------------------+----------------+--------------+
 
 

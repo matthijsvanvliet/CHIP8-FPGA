@@ -91,6 +91,7 @@ set_property ip_cache_permissions {read write} [current_project]
 OPTRACE "Creating in-memory project" END { }
 OPTRACE "Adding files" START { }
 read_vhdl -library xil_defaultlib {
+  D:/git/Overig/CHIP8-FPGA/ssd1306.vhd
   D:/git/Overig/CHIP8-FPGA/i2c_master.vhd
   D:/git/Overig/CHIP8-FPGA/display.vhd
 }
