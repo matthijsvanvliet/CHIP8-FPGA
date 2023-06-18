@@ -62,15 +62,7 @@
     <Option Name="IPStaticSourceDir" Val="$PIPUSERFILESDIR/ipstatic"/>
     <Option Name="EnableBDX" Val="FALSE"/>
     <Option Name="DSABoardId" Val="arty-a7-100"/>
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    <Option Name="WTXSimLaunchSim" Val="252"/>
-=======
-    <Option Name="WTXSimLaunchSim" Val="167"/>
->>>>>>> Stashed changes
-=======
-    <Option Name="WTXSimLaunchSim" Val="167"/>
->>>>>>> Stashed changes
+    <Option Name="WTXSimLaunchSim" Val="253"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
@@ -210,13 +202,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-<<<<<<< Updated upstream
-=======
       <File Path="$PPRDIR/../../ibm-logo.ch8"/>
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
         <Option Name="TopModule" Val="chip8_cpu_tb"/>

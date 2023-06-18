@@ -142,8 +142,8 @@ set_property -dict {PACKAGE_PIN D8 IOSTANDARD LVCMOS33 PULLUP true } [get_ports 
 #set_input_delay -clock i_clck 0 [get_ports {o_oled_scl}]
 #set_false_path -to [get_ports {o_oled_scl o_oled_sda}]
 
-set_property -dict {PACKAGE_PIN C7 IOSTANDARD LVCMOS33} [get_ports o_oled_vcc]
-set_property -dict {PACKAGE_PIN E7 IOSTANDARD LVCMOS33} [get_ports o_oled_gnd]
+#set_property -dict {PACKAGE_PIN C7 IOSTANDARD LVCMOS33} [get_ports o_oled_vcc]
+#set_property -dict {PACKAGE_PIN E7 IOSTANDARD LVCMOS33} [get_ports o_oled_gnd]
 #set_property -dict { PACKAGE_PIN D7    IOSTANDARD LVCMOS33 } [get_ports { ck_a4 }]; #IO_L6N_T0_VREF_35 Sch=ck_a[4]
 #set_property -dict { PACKAGE_PIN D5    IOSTANDARD LVCMOS33 } [get_ports { ck_a5 }]; #IO_L11P_T1_SRCC_35 Sch=ck_a[5]
 

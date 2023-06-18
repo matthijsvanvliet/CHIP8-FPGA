@@ -5,31 +5,39 @@ use ieee.numeric_std.all;
 entity display is
     generic
     (
-        g_INPUT_CLOCK_FREQ : integer := 50_000_000
+        g_INPUT_CLOCK_FREQ      : integer := 50_000_000;
+        g_DISPLAY_BUFFER_WIDTH  : natural   := 64;
+        g_DISPLAY_BUFFER_HEIGHT : natural   := 32
     );
     port (
         -- clock
         i_clck      : in    std_logic;
 
+        -- incoming display buffer
+        i_buffer    : in    std_logic_vector((g_DISPLAY_BUFFER_WIDTH * g_DISPLAY_BUFFER_HEIGHT) - 1 downto 0);
+
         -- oled
         o_oled_scl  : inout std_logic;
-        o_oled_sda  : inout std_logic;
-
-        -- temp
-        o_oled_vcc : out std_logic;
-        o_oled_gnd : out std_logic
+        o_oled_sda  : inout std_logic
     );
 end display;
 
-architecture rtl of display is
+architecture arch_display of display is
 
-    constant c_DISPLAY_BUFFER_WIDTH     : natural   := 64;
-    constant c_DISPLAY_BUFFER_HEIGHT    : natural   := 32;
+    constant c_DISPLAY_BUFFER_WIDTH     : natural   := g_DISPLAY_BUFFER_WIDTH;
+    constant c_DISPLAY_BUFFER_HEIGHT    : natural   := g_DISPLAY_BUFFER_HEIGHT;
     constant c_DISPLAY_LENGTH           : natural   := c_DISPLAY_BUFFER_WIDTH * c_DISPLAY_BUFFER_HEIGHT;
     constant c_DISPLAY_BUFFER_LENGTH    : natural   := c_DISPLAY_LENGTH / 8;
 
-    signal r_DISPLAY_BUFFER : std_logic_vector(c_DISPLAY_LENGTH - 1 downto 0) := (others => '0');
+    signal r_DISPLAY_BUFFER : std_logic_vector(c_DISPLAY_LENGTH - 1 downto 0) := (--(others => '0');
+        "00000000000000000000000000000000000000000000000000000000000000000000000000001111101000000000000000000001000000000011000000000000000000000000001000001101000110011100011101001001100100000000000000000000000000100010101010100101001010010100101000000000000000000000000000000010001010001011110100101001010010010000000000000000000000000000001000101000101000010010100101001000100000000000000000000000000000100010100010011101001001110011101100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111110001100000001100111110000000000011111110000000000000000000111111101110000001110111111100000000011100011100000000000000000111000110111000000111011100111000000011100000110000000000000000111000000011100000000001110001100000001110000011000000000000000011100101001110000000110111000110000000111000001100000000000000001110000000111111000111011100011000000001110001100000000000000000111010001011111110011101110001101111000011111100000000000000000011100111001110011101110111001110111100011100111000000000000000001110000000111000110111011111110000000011100001110000000000000000111000000011100011011101111110000000011100000011000000000000000011100000001110001101110111000000000001110000001100000000000000001110000000111000110111011101010001110111000000110000000000000000011100011011100011011101110111000101011110000111000000000000000000111111101110001101110111000100010100111111111000000000000000000001111100111000110111011100010101110001111111000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011100110001101000000011000000101000011000000000000000000000000000100100101000111000010001001000111010010000000000000000000000000010011110010010000000100100101010001111000000000000000000000000001001000000101000000001010010101000100000000000000000000000000000100011101100011000011000111010011001110000000000000000000000000000000000000000000000000000000000000000000000000000"
+    );
 
+    type t_ARRAY_DISPLAY_BUFFER is array (0 to c_DISPLAY_BUFFER_HEIGHT-1) of std_logic_vector(c_DISPLAY_BUFFER_WIDTH - 1 downto 0);
+    signal r_ARRAY_DISPLAY_BUFFER : t_ARRAY_DISPLAY_BUFFER := (others => x"0000_0000_0000_0000");
+
+    type t_FORMATTED_DISPLAY_BUFFER is array (0 to c_DISPLAY_BUFFER_LENGTH-1) of std_logic_vector(7 downto 0);
+    signal r_FORMATTED_DISPLAY_BUFFER : t_FORMATTED_DISPLAY_BUFFER := (others => x"00");
 
     component clk_50hz
     port
@@ -46,10 +54,9 @@ architecture rtl of display is
     signal w_CLOCK_OUT1     : std_logic;
     signal r_CLOCK_RESET    : std_logic := '0';
     signal w_LOCKED         : std_logic;
-    --signal r_CLOCK_IN       : std_logic := '0';
 
     constant c_INPUT_CLOCK  : integer := g_INPUT_CLOCK_FREQ;
-    constant c_BUS_CLOCK    : integer := 100_000;
+    constant c_BUS_CLOCK    : integer := 400_000;
 
     signal r_CLK        : std_logic := '0';
     signal r_RESET_N    : std_logic := '1';
@@ -116,7 +123,7 @@ architecture rtl of display is
         c_SSD1306_SETDISPLAYCLOCKDIV,
         x"80",
         c_SSD1306_SETMULTIPLEX,
-        x"1F",
+        x"3F",
         c_SSD1306_SETDISPLAYOFFSET,
         x"00",
         c_SSD1306_SETSTARTLINE or x"00",
@@ -129,11 +136,11 @@ architecture rtl of display is
         c_SSD1306_SETCOMPINS,
         x"12",
         c_SSD1306_SETCONTRAST,
-        x"8F",
+        x"CF",
         c_SSD1306_SETPRECHARGE,
-        x"F1",
+        x"22",
         c_SSD1306_SETVCOMDETECT,
-        x"40",
+        x"00",
         c_SSD1306_DEACTIVATE_SCROLL,
         c_SSD1306_DISPLAYALLON_RESUME,
         c_SSD1306_NORMALDISPLAY,
@@ -147,8 +154,8 @@ architecture rtl of display is
         x"00",
         x"07",
         c_SSD1306_COLUMNADDR,
-        x"3F",
-        std_logic_vector(to_unsigned((c_DISPLAY_BUFFER_WIDTH * 2) - 1, 8))
+        x"20",
+        x"5F"
     );
 
     signal r_COM_COUNTER        : integer   := 0;
@@ -158,7 +165,7 @@ architecture rtl of display is
     signal r_START_PIXEL_DATA   : std_logic := '0';
 
     constant c_DELAY_TIME       : integer   := (c_INPUT_CLOCK / c_BUS_CLOCK) * 100; -- 100 sla clock pulses
-    constant c_SETUP_DELAY_TIME : integer   := 50_000_000 * 2; -- 1 sec
+    constant c_SETUP_DELAY_TIME : integer   := 50_000_000; -- 1 sec
     signal r_SETUP_TIME_ENABLE  : std_logic := '1';
     signal r_DELAY_COUNTER      : integer   := 0;
 
@@ -196,9 +203,6 @@ begin
         i_clck      => i_clck
     );
 
-    o_oled_vcc <= '1';
-    o_oled_gnd <= '0';
-
     o_oled_sda <= w_SDA;
     o_oled_scl <= w_SCL;
 
@@ -208,11 +212,30 @@ begin
     begin
         r_ADDR <= c_SLAVE_ADDRESS;
         r_RW <= '0';
-        -- for i in 690 to 1903 loop
-        --     r_DISPLAY_BUFFER(i) <= '1';
-        -- end loop;
         wait;
     end process p_INITIALISE;
+
+    p_REFORMAT_BUFFER : process (w_CLOCK_OUT1) is
+        variable v_TEMP     : std_logic_vector(c_DISPLAY_LENGTH-1 downto 0) := (others => '0');
+        constant c_SLICE    : natural := 8;
+        variable v_INDEX    : natural;
+    begin
+        if rising_edge(w_CLOCK_OUT1) then 
+            for i in 0 to c_DISPLAY_BUFFER_HEIGHT-1 loop
+                v_TEMP := std_logic_vector(shift_left(unsigned(r_DISPLAY_BUFFER), c_DISPLAY_BUFFER_WIDTH * i));
+                r_ARRAY_DISPLAY_BUFFER(i) <= v_TEMP(c_DISPLAY_LENGTH-1 downto c_DISPLAY_LENGTH - c_DISPLAY_BUFFER_WIDTH);
+            end loop;
+
+            for i in 0 to c_DISPLAY_BUFFER_LENGTH - 1 loop
+                v_INDEX := i / c_DISPLAY_BUFFER_WIDTH;
+                --for l in 0 to 3 loop
+                    for j in 0 to c_SLICE - 1 loop
+                        r_FORMATTED_DISPLAY_BUFFER(c_DISPLAY_BUFFER_LENGTH-1-i)(c_SLICE - 1 - j) <= r_ARRAY_DISPLAY_BUFFER(j + (c_SLICE * v_INDEX))(c_DISPLAY_BUFFER_WIDTH - 1 - (i mod 64));
+                    end loop;
+                --end loop;
+            end loop;
+        end if;
+    end process p_REFORMAT_BUFFER;
 
     p_STATE_MACHINE : process (w_CLOCK_OUT1) is
         variable v_COUNTER : integer := 0;
@@ -258,8 +281,6 @@ begin
                     end if;
                 
                 when s_SET_PIXEL =>
-                    r_DISPLAY_BUFFER(r_DRAW_COUNTER) <= '1';
-                    r_DRAW_COUNTER <= r_DRAW_COUNTER + 1;
                     if r_DRAW_COUNTER + 1 = c_DISPLAY_LENGTH then
                         r_DRAW_COUNTER <= 0;
                     end if;
@@ -283,11 +304,6 @@ begin
                         if r_DELAY_COUNTER = c_DELAY_TIME then
                             r_DELAY_COUNTER <= 0;
                             r_SM_DISPLAY <= s_SEND_CONTROL;
-                            if r_START_PIXEL_DATA = '0' then
-                                r_START_PIXEL_DATA <= '1';
-                            elsif r_START_PIXEL_DATA = '1' then
-                                r_START_PIXEL_DATA <= '0';
-                            end if;
                         end if;
                     end if;
                     
@@ -297,7 +313,7 @@ begin
                     if w_BUSY = '1' and r_PREV_BUSY = '0' then
                         if r_REFRESH_COUNTER = c_REFRESH_COMMAND_LENGTH - 1 then
                             r_ENA <= '0';
-                            --r_START_PIXEL_DATA <= '1';
+                            r_START_PIXEL_DATA <= '1';
                             r_SM_DISPLAY <= s_SET_PIXEL;
                             r_REFRESH_COUNTER <= 0;
                         else
@@ -306,10 +322,10 @@ begin
                     end if;
 
                 when s_SEND_PIXEL_DATA =>
-                    r_DATA_WR <= r_DISPLAY_BUFFER(c_DISPLAY_LENGTH - 1 - r_PIXEL_COUNTER * 8 downto (c_DISPLAY_LENGTH - 1 - r_PIXEL_COUNTER * 8) - 7);
+                    r_DATA_WR <= r_FORMATTED_DISPLAY_BUFFER(r_PIXEL_COUNTER);
 
                     if w_BUSY = '1' and r_PREV_BUSY = '0' then
-                        if r_PIXEL_COUNTER /= c_DISPLAY_BUFFER_LENGTH - 2 then
+                        if r_PIXEL_COUNTER /= c_DISPLAY_BUFFER_LENGTH - 1 then
                             r_PIXEL_COUNTER <= r_PIXEL_COUNTER + 1;
                         else
                             r_ENA <= '0';
@@ -317,9 +333,8 @@ begin
                     end if;
 
                     if w_BUSY = '0' and r_PREV_BUSY = '1' then
-                        if r_PIXEL_COUNTER = c_DISPLAY_BUFFER_LENGTH - 2 then
+                        if r_PIXEL_COUNTER = c_DISPLAY_BUFFER_LENGTH - 1 then
                             r_PIXEL_COUNTER <= 0;
-                            --r_START_PIXEL_DATA <= '0';
                             r_SM_DISPLAY <= s_DELAY;
                         end if;
                     end if;
@@ -329,4 +344,4 @@ begin
         end if;
     end process p_STATE_MACHINE;
 
-end rtl;
+end arch_display;

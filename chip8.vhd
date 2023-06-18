@@ -18,8 +18,6 @@ entity chip8 is
         i_PIN_15  : in std_logic;
 
         -- oled
-        o_oled_gnd  : out   std_logic;
-        o_oled_vcc  : out   std_logic;
         o_oled_scl  : out   std_logic;
         o_oled_sda  : out   std_logic
     );

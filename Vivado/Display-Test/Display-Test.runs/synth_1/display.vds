@@ -2,17 +2,18 @@
 # Vivado v2022.2 (64-bit)
 # SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
 # IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
-# Start of session at: Thu Jun 15 15:12:39 2023
-# Process ID: 9108
-# Current directory: C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1
+# Start of session at: Sun Jun 18 18:38:50 2023
+# Process ID: 21904
+# Current directory: D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1
 # Command line: vivado.exe -log display.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source display.tcl
-# Log file: C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1/display.vds
-# Journal file: C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1\vivado.jou
-# Running On: LAPTOP-IT23Q15D, OS: Windows, CPU Frequency: 1797 MHz, CPU Physical cores: 16, Host memory: 14887 MB
+# Log file: D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1/display.vds
+# Journal file: D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1\vivado.jou
+# Running On: DESKTOP-MATTHIJS, OS: Windows, CPU Frequency: 3700 MHz, CPU Physical cores: 16, Host memory: 25715 MB
 #-----------------------------------------------------------
 source display.tcl -notrace
-Command: read_checkpoint -auto_incremental -incremental {C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.srcs/utils_1/imports/synth_1/display.dcp}
-INFO: [Vivado 12-5825] Read reference checkpoint from C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.srcs/utils_1/imports/synth_1/display.dcp for incremental synthesis
+create_project: Time (s): cpu = 00:00:06 ; elapsed = 00:00:06 . Memory (MB): peak = 394.250 ; gain = 71.781
+Command: read_checkpoint -auto_incremental -incremental D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.srcs/utils_1/imports/synth_1/display.dcp
+INFO: [Vivado 12-5825] Read reference checkpoint from D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.srcs/utils_1/imports/synth_1/display.dcp for incremental synthesis
 INFO: [Vivado 12-7989] Please ensure there are no constraint changes
 Command: synth_design -top display -part xc7a100tcsg324-1
 Starting synth_design
@@ -23,74 +24,174 @@ INFO: [Designutils 20-5440] No compile time benefit to using incremental synthes
 INFO: [Designutils 20-4379] Flow is switching to default flow due to incremental criteria not met. If you would like to alter this behaviour and have the flow terminate instead, please set the following parameter config_implementation {autoIncr.Synth.RejectBehavior Terminate}
 INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
 INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
-INFO: [Synth 8-7075] Helper process launched with PID 16308
-INFO: [Synth 8-11241] undeclared symbol 'REGCCE', assumed default net type 'wire' [C:/Xilinx/Vivado/2022.2/data/verilog/src/unimacro/BRAM_SINGLE_MACRO.v:2170]
+INFO: [Synth 8-7075] Helper process launched with PID 10632
+INFO: [Synth 8-11241] undeclared symbol 'REGCCE', assumed default net type 'wire' [F:/Xilinx/Vivado/2022.2/data/verilog/src/unimacro/BRAM_SINGLE_MACRO.v:2170]
 ---------------------------------------------------------------------------------
-Starting RTL Elaboration : Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 1233.746 ; gain = 409.031
+Starting RTL Elaboration : Time (s): cpu = 00:00:07 ; elapsed = 00:00:06 . Memory (MB): peak = 1234.016 ; gain = 408.996
 ---------------------------------------------------------------------------------
-INFO: [Synth 8-638] synthesizing module 'display' [C:/git/git repositories/CHIP8-FPGA/display.vhd:24]
-INFO: [Synth 8-638] synthesizing module 'i2c_master' [C:/git/git repositories/CHIP8-FPGA/i2c_master.vhd:54]
+INFO: [Synth 8-638] synthesizing module 'display' [D:/git/Overig/CHIP8-FPGA/display.vhd:25]
+INFO: [Synth 8-638] synthesizing module 'i2c_master' [D:/git/Overig/CHIP8-FPGA/i2c_master.vhd:54]
 	Parameter input_clk bound to: 50000000 - type: integer 
-	Parameter bus_clk bound to: 100000 - type: integer 
-INFO: [Synth 8-256] done synthesizing module 'i2c_master' (0#1) [C:/git/git repositories/CHIP8-FPGA/i2c_master.vhd:54]
-INFO: [Synth 8-3491] module 'clk_50hz' declared at 'C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1/.Xil/Vivado-9108-LAPTOP-IT23Q15D/realtime/clk_50hz_stub.vhdl:5' bound to instance 'CLOCK_50HZ' of component 'clk_50hz' [C:/git/git repositories/CHIP8-FPGA/display.vhd:189]
-INFO: [Synth 8-638] synthesizing module 'clk_50hz' [C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1/.Xil/Vivado-9108-LAPTOP-IT23Q15D/realtime/clk_50hz_stub.vhdl:15]
-INFO: [Synth 8-256] done synthesizing module 'display' (0#1) [C:/git/git repositories/CHIP8-FPGA/display.vhd:24]
-WARNING: [Synth 8-3917] design display has port o_oled_vcc driven by constant 1
-WARNING: [Synth 8-3917] design display has port o_oled_gnd driven by constant 0
+	Parameter bus_clk bound to: 400000 - type: integer 
+INFO: [Synth 8-256] done synthesizing module 'i2c_master' (0#1) [D:/git/Overig/CHIP8-FPGA/i2c_master.vhd:54]
+INFO: [Synth 8-3491] module 'clk_50hz' declared at 'D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1/.Xil/Vivado-21904-DESKTOP-MATTHIJS/realtime/clk_50hz_stub.vhdl:5' bound to instance 'CLOCK_50HZ' of component 'clk_50hz' [D:/git/Overig/CHIP8-FPGA/display.vhd:196]
+INFO: [Synth 8-638] synthesizing module 'clk_50hz' [D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1/.Xil/Vivado-21904-DESKTOP-MATTHIJS/realtime/clk_50hz_stub.vhdl:15]
+INFO: [Synth 8-256] done synthesizing module 'display' (0#1) [D:/git/Overig/CHIP8-FPGA/display.vhd:25]
+WARNING: [Synth 8-7129] Port i_buffer[2047] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2046] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2045] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2044] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2043] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2042] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2041] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2040] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2039] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2038] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2037] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2036] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2035] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2034] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2033] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2032] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2031] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2030] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2029] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2028] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2027] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2026] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2025] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2024] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2023] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2022] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2021] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2020] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2019] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2018] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2017] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2016] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2015] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2014] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2013] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2012] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2011] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2010] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2009] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2008] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2007] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2006] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2005] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2004] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2003] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2002] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2001] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[2000] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1999] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1998] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1997] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1996] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1995] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1994] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1993] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1992] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1991] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1990] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1989] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1988] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1987] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1986] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1985] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1984] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1983] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1982] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1981] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1980] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1979] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1978] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1977] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1976] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1975] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1974] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1973] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1972] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1971] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1970] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1969] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1968] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1967] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1966] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1965] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1964] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1963] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1962] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1961] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1960] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1959] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1958] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1957] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1956] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1955] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1954] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1953] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1952] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1951] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1950] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1949] in module display is either unconnected or has no load
+WARNING: [Synth 8-7129] Port i_buffer[1948] in module display is either unconnected or has no load
+INFO: [Common 17-14] Message 'Synth 8-7129' appears 100 times and further instances of the messages will be disabled. Use the Tcl command set_msg_config to change the current settings.
 ---------------------------------------------------------------------------------
-Finished RTL Elaboration : Time (s): cpu = 00:00:07 ; elapsed = 00:00:08 . Memory (MB): peak = 1339.250 ; gain = 514.535
+Finished RTL Elaboration : Time (s): cpu = 00:00:10 ; elapsed = 00:00:10 . Memory (MB): peak = 1434.637 ; gain = 609.617
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:07 ; elapsed = 00:00:08 . Memory (MB): peak = 1339.250 ; gain = 514.535
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:10 ; elapsed = 00:00:10 . Memory (MB): peak = 1434.637 ; gain = 609.617
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:07 ; elapsed = 00:00:08 . Memory (MB): peak = 1339.250 ; gain = 514.535
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:10 ; elapsed = 00:00:10 . Memory (MB): peak = 1434.637 ; gain = 609.617
 ---------------------------------------------------------------------------------
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.132 . Memory (MB): peak = 1339.250 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:01 ; elapsed = 00:00:00.235 . Memory (MB): peak = 1434.637 ; gain = 0.000
 INFO: [Project 1-570] Preparing netlist for logic optimization
 
 Processing XDC Constraints
 Initializing timing engine
-Parsing XDC File [c:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz/clk_50hz_in_context.xdc] for cell 'CLOCK_50HZ'
-Finished Parsing XDC File [c:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz/clk_50hz_in_context.xdc] for cell 'CLOCK_50HZ'
-Parsing XDC File [C:/git/git repositories/CHIP8-FPGA/constraints/Arty-A7-100-display.xdc]
-Finished Parsing XDC File [C:/git/git repositories/CHIP8-FPGA/constraints/Arty-A7-100-display.xdc]
-INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [C:/git/git repositories/CHIP8-FPGA/constraints/Arty-A7-100-display.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/display_propImpl.xdc].
+Parsing XDC File [d:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz/clk_50hz_in_context.xdc] for cell 'CLOCK_50HZ'
+Finished Parsing XDC File [d:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz/clk_50hz_in_context.xdc] for cell 'CLOCK_50HZ'
+Parsing XDC File [D:/git/Overig/CHIP8-FPGA/constraints/Arty-A7-100-display.xdc]
+Finished Parsing XDC File [D:/git/Overig/CHIP8-FPGA/constraints/Arty-A7-100-display.xdc]
+INFO: [Project 1-236] Implementation specific constraints were found while reading constraint file [D:/git/Overig/CHIP8-FPGA/constraints/Arty-A7-100-display.xdc]. These constraints will be ignored for synthesis but will be used in implementation. Impacted constraints are listed in the file [.Xil/display_propImpl.xdc].
 Resolution: To avoid this warning, move constraints listed in [.Xil/display_propImpl.xdc] to another XDC file and exclude this new file from synthesis with the used_in_synthesis property (File Properties dialog in GUI) and re-run elaboration/synthesis.
 Completed Processing XDC Constraints
 
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1424.938 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.002 . Memory (MB): peak = 1440.262 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
 No Unisim elements were transformed.
 
-Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.014 . Memory (MB): peak = 1424.938 ; gain = 0.000
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.036 . Memory (MB): peak = 1440.262 ; gain = 0.000
 INFO: [Designutils 20-5440] No compile time benefit to using incremental synthesis; A full resynthesis will be run
 INFO: [Designutils 20-4379] Flow is switching to default flow due to incremental criteria not met. If you would like to alter this behaviour and have the flow terminate instead, please set the following parameter config_implementation {autoIncr.Synth.RejectBehavior Terminate}
-INFO: [Synth 8-11241] undeclared symbol 'REGCCE', assumed default net type 'wire' [C:/Xilinx/Vivado/2022.2/data/verilog/src/unimacro/BRAM_SINGLE_MACRO.v:2170]
+INFO: [Synth 8-11241] undeclared symbol 'REGCCE', assumed default net type 'wire' [F:/Xilinx/Vivado/2022.2/data/verilog/src/unimacro/BRAM_SINGLE_MACRO.v:2170]
 ---------------------------------------------------------------------------------
-Finished Constraint Validation : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 1424.938 ; gain = 600.223
+Finished Constraint Validation : Time (s): cpu = 00:00:22 ; elapsed = 00:00:22 . Memory (MB): peak = 1440.262 ; gain = 615.242
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Loading Part and Timing Information
 ---------------------------------------------------------------------------------
 Loading part: xc7a100tcsg324-1
 ---------------------------------------------------------------------------------
-Finished Loading Part and Timing Information : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 1424.938 ; gain = 600.223
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:22 ; elapsed = 00:00:22 . Memory (MB): peak = 1440.262 ; gain = 615.242
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Applying 'set_property' XDC Constraints
 ---------------------------------------------------------------------------------
-Applied set_property IO_BUFFER_TYPE = NONE for i_clck. (constraint file  {c:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz/clk_50hz_in_context.xdc}, line 3).
-Applied set_property CLOCK_BUFFER_TYPE = NONE for i_clck. (constraint file  {c:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz/clk_50hz_in_context.xdc}, line 4).
+Applied set_property IO_BUFFER_TYPE = NONE for i_clck. (constraint file  d:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz/clk_50hz_in_context.xdc, line 3).
+Applied set_property CLOCK_BUFFER_TYPE = NONE for i_clck. (constraint file  d:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.gen/sources_1/ip/clk_50hz/clk_50hz/clk_50hz_in_context.xdc, line 4).
 Applied set_property KEEP_HIERARCHY = SOFT for CLOCK_50HZ. (constraint file  auto generated constraint).
 ---------------------------------------------------------------------------------
-Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:16 ; elapsed = 00:00:17 . Memory (MB): peak = 1424.938 ; gain = 600.223
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:22 ; elapsed = 00:00:22 . Memory (MB): peak = 1440.262 ; gain = 615.242
 ---------------------------------------------------------------------------------
 INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'i2c_master'
+INFO: [Synth 8-802] inferred FSM for state register 'r_SM_DISPLAY_reg' in module 'display'
 ---------------------------------------------------------------------------------------------------
                    State |                     New Encoding |                Previous Encoding 
 ---------------------------------------------------------------------------------------------------
@@ -105,8 +206,20 @@ INFO: [Synth 8-802] inferred FSM for state register 'state_reg' in module 'i2c_m
                     stop |                        100000000 |                             1000
 ---------------------------------------------------------------------------------------------------
 INFO: [Synth 8-3354] encoded FSM with state register 'state_reg' using encoding 'one-hot' in module 'i2c_master'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+            s_clock_init |                              000 |                              000
+                 s_delay |                              001 |                              101
+          s_send_control |                              010 |                              010
+                  s_init |                              011 |                              011
+               s_refresh |                              100 |                              100
+             s_set_pixel |                              101 |                              111
+       s_send_pixel_data |                              110 |                              110
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'r_SM_DISPLAY_reg' using encoding 'sequential' in module 'display'
 ---------------------------------------------------------------------------------
-Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:18 ; elapsed = 00:00:19 . Memory (MB): peak = 1424.938 ; gain = 600.223
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:25 ; elapsed = 00:00:25 . Memory (MB): peak = 1440.262 ; gain = 615.242
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start RTL Component Statistics 
@@ -114,34 +227,34 @@ Start RTL Component Statistics
 Detailed RTL Component Info : 
 +---Adders : 
 	   2 Input   32 Bit       Adders := 5     
-	   2 Input   12 Bit       Adders := 1     
-	   2 Input    9 Bit       Adders := 1     
+	   2 Input    7 Bit       Adders := 1     
 	   2 Input    4 Bit       Adders := 1     
 	   2 Input    3 Bit       Adders := 1     
 +---Registers : 
 	             2048 Bit    Registers := 1     
-	               32 Bit    Registers := 2     
-	                9 Bit    Registers := 1     
-	                8 Bit    Registers := 5     
-	                3 Bit    Registers := 2     
+	               64 Bit    Registers := 32    
+	               32 Bit    Registers := 3     
+	                8 Bit    Registers := 261   
+	                7 Bit    Registers := 1     
+	                3 Bit    Registers := 1     
 	                1 Bit    Registers := 12    
 +---Muxes : 
-	   8 Input 2048 Bit        Muxes := 1     
-	   2 Input 2048 Bit        Muxes := 2     
+	   2 Input 2048 Bit        Muxes := 1     
+	   7 Input 2048 Bit        Muxes := 1     
 	   2 Input   32 Bit        Muxes := 5     
-	   2 Input    9 Bit        Muxes := 10    
 	   9 Input    9 Bit        Muxes := 1     
+	   2 Input    9 Bit        Muxes := 9     
 	   6 Input    8 Bit        Muxes := 2     
 	   2 Input    8 Bit        Muxes := 3     
-	   2 Input    3 Bit        Muxes := 1     
-	   8 Input    3 Bit        Muxes := 1     
-	   3 Input    3 Bit        Muxes := 1     
-	   2 Input    1 Bit        Muxes := 15    
+	   7 Input    8 Bit        Muxes := 1     
+	   2 Input    3 Bit        Muxes := 4     
+	   7 Input    3 Bit        Muxes := 1     
+	   4 Input    1 Bit        Muxes := 3     
+	   2 Input    1 Bit        Muxes := 13    
 	   3 Input    1 Bit        Muxes := 4     
 	   9 Input    1 Bit        Muxes := 7     
 	   6 Input    1 Bit        Muxes := 3     
-	   4 Input    1 Bit        Muxes := 1     
-	   8 Input    1 Bit        Muxes := 10    
+	   7 Input    1 Bit        Muxes := 11    
 ---------------------------------------------------------------------------------
 Finished RTL Component Statistics 
 ---------------------------------------------------------------------------------
@@ -158,10 +271,8 @@ Finished Part Resource Summary
 Start Cross Boundary and Area Optimization
 ---------------------------------------------------------------------------------
 WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
-WARNING: [Synth 8-3917] design display has port o_oled_vcc driven by constant 1
-WARNING: [Synth 8-3917] design display has port o_oled_gnd driven by constant 0
 ---------------------------------------------------------------------------------
-Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:31 ; elapsed = 00:00:32 . Memory (MB): peak = 1424.938 ; gain = 600.223
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:33 ; elapsed = 00:00:33 . Memory (MB): peak = 1440.262 ; gain = 615.242
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start ROM, RAM, DSP, Shift Register and Retiming Reporting
@@ -182,13 +293,13 @@ Finished ROM, RAM, DSP, Shift Register and Retiming Reporting
 Start Applying XDC Timing Constraints
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:37 ; elapsed = 00:00:38 . Memory (MB): peak = 1424.938 ; gain = 600.223
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:39 ; elapsed = 00:00:39 . Memory (MB): peak = 1440.262 ; gain = 615.242
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Timing Optimization
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Timing Optimization : Time (s): cpu = 00:00:43 ; elapsed = 00:00:44 . Memory (MB): peak = 1442.559 ; gain = 617.844
+Finished Timing Optimization : Time (s): cpu = 00:00:41 ; elapsed = 00:00:41 . Memory (MB): peak = 1440.262 ; gain = 615.242
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Technology Mapping
@@ -196,7 +307,7 @@ Start Technology Mapping
 WARNING: [Synth 8-3332] Sequential element (I2C_CONTROLLER/FSM_onehot_state_reg[7]) is unused and will be removed from module display.
 WARNING: [Synth 8-3332] Sequential element (I2C_CONTROLLER/FSM_onehot_state_reg[6]) is unused and will be removed from module display.
 ---------------------------------------------------------------------------------
-Finished Technology Mapping : Time (s): cpu = 00:00:47 ; elapsed = 00:00:48 . Memory (MB): peak = 1601.715 ; gain = 777.000
+Finished Technology Mapping : Time (s): cpu = 00:00:42 ; elapsed = 00:00:42 . Memory (MB): peak = 1440.262 ; gain = 615.242
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start IO Insertion
@@ -214,37 +325,37 @@ Start Final Netlist Cleanup
 Finished Final Netlist Cleanup
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished IO Insertion : Time (s): cpu = 00:00:53 ; elapsed = 00:00:54 . Memory (MB): peak = 1613.391 ; gain = 788.676
+Finished IO Insertion : Time (s): cpu = 00:00:47 ; elapsed = 00:00:47 . Memory (MB): peak = 1440.262 ; gain = 615.242
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Instances
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Instances : Time (s): cpu = 00:00:53 ; elapsed = 00:00:54 . Memory (MB): peak = 1613.391 ; gain = 788.676
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:47 ; elapsed = 00:00:47 . Memory (MB): peak = 1440.262 ; gain = 615.242
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Rebuilding User Hierarchy
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:53 ; elapsed = 00:00:54 . Memory (MB): peak = 1613.391 ; gain = 788.676
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:47 ; elapsed = 00:00:47 . Memory (MB): peak = 1440.262 ; gain = 615.242
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Ports
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Ports : Time (s): cpu = 00:00:53 ; elapsed = 00:00:54 . Memory (MB): peak = 1613.391 ; gain = 788.676
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:47 ; elapsed = 00:00:47 . Memory (MB): peak = 1440.262 ; gain = 615.242
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Handling Custom Attributes
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Handling Custom Attributes : Time (s): cpu = 00:00:54 ; elapsed = 00:00:55 . Memory (MB): peak = 1613.391 ; gain = 788.676
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:47 ; elapsed = 00:00:47 . Memory (MB): peak = 1440.262 ; gain = 615.242
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Renaming Generated Nets
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
-Finished Renaming Generated Nets : Time (s): cpu = 00:00:54 ; elapsed = 00:00:55 . Memory (MB): peak = 1613.391 ; gain = 788.676
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:47 ; elapsed = 00:00:47 . Memory (MB): peak = 1440.262 ; gain = 615.242
 ---------------------------------------------------------------------------------
 ---------------------------------------------------------------------------------
 Start Writing Synthesis Report
@@ -262,43 +373,41 @@ Report Cell Usage:
 |      |Cell          |Count |
 +------+--------------+------+
 |1     |clk_50hz_bbox |     1|
-|2     |CARRY4        |    68|
-|3     |LUT1          |    33|
-|4     |LUT2          |    54|
-|5     |LUT3          |    16|
-|6     |LUT4          |   115|
-|7     |LUT5          |   138|
-|8     |LUT6          |  2759|
-|9     |MUXF7         |   274|
-|10    |MUXF8         |   136|
-|11    |FDRE          |  2265|
-|12    |IOBUF         |     1|
-|13    |OBUF          |     2|
-|14    |OBUFT         |     1|
+|2     |CARRY4        |    40|
+|3     |LUT1          |     2|
+|4     |LUT2          |    35|
+|5     |LUT3          |    32|
+|6     |LUT4          |    50|
+|7     |LUT5          |   110|
+|8     |LUT6          |   299|
+|9     |MUXF7         |     2|
+|10    |FDRE          |  1217|
+|11    |IOBUF         |     1|
+|12    |OBUFT         |     1|
 +------+--------------+------+
 ---------------------------------------------------------------------------------
-Finished Writing Synthesis Report : Time (s): cpu = 00:00:54 ; elapsed = 00:00:55 . Memory (MB): peak = 1613.391 ; gain = 788.676
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:47 ; elapsed = 00:00:47 . Memory (MB): peak = 1440.262 ; gain = 615.242
 ---------------------------------------------------------------------------------
-Synthesis finished with 0 errors, 0 critical warnings and 5 warnings.
-Synthesis Optimization Runtime : Time (s): cpu = 00:00:44 ; elapsed = 00:00:52 . Memory (MB): peak = 1613.391 ; gain = 702.988
-Synthesis Optimization Complete : Time (s): cpu = 00:00:54 ; elapsed = 00:00:55 . Memory (MB): peak = 1613.391 ; gain = 788.676
+Synthesis finished with 0 errors, 0 critical warnings and 2051 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:31 ; elapsed = 00:00:42 . Memory (MB): peak = 1440.262 ; gain = 609.617
+Synthesis Optimization Complete : Time (s): cpu = 00:00:47 ; elapsed = 00:00:47 . Memory (MB): peak = 1440.262 ; gain = 615.242
 INFO: [Project 1-571] Translating synthesized netlist
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.061 . Memory (MB): peak = 1613.391 ; gain = 0.000
-INFO: [Netlist 29-17] Analyzing 479 Unisim elements for replacement
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.028 . Memory (MB): peak = 1440.262 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 43 Unisim elements for replacement
 INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
 WARNING: [Netlist 29-101] Netlist 'display' is not ideal for floorplanning, since the cellview 'display' contains a large number of primitives.  Please consider enabling hierarchy in synthesis if you want to do floorplanning.
 INFO: [Project 1-570] Preparing netlist for logic optimization
 INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
-Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.001 . Memory (MB): peak = 1613.391 ; gain = 0.000
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1440.262 ; gain = 0.000
 INFO: [Project 1-111] Unisim Transformation Summary:
   A total of 1 instances were transformed.
   IOBUF => IOBUF (IBUF, OBUFT): 1 instance 
 
-Synth Design complete, checksum: c0c14e9e
+Synth Design complete, checksum: 867668ef
 INFO: [Common 17-83] Releasing license: Synthesis
-31 Infos, 8 Warnings, 0 Critical Warnings and 0 Errors encountered.
+34 Infos, 104 Warnings, 0 Critical Warnings and 0 Errors encountered.
 synth_design completed successfully
-synth_design: Time (s): cpu = 00:01:00 ; elapsed = 00:01:01 . Memory (MB): peak = 1613.391 ; gain = 1183.984
-INFO: [Common 17-1381] The checkpoint 'C:/git/git repositories/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1/display.dcp' has been generated.
+synth_design: Time (s): cpu = 00:00:51 ; elapsed = 00:00:53 . Memory (MB): peak = 1440.262 ; gain = 1009.297
+INFO: [Common 17-1381] The checkpoint 'D:/git/Overig/CHIP8-FPGA/Vivado/Display-Test/Display-Test.runs/synth_1/display.dcp' has been generated.
 INFO: [runtcl-4] Executing : report_utilization -file display_utilization_synth.rpt -pb display_utilization_synth.pb
-INFO: [Common 17-206] Exiting Vivado at Thu Jun 15 15:13:48 2023...
+INFO: [Common 17-206] Exiting Vivado at Sun Jun 18 18:39:53 2023...
