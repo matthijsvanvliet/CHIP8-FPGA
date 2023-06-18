@@ -6,7 +6,7 @@ use work.ssd1306.all;
 entity display is
     generic
     (
-        g_INPUT_CLOCK_FREQ      : integer := 50_000_000;
+        g_INPUT_CLOCK_FREQ      : integer   := 100_000_000;
         g_DISPLAY_BUFFER_WIDTH  : natural   := 64;
         g_DISPLAY_BUFFER_HEIGHT : natural   := 32
     );
@@ -30,9 +30,7 @@ architecture arch_display of display is
     constant c_DISPLAY_LENGTH           : natural   := c_DISPLAY_BUFFER_WIDTH * c_DISPLAY_BUFFER_HEIGHT;
     constant c_DISPLAY_BUFFER_LENGTH    : natural   := c_DISPLAY_LENGTH / 8;
 
-    signal r_DISPLAY_BUFFER : std_logic_vector(c_DISPLAY_LENGTH - 1 downto 0) := (--(others => '0');
-        "00000000000000000000000000000000000000000000000000000000000000000000000000001111101000000000000000000001000000000011000000000000000000000000001000001101000110011100011101001001100100000000000000000000000000100010101010100101001010010100101000000000000000000000000000000010001010001011110100101001010010010000000000000000000000000000001000101000101000010010100101001000100000000000000000000000000000100010100010011101001001110011101100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111110001100000001100111110000000000011111110000000000000000000111111101110000001110111111100000000011100011100000000000000000111000110111000000111011100111000000011100000110000000000000000111000000011100000000001110001100000001110000011000000000000000011100101001110000000110111000110000000111000001100000000000000001110000000111111000111011100011000000001110001100000000000000000111010001011111110011101110001101111000011111100000000000000000011100111001110011101110111001110111100011100111000000000000000001110000000111000110111011111110000000011100001110000000000000000111000000011100011011101111110000000011100000011000000000000000011100000001110001101110111000000000001110000001100000000000000001110000000111000110111011101010001110111000000110000000000000000011100011011100011011101110111000101011110000111000000000000000000111111101110001101110111000100010100111111111000000000000000000001111100111000110111011100010101110001111111000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011100110001101000000011000000101000011000000000000000000000000000100100101000111000010001001000111010010000000000000000000000000010011110010010000000100100101010001111000000000000000000000000001001000000101000000001010010101000100000000000000000000000000000100011101100011000011000111010011001110000000000000000000000000000000000000000000000000000000000000000000000000000"
-    );
+    signal r_DISPLAY_BUFFER : std_logic_vector(c_DISPLAY_LENGTH - 1 downto 0) := (others => '0');
 
     type t_ARRAY_DISPLAY_BUFFER is array (0 to c_DISPLAY_BUFFER_HEIGHT-1) of std_logic_vector(c_DISPLAY_BUFFER_WIDTH - 1 downto 0);
     signal r_ARRAY_DISPLAY_BUFFER : t_ARRAY_DISPLAY_BUFFER := (others => x"0000_0000_0000_0000");
@@ -74,14 +72,13 @@ architecture arch_display of display is
     signal w_SCL        : std_logic;
 
     type t_SM_DISPLAY is (
-        s_CLOCK_INIT,
         s_SEND_CONTROL,
         s_INIT,
         s_REFRESH,
         s_DELAY,
         s_SEND_PIXEL_DATA
     );
-    signal r_SM_DISPLAY : t_SM_DISPLAY := s_CLOCK_INIT;
+    signal r_SM_DISPLAY : t_SM_DISPLAY := s_DELAY;
 
     constant c_SLAVE_ADDRESS : std_logic_vector(6 downto 0) := "0111100"; -- 0x3C
 
@@ -136,7 +133,7 @@ architecture arch_display of display is
     signal r_START_PIXEL_DATA   : std_logic := '0';
 
     constant c_DELAY_TIME       : integer   := (c_INPUT_CLOCK / c_BUS_CLOCK) * 100; -- 100 sla clock pulses
-    constant c_SETUP_DELAY_TIME : integer   := 50_000_000; -- 1 sec
+    constant c_SETUP_DELAY_TIME : integer   := g_INPUT_CLOCK_FREQ; -- 1 sec
     signal r_SETUP_TIME_ENABLE  : std_logic := '1';
     signal r_DELAY_COUNTER      : integer   := 0;
 
@@ -151,7 +148,7 @@ begin
             bus_clk     => c_BUS_CLOCK
         )
         port map (
-            clk         => r_CLK,      
+            clk         => i_clck,      
             reset_n     => r_RESET_N,  
             ena         => r_ENA,      
             addr        => r_ADDR,     
@@ -164,21 +161,10 @@ begin
             scl         => w_SCL
         );
 
-    CLOCK_50HZ : clk_50hz
-    port map (-- Clock in ports
-        -- Clock out ports
-        clk_out1    => w_CLOCK_OUT1,
-
-        -- Status and control signals
-        reset       => r_CLOCK_RESET,
-        locked      => w_LOCKED,
-        i_clck      => i_clck
-    );
-
     o_oled_sda <= w_SDA;
     o_oled_scl <= w_SCL;
 
-    r_CLK <= w_CLOCK_OUT1;
+    r_DISPLAY_BUFFER <= i_buffer;
 
     p_INITIALISE : process is
     begin
@@ -189,12 +175,12 @@ begin
 
     -- Rotates vertical slices of 8 bits in the original buffer to an array
     -- with a length of 256 ((width * length) / 8) where each value is 8 bits.
-    p_REFORMAT_BUFFER : process (w_CLOCK_OUT1) is
+    p_REFORMAT_BUFFER : process (i_clck) is
         variable v_TEMP     : std_logic_vector(c_DISPLAY_LENGTH-1 downto 0) := (others => '0');
         constant c_SLICE    : natural := 8;
         variable v_INDEX    : natural := 0;
     begin
-        if rising_edge(w_CLOCK_OUT1) then 
+        if rising_edge(i_clck) then 
             for i in 0 to c_DISPLAY_BUFFER_HEIGHT-1 loop
                 v_TEMP := std_logic_vector(shift_left(unsigned(r_DISPLAY_BUFFER), c_DISPLAY_BUFFER_WIDTH * i));
                 r_ARRAY_DISPLAY_BUFFER(i) <= v_TEMP(c_DISPLAY_LENGTH-1 downto c_DISPLAY_LENGTH - c_DISPLAY_BUFFER_WIDTH);
@@ -209,18 +195,13 @@ begin
         end if;
     end process p_REFORMAT_BUFFER;
 
-    p_STATE_MACHINE : process (w_CLOCK_OUT1) is
+    p_STATE_MACHINE : process (i_clck) is
         variable v_COUNTER : integer := 0;
     begin
-        if rising_edge(w_CLOCK_OUT1) then    
+        if rising_edge(i_clck) then    
             r_PREV_BUSY <= w_BUSY;
 
             case r_SM_DISPLAY is
-                when s_CLOCK_INIT =>
-                    r_ENA <= '0';
-                    if w_LOCKED = '1' and w_BUSY = '0' then
-                        r_SM_DISPLAY <= s_DELAY;
-                    end if; 
                 when s_SEND_CONTROL =>
                     if r_START_PIXEL_DATA = '0' then
                         r_DATA_WR <= x"00";

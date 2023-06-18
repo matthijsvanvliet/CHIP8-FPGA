@@ -71,8 +71,9 @@ proc create_report { reportName command } {
 }
 OPTRACE "synth_1" START { ROLLUP_AUTO }
 set_param checkpoint.writeSynthRtdsInDcp 1
-set_param synth.incrementalSynthesisCache C:/Users/Matthijs/AppData/Roaming/Xilinx/Vivado/.Xil/Vivado-5144-DESKTOP-MATTHIJS/incrSyn
-set_msg_config -id {Common 17-41} -limit 10000000
+set_param chipscope.maxJobs 4
+set_param synth.incrementalSynthesisCache C:/Users/Matthijs/AppData/Roaming/Xilinx/Vivado/.Xil/Vivado-21328-DESKTOP-MATTHIJS/incrSyn
+set_param xicom.use_bs_reader 1
 set_msg_config -id {Synth 8-256} -limit 10000
 set_msg_config -id {Synth 8-638} -limit 10000
 OPTRACE "Creating in-memory project" START { }
@@ -92,8 +93,18 @@ set_property ip_cache_permissions {read write} [current_project]
 OPTRACE "Creating in-memory project" END { }
 OPTRACE "Adding files" START { }
 read_vhdl -library xil_defaultlib {
+  D:/git/Overig/CHIP8-FPGA/roms/test_opcodes.vhd
+  D:/git/Overig/CHIP8-FPGA/roms/ibm_logo.vhd
+  D:/git/Overig/CHIP8-FPGA/roms/bc_test.vhd
+  D:/git/Overig/CHIP8-FPGA/roms/coraxplus.vhd
+  D:/git/Overig/CHIP8-FPGA/roms/sctest.vhd
+  D:/git/Overig/CHIP8-FPGA/roms/flags.vhd
+  D:/git/Overig/CHIP8-FPGA/roms/chip8_logo.vhd
   D:/git/Overig/CHIP8-FPGA/chip8_memory.vhd
   D:/git/Overig/CHIP8-FPGA/chip8_cpu.vhd
+  D:/git/Overig/CHIP8-FPGA/i2c_master.vhd
+  D:/git/Overig/CHIP8-FPGA/ssd1306.vhd
+  D:/git/Overig/CHIP8-FPGA/display.vhd
   D:/git/Overig/CHIP8-FPGA/chip8.vhd
 }
 OPTRACE "Adding files" END { }
@@ -105,7 +116,12 @@ OPTRACE "Adding files" END { }
 foreach dcp [get_files -quiet -all -filter file_type=="Design\ Checkpoint"] {
   set_property used_in_implementation false $dcp
 }
+read_xdc D:/git/Overig/CHIP8-FPGA/constraints/Arty-A7-100-chip8.xdc
+set_property used_in_implementation false [get_files D:/git/Overig/CHIP8-FPGA/constraints/Arty-A7-100-chip8.xdc]
+
 set_param ips.enableIPCacheLiteLoad 1
+
+read_checkpoint -auto_incremental -incremental D:/git/Overig/CHIP8-FPGA/Vivado/CHIP8-FPGA/CHIP8-FPGA.srcs/utils_1/imports/synth_1/chip8_cpu.dcp
 close [open __synthesis_is_running__ w]
 
 OPTRACE "synth_design" START { }

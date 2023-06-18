@@ -8,7 +8,11 @@ entity chip8_cpu is
         i_clck      : in    std_logic;
 
         -- input keys
-        i_keys      : in    std_logic_vector(15 downto 0)
+        i_keys      : in    std_logic_vector(15 downto 0);
+
+        -- output buffer
+        o_buffer        : out   std_logic_vector(63 downto 0);
+        o_buffer_sel    : out   std_logic_vector(7 downto 0)
     );
 end chip8_cpu;
 
@@ -42,6 +46,9 @@ architecture arch_chip8_cpu of chip8_cpu is
     -- Timers that are decremented 60 times per second. Consists of a delay timer and a sound timer
     signal r_DELAY_TIMER : std_logic_vector(7 downto 0) := (others => '0');
     signal r_SOUND_TIMER : std_logic_vector(7 downto 0) := (others => '0');
+
+    signal r_SET_DELAY_TIMER        : std_logic := '0';
+    signal r_DELAY_TIMER_NEW_VALUE  : std_logic_vector(7 downto 0) := (others => '0');
     ---- Timers ----
 
     ---- Stack, Registers, Program Counter, Current Instruction and SP ----
@@ -98,6 +105,7 @@ architecture arch_chip8_cpu of chip8_cpu is
     ---- Display ----
     constant c_DISPLAY_WIDTH    : integer := 64;
     constant c_DISPLAY_HEIGHT   : integer := 32;
+    constant c_DISPLAY_LENGTH   : integer := c_DISPLAY_WIDTH * c_DISPLAY_HEIGHT;
 
     type t_DISPLAY_BUFFER is array (0 to c_DISPLAY_HEIGHT-1) of std_logic_vector(c_DISPLAY_WIDTH-1 downto 0);
     signal r_DISPLAY_BUFFER : t_DISPLAY_BUFFER := (others => x"0000_0000_0000_0000");
@@ -131,6 +139,21 @@ begin
         r_CLOCK <= i_clck;
     end process p_MEMORY_CLOCK;
 
+    p_DISPLAY_TO_OUTPUT_BUFFER : process (i_clck) is
+        variable v_TEMP_BUFFER  : std_logic_vector(c_DISPLAY_LENGTH - 1 downto 0) := (others => '0');
+        variable v_SELECTION    : std_logic_vector(7 downto 0) := (others => '0');
+    begin
+        if rising_edge(i_clck) then
+            if v_SELECTION + 1 = c_DISPLAY_BUFFER_WIDTH - 1 then
+                v_SELECTION <= 0;
+            else
+                v_SELECTION <= v_SELECTION + 1;
+            end if;
+
+            o_buffer <= r_DISPLAY_BUFFER(i);
+        end if;
+    end process p_DISPLAY_TO_OUTPUT_BUFFER;
+
     p_PRESCALAR_COUNTER : process (i_clck) is
     begin
         if rising_edge(i_clck) then
@@ -154,8 +177,12 @@ begin
     begin
         if rising_edge(i_clck) then
             if r_PRESCALER_COUNTER_60HZ = r_PRESCALER_60HZ then
-                if unsigned(r_DELAY_TIMER) > 0 then
-                    r_DELAY_TIMER <= std_logic_vector(unsigned(r_DELAY_TIMER) - 1);
+                if r_SET_DELAY_TIMER = '0' then
+                    if unsigned(r_DELAY_TIMER) > 0 then
+                        r_DELAY_TIMER <= std_logic_vector(unsigned(r_DELAY_TIMER) - 1);
+                    end if;
+                elsif r_SET_DELAY_TIMER = '1' then
+                    r_DELAY_TIMER <= r_DELAY_TIMER_NEW_VALUE;
                 end if;
 
                 if unsigned(r_SOUND_TIMER) > 0 then
@@ -187,6 +214,7 @@ begin
     begin
         if rising_edge(i_clck) then
             r_SEED <= (r_SEED * c_RAND_A + c_RAND_C) mod c_RAND_M;
+            r_SET_DELAY_TIMER <= '0';
 
             case r_SM_CPU is
                 when s_NEXT_INSTR =>
@@ -465,7 +493,8 @@ begin
                                     end if;
                                 when x"15" =>
                                     -- Delay Timer = VX
-                                    r_DELAY_TIMER <= r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))));
+                                    r_DELAY_TIMER_NEW_VALUE <= r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))));
+                                    r_SET_DELAY_TIMER <= '1';
                                 when x"18" =>
                                     -- Sound Timer = VX
                                     r_SOUND_TIMER <= r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))));

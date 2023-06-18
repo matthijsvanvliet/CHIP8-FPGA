@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="7,183.620000 us"></ZoomStartTime>
-      <ZoomEndTime time="7,474.020001 us"></ZoomEndTime>
-      <Cursor1Time time="7,312.020000 us"></Cursor1Time>
+      <ZoomStartTime time="0.000000000 ms"></ZoomStartTime>
+      <ZoomEndTime time="20.540000001 ms"></ZoomEndTime>
+      <Cursor1Time time="2.094640000 ms"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="180"></NameColumnWidth>
-      <ValueColumnWidth column_width="137"></ValueColumnWidth>
+      <ValueColumnWidth column_width="132"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="10" />
+   <WVObjectSize size="11" />
    <wvobject fp_name="/display_tb/r_CLOCK" type="logic">
       <obj_property name="ElementShortName">r_CLOCK</obj_property>
       <obj_property name="ObjectShortName">r_CLOCK</obj_property>
@@ -59,5 +59,9 @@
    <wvobject fp_name="/display_tb/DUT/r_ENA" type="logic">
       <obj_property name="ElementShortName">r_ENA</obj_property>
       <obj_property name="ObjectShortName">r_ENA</obj_property>
+   </wvobject>
+   <wvobject fp_name="/display_tb/DUT/r_PIXEL_COUNTER" type="other">
+      <obj_property name="ElementShortName">r_PIXEL_COUNTER</obj_property>
+      <obj_property name="ObjectShortName">r_PIXEL_COUNTER</obj_property>
    </wvobject>
 </wave_config>
