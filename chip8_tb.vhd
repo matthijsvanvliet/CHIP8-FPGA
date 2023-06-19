@@ -13,14 +13,8 @@ architecture behave of chip8_tb is
             i_clck      : in    std_logic;
 
             -- keypad
-            o_PIN_22  : out std_logic;
-            o_PIN_21  : out std_logic;
-            o_PIN_20  : out std_logic;
-            o_PIN_19  : out std_logic;
-            i_PIN_18  : in std_logic;
-            i_PIN_17  : in std_logic;
-            i_PIN_16  : in std_logic;
-            i_PIN_15  : in std_logic;
+            i_rows  : inout    std_logic_vector(3 downto 0);
+            i_cols  : inout    std_logic_vector(3 downto 0);
 
             -- oled
             o_oled_scl  : inout   std_logic;
@@ -32,14 +26,8 @@ architecture behave of chip8_tb is
     signal r_CLOCK_TB  : std_logic := '0';
 
     -- Input keys
-    signal r_KEY_22 : std_logic;
-    signal r_KEY_21 : std_logic;
-    signal r_KEY_20 : std_logic;
-    signal r_KEY_19 : std_logic;
-    signal r_KEY_18 : std_logic;
-    signal r_KEY_17 : std_logic;
-    signal r_KEY_16 : std_logic;
-    signal r_KEY_15 : std_logic;
+    signal r_ROWS       : std_logic_vector(1 to 4) := (others => '0');
+    signal w_COLUMS     : std_logic_vector(1 to 4);
 
     signal w_SCL    : std_logic;
     signal w_SDA    : std_logic;
@@ -52,14 +40,8 @@ begin
             i_clck      => r_CLOCK_TB,
 
             -- keypad
-            o_PIN_22    => r_KEY_22,
-            o_PIN_21    => r_KEY_21,
-            o_PIN_20    => r_KEY_20,
-            o_PIN_19    => r_KEY_19,
-            i_PIN_18    => r_KEY_18,
-            i_PIN_17    => r_KEY_17,
-            i_PIN_16    => r_KEY_16,
-            i_PIN_15    => r_KEY_15,
+            i_rows      => r_ROWS,
+            i_cols      => w_COLUMS,
 
             -- oled
             o_oled_scl  => w_SCL,

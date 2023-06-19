@@ -15,7 +15,8 @@ entity display is
         i_clck      : in    std_logic;
 
         -- incoming display buffer
-        i_buffer    : in    std_logic_vector((g_DISPLAY_BUFFER_WIDTH * g_DISPLAY_BUFFER_HEIGHT) - 1 downto 0);
+        i_buffer        : in std_logic_vector((g_DISPLAY_BUFFER_WIDTH - 1) downto 0);
+        i_buffer_sel    : in std_logic_vector(4 downto 0);   
 
         -- oled
         o_oled_scl  : inout std_logic;
@@ -29,8 +30,6 @@ architecture arch_display of display is
     constant c_DISPLAY_BUFFER_HEIGHT    : natural   := g_DISPLAY_BUFFER_HEIGHT;
     constant c_DISPLAY_LENGTH           : natural   := c_DISPLAY_BUFFER_WIDTH * c_DISPLAY_BUFFER_HEIGHT;
     constant c_DISPLAY_BUFFER_LENGTH    : natural   := c_DISPLAY_LENGTH / 8;
-
-    signal r_DISPLAY_BUFFER : std_logic_vector(c_DISPLAY_LENGTH - 1 downto 0) := (others => '0');
 
     type t_ARRAY_DISPLAY_BUFFER is array (0 to c_DISPLAY_BUFFER_HEIGHT-1) of std_logic_vector(c_DISPLAY_BUFFER_WIDTH - 1 downto 0);
     signal r_ARRAY_DISPLAY_BUFFER : t_ARRAY_DISPLAY_BUFFER := (others => x"0000_0000_0000_0000");
@@ -137,8 +136,7 @@ architecture arch_display of display is
     signal r_SETUP_TIME_ENABLE  : std_logic := '1';
     signal r_DELAY_COUNTER      : integer   := 0;
 
-
-    signal r_DRAW_COUNTER : integer := 0;
+    signal r_BUFFER_SEL : std_logic_vector(7 downto 0) := x"00";
 
 begin
 
@@ -164,14 +162,19 @@ begin
     o_oled_sda <= w_SDA;
     o_oled_scl <= w_SCL;
 
-    r_DISPLAY_BUFFER <= i_buffer;
-
     p_INITIALISE : process is
     begin
         r_ADDR <= c_SLAVE_ADDRESS;
         r_RW <= '0';
         wait;
     end process p_INITIALISE;
+
+    p_COLLECT_BUFFER : process (i_clck) is
+    begin
+        if rising_edge(i_clck) then
+            r_ARRAY_DISPLAY_BUFFER(to_integer(unsigned(i_buffer_sel))) <= i_buffer;
+        end if;
+    end process p_COLLECT_BUFFER;
 
     -- Rotates vertical slices of 8 bits in the original buffer to an array
     -- with a length of 256 ((width * length) / 8) where each value is 8 bits.
@@ -181,11 +184,6 @@ begin
         variable v_INDEX    : natural := 0;
     begin
         if rising_edge(i_clck) then 
-            for i in 0 to c_DISPLAY_BUFFER_HEIGHT-1 loop
-                v_TEMP := std_logic_vector(shift_left(unsigned(r_DISPLAY_BUFFER), c_DISPLAY_BUFFER_WIDTH * i));
-                r_ARRAY_DISPLAY_BUFFER(i) <= v_TEMP(c_DISPLAY_LENGTH-1 downto c_DISPLAY_LENGTH - c_DISPLAY_BUFFER_WIDTH);
-            end loop;
-
             for i in 0 to c_DISPLAY_BUFFER_LENGTH - 1 loop
                 v_INDEX := i / c_DISPLAY_BUFFER_WIDTH;
                     for j in 0 to c_SLICE - 1 loop

@@ -5,14 +5,15 @@ use ieee.numeric_std.all; -- For numerical computation (includes logical operati
 entity chip8_cpu is
     port (
         -- clock
-        i_clck      : in    std_logic;
+        i_clck          : in    std_logic;
+        i_clck_100mhz   : in    std_logic;
 
         -- input keys
-        i_keys      : in    std_logic_vector(15 downto 0);
+        i_keys      : in    std_logic_vector(0 to 15);
 
         -- output buffer
         o_buffer        : out   std_logic_vector(63 downto 0);
-        o_buffer_sel    : out   std_logic_vector(7 downto 0)
+        o_buffer_sel    : out   std_logic_vector(4 downto 0)
     );
 end chip8_cpu;
 
@@ -139,18 +140,18 @@ begin
         r_CLOCK <= i_clck;
     end process p_MEMORY_CLOCK;
 
-    p_DISPLAY_TO_OUTPUT_BUFFER : process (i_clck) is
-        variable v_TEMP_BUFFER  : std_logic_vector(c_DISPLAY_LENGTH - 1 downto 0) := (others => '0');
-        variable v_SELECTION    : std_logic_vector(7 downto 0) := (others => '0');
+    p_DISPLAY_TO_OUTPUT_BUFFER : process (i_clck_100mhz) is
+        variable v_SELECTION    : std_logic_vector(4 downto 0) := (others => '0');
     begin
-        if rising_edge(i_clck) then
-            if v_SELECTION + 1 = c_DISPLAY_BUFFER_WIDTH - 1 then
-                v_SELECTION <= 0;
+        if rising_edge(i_clck_100mhz) then
+            if to_integer(unsigned(v_SELECTION) + 1) = (c_DISPLAY_HEIGHT - 1) then
+                v_SELECTION := "00000";
             else
-                v_SELECTION <= v_SELECTION + 1;
+                v_SELECTION := std_logic_vector(unsigned(v_SELECTION) + 1);
             end if;
 
-            o_buffer <= r_DISPLAY_BUFFER(i);
+            o_buffer_sel <= v_SELECTION;
+            o_buffer <= r_DISPLAY_BUFFER(to_integer(unsigned(v_SELECTION)));
         end if;
     end process p_DISPLAY_TO_OUTPUT_BUFFER;
 
@@ -414,7 +415,7 @@ begin
                         when x"B" => 
                             r_PROG_COUNT <= std_logic_vector(unsigned(r_PROG_COUNT) + to_integer(unsigned(r_VAR_REG(0))));
                         when x"C" =>
-                            r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(unsigned(r_INSTRUCTION(11 downto 8))) & std_logic_vector(to_unsigned(r_SEED, 8));
+                            r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(unsigned(r_INSTRUCTION(11 downto 8))) and std_logic_vector(to_unsigned(r_SEED, 4));
                         when x"D" =>
                             r_SM_CPU <= s_DECODE;
                             
@@ -465,11 +466,11 @@ begin
                             end case;
                         when x"E" =>
                             case r_INSTRUCTION(7 downto 0) is
-                                when x"A1" =>
+                                when x"9E" =>
                                     if i_keys(to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))))) = '1' then
                                         r_PROG_COUNT <= std_logic_vector(unsigned(r_PROG_COUNT) + 2);
                                     end if;
-                                when x"9E" =>
+                                when x"A1" =>
                                     if i_keys(to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))))) = '0' then
                                         r_PROG_COUNT <= std_logic_vector(unsigned(r_PROG_COUNT) + 2);
                                     end if;

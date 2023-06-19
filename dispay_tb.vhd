@@ -12,9 +12,11 @@ architecture behave of display_tb is
         -- clock
         i_clck      : in    std_logic;
 
+        -- incoming display buffer
+        i_buffer        : in std_logic_vector((g_DISPLAY_BUFFER_WIDTH - 1) downto 0);
+        i_buffer_sel    : in std_logic_vector(7 downto 0);   
+
         -- oled
-        o_oled_gnd  : out   std_logic;
-        o_oled_vcc  : out   std_logic;
         o_oled_scl  : inout std_logic;
         o_oled_sda  : inout std_logic
     );
@@ -22,8 +24,6 @@ architecture behave of display_tb is
 
     signal r_CLOCK  : std_logic := '0';
 
-    signal w_OLED_GND  : std_logic;
-    signal w_OLED_VCC  : std_logic;
     signal w_OLED_SCL  : std_logic;
     signal w_OLED_SDA  : std_logic;
 
@@ -33,13 +33,13 @@ begin
     port map (
         -- clock
         i_clck      => r_CLOCK,
+
+        -- buffer
+        
+
         -- oled
         o_oled_scl  => w_OLED_SCL,
         o_oled_sda  => w_OLED_SDA,
-
-        -- temp
-        o_oled_gnd  => w_OLED_GND,
-        o_oled_vcc  => w_OLED_VCC
     );
 
     p_CLOCK : process is
