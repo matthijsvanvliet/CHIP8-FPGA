@@ -2,12 +2,12 @@
 # Vivado v2022.2 (64-bit)
 # SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
 # IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
-# Start of session at: Mon Jun 19 15:55:18 2023
-# Process ID: 12436
-# Current directory: C:/git/git repositories/CHIP8-FPGA/Vivado/CHIP8-FPGA/CHIP8-FPGA.runs/synth_1
+# Start of session at: Mon Jun 19 23:28:47 2023
+# Process ID: 20960
+# Current directory: D:/git/Overig/CHIP8-FPGA/Vivado/CHIP8-FPGA/CHIP8-FPGA.runs/synth_1
 # Command line: vivado.exe -log chip8.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source chip8.tcl
-# Log file: C:/git/git repositories/CHIP8-FPGA/Vivado/CHIP8-FPGA/CHIP8-FPGA.runs/synth_1/chip8.vds
-# Journal file: C:/git/git repositories/CHIP8-FPGA/Vivado/CHIP8-FPGA/CHIP8-FPGA.runs/synth_1\vivado.jou
-# Running On: LAPTOP-IT23Q15D, OS: Windows, CPU Frequency: 1797 MHz, CPU Physical cores: 16, Host memory: 14887 MB
+# Log file: D:/git/Overig/CHIP8-FPGA/Vivado/CHIP8-FPGA/CHIP8-FPGA.runs/synth_1/chip8.vds
+# Journal file: D:/git/Overig/CHIP8-FPGA/Vivado/CHIP8-FPGA/CHIP8-FPGA.runs/synth_1\vivado.jou
+# Running On: DESKTOP-MATTHIJS, OS: Windows, CPU Frequency: 3700 MHz, CPU Physical cores: 16, Host memory: 25715 MB
 #-----------------------------------------------------------
 source chip8.tcl -notrace

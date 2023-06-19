@@ -1,7 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use work.keypad_test.all;
+use work.c8_test.all;
 
 entity chip8_memory is
     port (

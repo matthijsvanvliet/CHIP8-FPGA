@@ -7,14 +7,15 @@ vhdl xil_defaultlib  \
 "../../../../../../roms/sctest.vhd" \
 "../../../../../../roms/chip8_logo.vhd" \
 "../../../../../../roms/flags.vhd" \
-"../../../../../../roms/keypad_test.vhd" \
-"../../../../../../chip8_memory.vhd" \
-"../../../../../../chip8_cpu.vhd" \
+"../../../../../../roms/rps.vhd" \
+"../../../../../../roms/c8_test.vhd" \
 "../../../../../../i2c_master.vhd" \
 "../../../../../../ssd1306.vhd" \
 "../../../../../../display.vhd" \
 "../../../../../../debounce.vhd" \
 "../../../../../../pmod_keypad.vhd" \
+"../../../../../../chip8_memory.vhd" \
+"../../../../../../chip8_cpu.vhd" \
 "../../../../../../chip8.vhd" \
 "../../../../../../chip8_cpu_tb.vhd" \
 

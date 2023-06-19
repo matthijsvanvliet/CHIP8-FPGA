@@ -1,8 +1,8 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 -----------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
-| Date         : Mon Jun 19 15:57:43 2023
-| Host         : LAPTOP-IT23Q15D running 64-bit major release  (build 9200)
+| Date         : Mon Jun 19 23:31:15 2023
+| Host         : DESKTOP-MATTHIJS running 64-bit major release  (build 9200)
 | Command      : report_utilization -file chip8_utilization_synth.rpt -pb chip8_utilization_synth.pb
 | Design       : chip8
 | Device       : xc7a100tcsg324-1

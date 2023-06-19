@@ -50,8 +50,8 @@ begin
 
     CPU : entity work.chip8_cpu
         port map (
-            i_clck_100mhz   => r_CLOCK_100MHZ,
             i_clck          => r_CLOCK_CPU,
+            i_clck_100mhz   => r_CLOCK_100MHZ,
             i_keys          => w_KEYS,
             o_buffer        => w_BUFFER,
             o_buffer_sel    => w_BUFFER_SEL
@@ -99,6 +99,7 @@ begin
         if rising_edge(i_clck) then 
             r_RESET_N <= '1';
         end if;
+        wait;
     end process p_INITIALISE_KEYPAD;
 
     p_CLOCK_100HZ_TO_4HZ : process (i_clck) is

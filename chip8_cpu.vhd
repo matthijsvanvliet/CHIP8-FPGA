@@ -20,9 +20,9 @@ end chip8_cpu;
 architecture arch_chip8_cpu of chip8_cpu is
     
     ---- Timing ----
-    constant r_FREQ_CLOCK       : integer := 4000000; -- 4 MHz
+    constant r_FREQ_CLOCK       : integer := 4_000_000; -- 4 MHz
     constant r_FREQ_60HZ_CLOCK  : integer := 60; -- 60 Hz
-    constant r_FREQ_INSTR_CLOCK : integer := 700; -- 700 Hz
+    constant r_FREQ_INSTR_CLOCK : integer := 500; -- Instruction speed -> How many instructions per second
 
     constant r_PRESCALER_60HZ       : integer := r_FREQ_CLOCK / r_FREQ_60HZ_CLOCK / 2; -- 4 MHz / 60 / 2 = 33333.333..
     signal r_PRESCALER_COUNTER_60HZ : integer := 0;
@@ -50,6 +50,9 @@ architecture arch_chip8_cpu of chip8_cpu is
 
     signal r_SET_DELAY_TIMER        : std_logic := '0';
     signal r_DELAY_TIMER_NEW_VALUE  : std_logic_vector(7 downto 0) := (others => '0');
+
+    signal r_SET_SOUND_TIMER        : std_logic := '0';
+    signal r_SOUND_TIMER_NEW_VALUE  : std_logic_vector(7 downto 0) := (others => '0');
     ---- Timers ----
 
     ---- Stack, Registers, Program Counter, Current Instruction and SP ----
@@ -186,8 +189,12 @@ begin
                     r_DELAY_TIMER <= r_DELAY_TIMER_NEW_VALUE;
                 end if;
 
-                if unsigned(r_SOUND_TIMER) > 0 then
-                    r_SOUND_TIMER <= std_logic_vector(unsigned(r_SOUND_TIMER) - 1);
+                if r_SET_SOUND_TIMER = '0' then
+                    if unsigned(r_SOUND_TIMER) > 0 then
+                        r_SOUND_TIMER <= std_logic_vector(unsigned(r_SOUND_TIMER) - 1);
+                    end if;
+                elsif r_SET_SOUND_TIMER = '1' then
+                    r_SOUND_TIMER <= r_SOUND_TIMER_NEW_VALUE;
                 end if;
             end if;
         end if;
@@ -413,9 +420,9 @@ begin
                         when x"A" =>
                             r_INDEX_REG <= r_INSTRUCTION(11 downto 0);
                         when x"B" => 
-                            r_PROG_COUNT <= std_logic_vector(unsigned(r_PROG_COUNT) + to_integer(unsigned(r_VAR_REG(0))));
+                            r_PROG_COUNT <= std_logic_vector(unsigned(r_INSTRUCTION(11 downto 0)) + to_integer(unsigned(r_VAR_REG(0))));
                         when x"C" =>
-                            r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(unsigned(r_INSTRUCTION(11 downto 8))) and std_logic_vector(to_unsigned(r_SEED, 4));
+                            r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(unsigned(r_INSTRUCTION(7 downto 0))) and std_logic_vector(to_unsigned(r_SEED, 8));
                         when x"D" =>
                             r_SM_CPU <= s_DECODE;
                             
@@ -484,7 +491,7 @@ begin
                                 when x"0A" =>
                                     -- Wait until key is pressed
                                     if i_keys = x"0000" then
-                                        r_SM_CPU <= s_DECODE;
+                                        r_PROG_COUNT <= std_logic_vector(unsigned(r_PROG_COUNT) - 2);
                                     else
                                         for i in 0 to i_keys'length - 1 loop
                                             if i_keys(i) = '1' then
@@ -498,7 +505,8 @@ begin
                                     r_SET_DELAY_TIMER <= '1';
                                 when x"18" =>
                                     -- Sound Timer = VX
-                                    r_SOUND_TIMER <= r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))));
+                                    r_SOUND_TIMER_NEW_VALUE <= r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))));
+                                    r_SET_SOUND_TIMER <= '1';
                                 when x"1E" =>
                                     -- I = I + VX
                                     r_INDEX_REG <= std_logic_vector(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) + unsigned(r_INDEX_REG));

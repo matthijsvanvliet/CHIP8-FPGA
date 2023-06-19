@@ -1,8 +1,8 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
-| Date         : Mon Jun 19 16:00:42 2023
-| Host         : LAPTOP-IT23Q15D running 64-bit major release  (build 9200)
+| Date         : Mon Jun 19 23:34:36 2023
+| Host         : DESKTOP-MATTHIJS running 64-bit major release  (build 9200)
 | Command      : report_timing_summary -max_paths 10 -report_unconstrained -file chip8_timing_summary_routed.rpt -pb chip8_timing_summary_routed.pb -rpx chip8_timing_summary_routed.rpx -warn_on_violation
 | Design       : chip8
 | Device       : 7a100t-csg324

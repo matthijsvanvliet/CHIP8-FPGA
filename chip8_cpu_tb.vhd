@@ -10,7 +10,8 @@ architecture behave of chip8_cpu_tb is
     component chip8_cpu
         port (
             -- clock
-            i_clck      : in    std_logic;
+            i_clck          : in    std_logic;
+            i_clck_100mhz   : in    std_logic;
 
             -- input keys
             i_keys      : in    std_logic_vector(0 to 15);
@@ -22,7 +23,8 @@ architecture behave of chip8_cpu_tb is
     end component chip8_cpu;
 
     -- Clock signals
-    signal r_CLOCK_TB  : std_logic := '0';
+    signal r_CLOCK_TB           : std_logic := '0';
+    signal r_CLOCK_100MHZ_TB    : std_logic := '0';
 
     -- Input keys
     signal r_KEYS : std_logic_vector(0 to 15) := (others => '0');
@@ -36,6 +38,7 @@ begin
         port map (
             -- clock
             i_clck  => r_CLOCK_TB,
+            i_clck_100mhz => r_CLOCK_100MHZ_TB,
 
             -- input keys
             i_keys => r_KEYS,
@@ -51,9 +54,18 @@ begin
         wait for 250 ns; -- 4 MHz
     end process p_CLOCK_TB;
 
+    p_CLOCK_100MHZ_TB : process is
+    begin
+        r_CLOCK_100MHZ_TB <= not r_CLOCK_100MHZ_TB;
+        wait for 10 ns; -- 100 MHz
+    end process p_CLOCK_100MHZ_TB;
+
     process is
     begin
-        r_KEYS(1) <= '1';
+        wait for 0.6 sec;
+        r_KEYS(16#F#) <= '1';
+        wait for 0.1 sec;
+        r_KEYS(16#F#) <= '0';
         wait;
     end process;
 
