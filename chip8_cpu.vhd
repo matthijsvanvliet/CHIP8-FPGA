@@ -298,7 +298,7 @@ begin
                         v_RAM_CLKPULSE := '1';
                     else
                         v_RAM_CLKPULSE := '0';
-                        if v_LOADSTORE_COUNTER > v_UPPER_LIMIT then
+                        if v_LOADSTORE_COUNTER + 1 > v_UPPER_LIMIT then
                             v_LOADSTORE_COUNTER := 0;
                             v_UPPER_LIMIT := 0;
                             r_SM_CPU <= s_NEXT_INSTR;
@@ -345,33 +345,33 @@ begin
                             r_STACK_DATA(r_SP) <= r_PROG_COUNT;
                             r_STACK_ADDR <= r_INSTRUCTION(11 downto 0);
                             r_SM_CPU <= s_PUSH;
-                        when x"3" =>
+                        when x"3" => --
                             if r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) = r_INSTRUCTION(7 downto 0) then
                                 r_PROG_COUNT <= std_logic_vector(unsigned(r_PROG_COUNT) + 2);
                             end if;
-                        when x"4" =>
+                        when x"4" => -- 
                             if r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) /= r_INSTRUCTION(7 downto 0) then
                                 r_PROG_COUNT <= std_logic_vector(unsigned(r_PROG_COUNT) + 2);
                             end if;
-                        when x"5" =>
+                        when x"5" => --
                             if r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) = r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4)))) then
                                 r_PROG_COUNT <= std_logic_vector(unsigned(r_PROG_COUNT) + 2);
                             end if;
                         when x"6" =>
                             r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= r_INSTRUCTION(7 downto 0);
-                        when x"7" =>
+                        when x"7" => --
                             r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) + unsigned(r_INSTRUCTION(7 downto 0)));
                         when x"8" =>
                             case r_INSTRUCTION(3 downto 0) is
-                                when x"0" =>
+                                when x"0" => --
                                     r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4))));
-                                when x"1" =>
+                                when x"1" => --
                                     r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) or r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4))));
-                                when x"2" =>
+                                when x"2" => -- 
                                     r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) and r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4))));
-                                when x"3" =>
+                                when x"3" => --
                                     r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) xor r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4))));
-                                when x"4" =>
+                                when x"4" => --
                                     r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) + unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4))))));
                                     if (to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))))) + to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4))))))) > 255 then
                                         v_CARRY := x"01";
@@ -379,7 +379,7 @@ begin
                                         v_CARRY := x"00";
                                     end if;
                                     r_SM_CPU <= s_STORE_CARRY;
-                                when x"5" =>
+                                when x"5" => --
                                     r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) - unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4))))));
                                     if to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4)))))) > to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))))) then
                                         v_CARRY := x"00";
@@ -387,7 +387,7 @@ begin
                                         v_CARRY := x"01";
                                     end if;
                                     r_SM_CPU <= s_STORE_CARRY;
-                                when x"6" =>
+                                when x"6" => --
                                     r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(shift_right(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))), 1));
                                     if (r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) and x"01") = x"01" then
                                         v_CARRY := x"01";
@@ -395,7 +395,7 @@ begin
                                         v_CARRY := x"00";
                                     end if;
                                     r_SM_CPU <= s_STORE_CARRY;
-                                when x"7" =>
+                                when x"7" => --
                                     r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4))))) - unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))));
                                     if to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))))) > to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4)))))) then
                                         v_CARRY := x"00";
@@ -403,7 +403,7 @@ begin
                                         v_CARRY := x"01";
                                     end if;
                                     r_SM_CPU <= s_STORE_CARRY;
-                                when x"E" =>
+                                when x"E" => --
                                     r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(shift_left(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))), 1));
                                     if (r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) and x"80") = x"80" then
                                         v_CARRY := x"01";
@@ -413,15 +413,15 @@ begin
                                     r_SM_CPU <= s_STORE_CARRY;
                                 when others => NULL;
                             end case;
-                        when x"9" =>
+                        when x"9" => --
                             if r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) /= r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(7 downto 4)))) then
                                 r_PROG_COUNT <= std_logic_vector(unsigned(r_PROG_COUNT) + 2);
                             end if;
-                        when x"A" =>
+                        when x"A" => --
                             r_INDEX_REG <= r_INSTRUCTION(11 downto 0);
-                        when x"B" => 
+                        when x"B" => --
                             r_PROG_COUNT <= std_logic_vector(unsigned(r_INSTRUCTION(11 downto 0)) + to_integer(unsigned(r_VAR_REG(0))));
-                        when x"C" =>
+                        when x"C" => --
                             r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= std_logic_vector(unsigned(r_INSTRUCTION(7 downto 0))) and std_logic_vector(to_unsigned(r_SEED, 8));
                         when x"D" =>
                             r_SM_CPU <= s_DECODE;
@@ -485,10 +485,10 @@ begin
                             end case;
                         when x"F" =>
                             case r_INSTRUCTION(7 downto 0) is
-                                when x"07" =>
+                                when x"07" => --
                                     -- VX = Delay Timer
                                     r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))) <= r_DELAY_TIMER;
-                                when x"0A" =>
+                                when x"0A" => 
                                     -- Wait until key is pressed
                                     if i_keys = x"0000" then
                                         r_PROG_COUNT <= std_logic_vector(unsigned(r_PROG_COUNT) - 2);
@@ -499,27 +499,27 @@ begin
                                             end if;
                                         end loop;
                                     end if;
-                                when x"15" =>
+                                when x"15" => --
                                     -- Delay Timer = VX
                                     r_DELAY_TIMER_NEW_VALUE <= r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))));
                                     r_SET_DELAY_TIMER <= '1';
-                                when x"18" =>
+                                when x"18" => --
                                     -- Sound Timer = VX
                                     r_SOUND_TIMER_NEW_VALUE <= r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))));
                                     r_SET_SOUND_TIMER <= '1';
-                                when x"1E" =>
+                                when x"1E" => --
                                     -- I = I + VX
                                     r_INDEX_REG <= std_logic_vector(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))) + unsigned(r_INDEX_REG));
-                                when x"29" =>
+                                when x"29" => --???
                                     -- Font Location => 0x050 --> I = 0x050 + (VX * 5)
                                     r_INDEX_REG <= std_logic_vector(x"050" + to_unsigned(to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8)))))) * 5, r_INDEX_REG'length)); 
-                                when x"33" =>
+                                when x"33" => --
                                     v_VX := to_integer(unsigned(r_VAR_REG(to_integer(unsigned(r_INSTRUCTION(11 downto 8))))));
                                     r_SM_CPU <= s_BCD1;
-                                when x"55" =>
+                                when x"55" => --
                                     v_UPPER_LIMIT := to_integer(unsigned(r_INSTRUCTION(11 downto 8)));
                                     r_SM_CPU <= s_STORE;
-                                when x"65" =>
+                                when x"65" => --
                                     v_UPPER_LIMIT := to_integer(unsigned(r_INSTRUCTION(11 downto 8)));
                                     r_SM_CPU <= s_LOAD;
                                 when others => NULL;

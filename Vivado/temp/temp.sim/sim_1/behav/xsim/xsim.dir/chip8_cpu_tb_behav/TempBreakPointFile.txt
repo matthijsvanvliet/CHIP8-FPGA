@@ -1,0 +1,5 @@
+Breakpoint File Version 1.0
+293,true,"C:/git/git repositories/CHIP8-FPGA/chip8_cpu.vhd"
+306,true,"C:/git/git repositories/CHIP8-FPGA/chip8_cpu.vhd"
+300,true,"C:/git/git repositories/CHIP8-FPGA/chip8_cpu.vhd"
+297,true,"C:/git/git repositories/CHIP8-FPGA/chip8_cpu.vhd"

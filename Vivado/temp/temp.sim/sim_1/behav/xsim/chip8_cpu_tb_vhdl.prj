@@ -1,0 +1,17 @@
+# compile vhdl design source files
+vhdl xil_defaultlib  \
+"../../../../../../roms/rps.vhd" \
+"../../../../../../roms/coraxplus.vhd" \
+"../../../../../../roms/flags.vhd" \
+"../../../../../../debounce.vhd" \
+"../../../../../../pmod_keypad.vhd" \
+"../../../../../../ssd1306.vhd" \
+"../../../../../../i2c_master.vhd" \
+"../../../../../../display.vhd" \
+"../../../../../../chip8_memory.vhd" \
+"../../../../../../chip8_cpu.vhd" \
+"../../../../../../chip8.vhd" \
+"../../../../../../chip8_cpu_tb.vhd" \
+
+# Do not sort compile order
+nosort
