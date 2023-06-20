@@ -1,1 +1,0 @@
---incr --debug "typical" --relax --mt "2" -L "xil_defaultlib" -L "secureip" --snapshot "chip8_cpu_tb_behav" "xil_defaultlib.chip8_cpu_tb" -log "elaborate.log" 

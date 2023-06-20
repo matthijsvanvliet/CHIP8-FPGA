@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="61" Path="C:/git/git repositories/CHIP8-FPGA/Vivado/temp/temp.xpr">
+<Project Version="7" Minor="61" Path="D:/git/Overig/CHIP8-FPGA/Vivado/temp/temp.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="b70af4c24bcd432aac88b74ebc5ce035"/>
@@ -45,7 +45,7 @@
     <Option Name="TargetLanguage" Val="VHDL"/>
     <Option Name="SimulatorLanguage" Val="VHDL"/>
     <Option Name="BoardPart" Val="digilentinc.com:arty-a7-100:part0:1.1"/>
-    <Option Name="BoardPartRepoPaths" Val="$PPRDIR/../../../../../Users/Matthijs/AppData/Roaming/Xilinx/Vivado/2022.2/xhub/board_store/xilinx_board_store"/>
+    <Option Name="BoardPartRepoPaths" Val="C:/Users/Matthijs/AppData/Roaming/Xilinx/Vivado/2022.2/xhub/board_store/xilinx_board_store"/>
     <Option Name="SourceMgmtMode" Val="DisplayOnly"/>
     <Option Name="ActiveSimSet" Val="sim_1"/>
     <Option Name="DefaultLib" Val="xil_defaultlib"/>

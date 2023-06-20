@@ -1,7 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use work.rps.all;
+use work.spaceinvaders.all;
 
 entity chip8_memory is
     port (
