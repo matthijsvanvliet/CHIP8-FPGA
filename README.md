@@ -1,6 +1,6 @@
 # CHIP-8 for FPGA
 
-This is a CHIP-8 emulator made for the [Arty A7-100T](https://digilent.com/shop/arty-a7-100t-artix-7-fpga-development-board/) FPGA development board. This project was used to get more familiar with FPGA's and VHDL, so there may some mistakes here and there.
+This is a CHIP-8 emulator made for the [Arty A7-100T](https://digilent.com/shop/arty-a7-100t-artix-7-fpga-development-board/) FPGA development board. This project was used to get more familiar with FPGAs and VHDL, so there may some mistakes here and there.
 
 ![fpga-setup](images/setup-fpga.jpg)
 
