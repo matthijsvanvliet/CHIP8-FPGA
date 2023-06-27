@@ -1,4 +1,0 @@
-vhdl xil_defaultlib  \
-"../../../../Display-Test.gen/sources_1/ip/clk_100_40_hz_4/clk_100_40_hz_sim_netlist.vhdl" \
-
-nosort

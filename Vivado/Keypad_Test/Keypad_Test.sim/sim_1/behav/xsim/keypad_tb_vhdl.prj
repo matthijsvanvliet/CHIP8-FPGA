@@ -1,8 +1,0 @@
-# compile vhdl design source files
-vhdl xil_defaultlib  \
-"../../../../../../keypad.vhd" \
-"../../../../../../top_keypad.vhd" \
-"../../../../../../keypad_tb.vhd" \
-
-# Do not sort compile order
-nosort
