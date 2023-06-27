@@ -1,9 +1,7 @@
 library ieee;
-use ieee.std_logic_1164.all; -- For std_logic type definition
-use ieee.numeric_std.all; -- For numerical computation (includes logical operations in this file (and, xor, etc))
--- use std.textio.all; -- Used to load in program into RAM
--- use ieee.std_logic_textio.all;
-use work.ibm_logo.all;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+use work.flags.all;
 
 entity chip8_memory is
     port (
@@ -55,12 +53,13 @@ architecture arch_chip8_memory of chip8_memory is
 
     function InitialiseRamWithData(
             font_data       : t_FONT;
-            program_data    : t_IBM_LOGO_DATA 
+            program_data    : t_ROM 
         )
         return t_RAM is
             variable ram_data       : t_RAM := (others => x"00");
 
     begin
+        -- Load program into memory
         for i in 0 to c_RAM_WIDTH - c_START_ADDRESS - 1 loop
             if i < program_data'length then
                 ram_data(c_START_ADDRESS + i) := program_data(i);
@@ -69,12 +68,12 @@ architecture arch_chip8_memory of chip8_memory is
 
         -- Load font into memory
         for i in t_FONT'range loop
-            ram_data(80 + i) := font_data(i); -- Load font data at address 0x050
+            ram_data(c_FONT_LOC + i) := font_data(i); -- Load font data at address 0x050
         end loop;
         return ram_data;
     end InitialiseRamWithData;
 
-    signal r_RAM_DATA : t_RAM := InitialiseRamWithData(c_FONT_DATA, c_IBM_LOGO_DATA);
+    signal r_RAM_DATA : t_RAM := InitialiseRamWithData(c_FONT_DATA, c_ROM);
 
 begin
 
