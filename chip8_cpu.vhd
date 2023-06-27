@@ -45,7 +45,7 @@ architecture arch_chip8_cpu of chip8_cpu is
 
     ---- Timers ----
     -- Timers that are decremented 60 times per second. Consists of a delay timer and a sound timer
-    signal r_DELAY_TIMER : std_logic_vector(7 downto 0) := (others => '0');
+    signal r_DELAY_TIMER : std_logic_vector(7 downto 0) := x"3c";--(others => '0');
     signal r_SOUND_TIMER : std_logic_vector(7 downto 0) := (others => '0');
 
     signal r_SET_DELAY_TIMER        : std_logic := '0';
@@ -55,12 +55,15 @@ architecture arch_chip8_cpu of chip8_cpu is
     signal r_SOUND_TIMER_NEW_VALUE  : std_logic_vector(7 downto 0) := (others => '0');
     ---- Timers ----
 
-    ---- Stack, Registers, Program Counter, Current Instruction and SP ----
+    ---- Stack, SP, Registers, Program Counter and Current Instruction ----
     -- Stack
     constant c_STACK_WIDTH : integer := 16;
     type t_STACK is array (0 to c_STACK_WIDTH-1) of std_logic_vector(11 downto 0); -- Stack of 16 elements where each element is 12-bit
     signal r_STACK_DATA : t_STACK := (others => x"000");
     signal r_STACK_ADDR : std_logic_vector(11 downto 0) := x"000";
+
+    -- SP
+    signal r_SP : integer := 0;
 
     -- General Purpose Variable Registers
     constant c_V_WIDTH : integer := 16;
@@ -75,9 +78,6 @@ architecture arch_chip8_cpu of chip8_cpu is
 
     -- Current Instruction
     signal r_INSTRUCTION : std_logic_vector(15 downto 0) := (others => '0');
-
-    -- SP
-    signal r_SP : integer := 0;
     ---- Stack, Registers, Program Counter and Current Instruction ----
 
     ---- State Machine ----
@@ -147,7 +147,7 @@ begin
         variable v_SELECTION    : std_logic_vector(4 downto 0) := (others => '0');
     begin
         if rising_edge(i_clck_100mhz) then
-            if to_integer(unsigned(v_SELECTION) + 1) = (c_DISPLAY_HEIGHT - 1) then
+            if to_integer(unsigned(v_SELECTION)) = (c_DISPLAY_HEIGHT - 1) then
                 v_SELECTION := "00000";
             else
                 v_SELECTION := std_logic_vector(unsigned(v_SELECTION) + 1);
@@ -180,21 +180,21 @@ begin
     p_DECR_TIMERS : process (i_clck) is
     begin
         if rising_edge(i_clck) then
+            if r_SET_DELAY_TIMER = '1' then
+                r_DELAY_TIMER <= r_DELAY_TIMER_NEW_VALUE;
+            end if;
+
+            if r_SET_SOUND_TIMER = '1' then
+                r_SOUND_TIMER <= r_SOUND_TIMER_NEW_VALUE;
+            end if;
+
             if r_PRESCALER_COUNTER_60HZ = r_PRESCALER_60HZ then
-                if r_SET_DELAY_TIMER = '0' then
-                    if unsigned(r_DELAY_TIMER) > 0 then
-                        r_DELAY_TIMER <= std_logic_vector(unsigned(r_DELAY_TIMER) - 1);
-                    end if;
-                elsif r_SET_DELAY_TIMER = '1' then
-                    r_DELAY_TIMER <= r_DELAY_TIMER_NEW_VALUE;
+                if unsigned(r_DELAY_TIMER) > 0 then
+                    r_DELAY_TIMER <= std_logic_vector(unsigned(r_DELAY_TIMER) - 1);
                 end if;
 
-                if r_SET_SOUND_TIMER = '0' then
-                    if unsigned(r_SOUND_TIMER) > 0 then
-                        r_SOUND_TIMER <= std_logic_vector(unsigned(r_SOUND_TIMER) - 1);
-                    end if;
-                elsif r_SET_SOUND_TIMER = '1' then
-                    r_SOUND_TIMER <= r_SOUND_TIMER_NEW_VALUE;
+                if unsigned(r_SOUND_TIMER) > 0 then
+                    r_SOUND_TIMER <= std_logic_vector(unsigned(r_SOUND_TIMER) - 1);
                 end if;
             end if;
         end if;
@@ -317,7 +317,7 @@ begin
                         v_RAM_CLKPULSE := '1';
                     else
                         v_RAM_CLKPULSE := '0';
-                        if v_LOADSTORE_COUNTER + 1 > v_UPPER_LIMIT then
+                        if v_LOADSTORE_COUNTER > v_UPPER_LIMIT then
                             v_LOADSTORE_COUNTER := 0;
                             v_UPPER_LIMIT := 0;
                             r_SM_CPU <= s_NEXT_INSTR;
@@ -452,11 +452,12 @@ begin
                                         v_SPRITE_COUNTER := v_SPRITE_COUNTER + 1;
                                         for i in 0 to v_SPRITE_BYTE'length - 1 loop
                                             if (c_DISPLAY_WIDTH - 1 - v_X_COOR - i) >= 0 then
-                                                if v_SPRITE_BYTE(v_SPRITE_BYTE'length - 1 - i) = r_DISPLAY_BUFFER(v_Y_COOR)(c_DISPLAY_WIDTH - 1 - v_X_COOR - i) then
+                                                if (r_DISPLAY_BUFFER(v_Y_COOR)(c_DISPLAY_WIDTH - 1 - v_X_COOR - i) and v_SPRITE_BYTE(v_SPRITE_BYTE'length - 1 - i)) = '1' then
+                                                    r_DISPLAY_BUFFER(v_Y_COOR)(c_DISPLAY_WIDTH - 1 - v_X_COOR - i) <= r_DISPLAY_BUFFER(v_Y_COOR)(c_DISPLAY_WIDTH - 1 - v_X_COOR - i) xor v_SPRITE_BYTE(v_SPRITE_BYTE'length - 1 - i);
                                                     r_VAR_REG(16#F#) <= x"01";
+                                                else
+                                        	        r_DISPLAY_BUFFER(v_Y_COOR)(c_DISPLAY_WIDTH - 1 - v_X_COOR - i) <= r_DISPLAY_BUFFER(v_Y_COOR)(c_DISPLAY_WIDTH - 1 - v_X_COOR - i) xor v_SPRITE_BYTE(v_SPRITE_BYTE'length - 1 - i);
                                                 end if;
-                                            
-                                                r_DISPLAY_BUFFER(v_Y_COOR)(c_DISPLAY_WIDTH - 1 - v_X_COOR - i) <= r_DISPLAY_BUFFER(v_Y_COOR)(c_DISPLAY_WIDTH - 1 - v_X_COOR - i) xor v_SPRITE_BYTE(v_SPRITE_BYTE'length - 1 - i);
                                             end if;
                                         end loop;
                                         r_SM_DRAW <= s_INCR_Y;

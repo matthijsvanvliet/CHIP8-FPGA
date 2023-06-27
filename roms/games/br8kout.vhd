@@ -4,7 +4,7 @@ use ieee.numeric_std.all;
 
 package br8kout is
 
-    type t_ROM is array (0 to 2017 - 1) of std_logic_vector(7 downto 0);
+    type t_ROM is array (0 to 199 - 1) of std_logic_vector(7 downto 0);
     constant c_ROM : t_ROM := (
         x"12", x"9F", x"FC", x"FC", x"80", x"A2", x"02", x"DD", x"C1", x"00", x"EE", x"A2", x"04", x"DB", x"A1", x"00", 
         x"EE", x"A2", x"03", x"60", x"02", x"61", x"05", x"87", x"00", x"86", x"10", x"D6", x"71", x"71", x"08", x"6F", 

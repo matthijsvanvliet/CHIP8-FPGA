@@ -1,7 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use work.spaceinvaders.all;
+use work.flags.all;
 
 entity chip8_memory is
     port (
@@ -61,7 +61,7 @@ architecture arch_chip8_memory of chip8_memory is
     begin
         -- Load program into memory
         for i in 0 to c_RAM_WIDTH - c_START_ADDRESS - 1 loop
-            if i < program_data'length-1 then
+            if i < program_data'length then
                 ram_data(c_START_ADDRESS + i) := program_data(i);
             end if;
         end loop;
