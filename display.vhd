@@ -37,18 +37,6 @@ architecture arch_display of display is
     type t_FORMATTED_DISPLAY_BUFFER is array (0 to c_DISPLAY_BUFFER_LENGTH-1) of std_logic_vector(7 downto 0);
     signal r_FORMATTED_DISPLAY_BUFFER : t_FORMATTED_DISPLAY_BUFFER := (others => x"00");
 
-    component clk_50hz
-    port
-    (-- Clock in ports
-        -- Clock out ports
-        clk_out1          : out    std_logic;
-        -- Status and control signals
-        reset             : in     std_logic;
-        locked            : out    std_logic;
-        i_clck            : in     std_logic
-    );
-    end component;
-
     signal w_CLOCK_OUT1     : std_logic;
     signal r_CLOCK_RESET    : std_logic := '0';
     signal w_LOCKED         : std_logic;
@@ -179,7 +167,6 @@ begin
     -- Rotates vertical slices of 8 bits in the original buffer to an array
     -- with a length of 256 ((width * length) / 8) where each value is 8 bits.
     p_REFORMAT_BUFFER : process (i_clck) is
-        variable v_TEMP     : std_logic_vector(c_DISPLAY_LENGTH-1 downto 0) := (others => '0');
         constant c_SLICE    : natural := 8;
         variable v_INDEX    : natural := 0;
     begin
